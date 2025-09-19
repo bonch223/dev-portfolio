@@ -8,6 +8,8 @@ const HeroSection = () => {
   const [hoveredPath, setHoveredPath] = useState(null);
   const [selectedPath, setSelectedPath] = useState(null);
   const [isShaking, setIsShaking] = useState(false);
+  const [displayedText, setDisplayedText] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
   const profileContainerRef = useRef(null);
   const physicsSystemRef = useRef(null);
 
@@ -21,12 +23,58 @@ const HeroSection = () => {
 
   useEffect(() => {
     setIsVisible(true);
-    const interval = setInterval(() => {
-      setCurrentRole((prev) => (prev + 1) % roles.length);
-    }, 3000);
-
-    return () => clearInterval(interval);
   }, []);
+
+  // Typewriter effect for roles
+  useEffect(() => {
+    let isActive = true; // Flag to prevent multiple instances
+    
+    const typeWriter = async () => {
+      if (!isActive) return; // Exit if component unmounted or new effect started
+      
+      const currentRoleText = roles[currentRole];
+      
+      // Start typing
+      setIsTyping(true);
+      setDisplayedText('');
+      
+      // Type out the text
+      for (let i = 0; i <= currentRoleText.length; i++) {
+        if (!isActive) return; // Exit if component unmounted
+        setDisplayedText(currentRoleText.slice(0, i));
+        await new Promise(resolve => setTimeout(resolve, 100)); // 100ms delay between characters
+      }
+      
+      if (!isActive) return; // Exit if component unmounted
+      
+      // Wait a bit before starting to delete
+      await new Promise(resolve => setTimeout(resolve, 4000));
+      
+      if (!isActive) return; // Exit if component unmounted
+      
+      // Delete the text
+      for (let i = currentRoleText.length; i >= 0; i--) {
+        if (!isActive) return; // Exit if component unmounted
+        setDisplayedText(currentRoleText.slice(0, i));
+        await new Promise(resolve => setTimeout(resolve, 50)); // 50ms delay for deletion
+      }
+      
+      if (!isActive) return; // Exit if component unmounted
+      
+      setIsTyping(false);
+      
+      // Move to next role
+      setCurrentRole((prev) => (prev + 1) % roles.length);
+    };
+
+    // Start the first typewriter cycle immediately
+    typeWriter();
+
+    // Cleanup function
+    return () => {
+      isActive = false;
+    };
+  }, [currentRole]);
 
 
   // Physics-based collision detection is handled by Matter.js
@@ -255,65 +303,74 @@ const HeroSection = () => {
     <section id="home" className="section hero-section">
       <div className="section-content">
         <div className="hero-grid">
-          {/* Left Content */}
+          {/* Left Content with Glass Pane */}
           <div className={`hero-content ${isVisible ? 'animate-slide-left' : 'opacity-0'}`}>
-            <div className="hero-text">
-              <h1 className="heading-primary">
-                Hi, I'm{' '}
-                <span className="text-gradient animate-pulse">
-                  MJR Elayron
-                </span>
-              </h1>
+            <div className="glass-content-pane">
+              {/* Subtle moving circles inside the glass pane */}
+              <div className="floating-circle circle-1" />
+              <div className="floating-circle circle-2" />
+              <div className="floating-circle circle-3" />
+              <div className="floating-circle circle-4" />
+              <div className="floating-circle circle-5" />
               
-              <div className="role-container">
-                <span className="role-label">I'm a</span>
-                <div className="role-display">
-                  <span className="role-text">
-                    {roles[currentRole]}
+              <div className="hero-text">
+                <h1 className="heading-primary">
+                  Hi, I'm{' '}
+                  <span className="text-gradient animate-pulse">
+                    Mel
                   </span>
-                  <span className="cursor-blink">|</span>
+                </h1>
+                
+                <div className="role-container">
+                  <span className="role-label">I'm a</span>
+                  <div className="role-display">
+                    <span className="role-text">
+                      {displayedText}
+                    </span>
+                    <span className={`cursor-blink ${isTyping ? 'typing' : ''}`}>|</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <p className="hero-description">
-              Passionate about creating innovative digital solutions that drive business growth. 
-              I specialize in SEO optimization, WordPress development, UI/UX design, and 
-              no-code solutions that deliver exceptional results for my clients.
-            </p>
+              <p className="hero-description">
+                Passionate about creating innovative digital solutions that drive business growth. 
+                I specialize in SEO optimization, WordPress development, UI/UX design, and 
+                no-code solutions that deliver exceptional results for my clients.
+              </p>
 
-            <div className="hero-buttons">
-              <button 
-                onClick={scrollToProjects}
-                className="btn btn-primary"
-              >
-                <span>View My Work</span>
-                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              <a 
-                href="/src/assets/Resume.pdf" 
-                download
-                className="btn btn-secondary"
-              >
-                <span>Download Resume</span>
-                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </a>
-            </div>
+              <div className="hero-buttons">
+                <button 
+                  onClick={scrollToProjects}
+                  className="btn btn-primary"
+                >
+                  <span>View My Work</span>
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                
+                <a 
+                  href="/src/assets/Resume.pdf" 
+                  download
+                  className="btn btn-secondary"
+                >
+                  <span>Download Resume</span>
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </a>
+              </div>
 
-            {/* Tech Stack */}
-            <div className="tech-stack">
-              <p className="tech-stack-label">Tech Stack</p>
-              <div className="tech-badges">
-                {['WordPress', 'SEO', 'UI/UX', 'Shopify', 'No Code', 'Marketing'].map((tech) => (
-                  <span key={tech} className="code-text">
-                    {tech}
-                  </span>
-                ))}
+              {/* Tech Stack */}
+              <div className="tech-stack">
+                <p className="tech-stack-label">Tech Stack</p>
+                <div className="tech-badges">
+                  {['WordPress', 'SEO', 'UI/UX', 'Shopify', 'No Code', 'Marketing'].map((tech) => (
+                    <span key={tech} className="code-text">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

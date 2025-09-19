@@ -35,12 +35,19 @@ function App() {
     <div className="App">
       <AnimatedBackground />
       <Navigation activeSection={activeSection} />
-      <main>
-        <HeroSection />
-        <AboutSection />
-        <ProjectsSection />
-        <ContactSection />
-      </main>
+      <div className="main-layout">
+        <main className="content-area">
+          <HeroSection />
+          <AboutSection />
+          <ProjectsSection />
+          <ContactSection />
+        </main>
+        <div className="sticky-profile-wrapper">
+          <div className="sticky-profile-container">
+            {/* Profile image will be moved here */}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

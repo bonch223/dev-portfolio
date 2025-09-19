@@ -335,6 +335,7 @@ const PhysicsParticleSystem = forwardRef(({ onParticleClick, onCollision }, ref)
   // Function to get random gradient colors for particles
   const getParticleGradient = (particleData) => {
     const colorSets = [
+      // Original vibrant set
       ['#00D4FF', '#8B5CF6'], // Blue to Purple
       ['#8B5CF6', '#EC4899'], // Purple to Pink
       ['#EC4899', '#F59E0B'], // Pink to Orange
@@ -345,6 +346,42 @@ const PhysicsParticleSystem = forwardRef(({ onParticleClick, onCollision }, ref)
       ['#EC4899', '#84CC16'], // Pink to Lime
       ['#F59E0B', '#EF4444'], // Orange to Red
       ['#10B981', '#8B5CF6'], // Green to Purple
+      
+      // Additional vibrant combinations
+      ['#06B6D4', '#EC4899'], // Cyan to Pink
+      ['#84CC16', '#8B5CF6'], // Lime to Purple
+      ['#F97316', '#10B981'], // Orange to Green
+      ['#EF4444', '#00D4FF'], // Red to Blue
+      ['#8B5CF6', '#F59E0B'], // Purple to Orange
+      ['#EC4899', '#06B6D4'], // Pink to Cyan
+      ['#10B981', '#EF4444'], // Green to Red
+      ['#F59E0B', '#8B5CF6'], // Orange to Purple
+      ['#00D4FF', '#84CC16'], // Blue to Lime
+      ['#06B6D4', '#F97316'], // Cyan to Orange
+      
+      // More unique combinations to reduce color dominance
+      ['#A855F7', '#EC4899'], // Deep Purple to Pink
+      ['#F59E0B', '#06B6D4'], // Orange to Cyan
+      ['#10B981', '#F97316'], // Green to Orange
+      ['#EF4444', '#8B5CF6'], // Red to Purple
+      ['#84CC16', '#EC4899'], // Lime to Pink
+      ['#06B6D4', '#10B981'], // Cyan to Green
+      ['#F97316', '#8B5CF6'], // Orange to Purple
+      ['#EC4899', '#F59E0B'], // Pink to Orange
+      ['#8B5CF6', '#84CC16'], // Purple to Lime
+      ['#00D4FF', '#EF4444'], // Blue to Red
+      
+      // Additional unique gradients
+      ['#DC2626', '#F59E0B'], // Deep Red to Orange
+      ['#059669', '#8B5CF6'], // Emerald to Purple
+      ['#7C3AED', '#EC4899'], // Violet to Pink
+      ['#F59E0B', '#84CC16'], // Orange to Lime
+      ['#06B6D4', '#DC2626'], // Cyan to Deep Red
+      ['#10B981', '#7C3AED'], // Green to Violet
+      ['#EC4899', '#059669'], // Pink to Emerald
+      ['#8B5CF6', '#F59E0B'], // Purple to Orange
+      ['#84CC16', '#DC2626'], // Lime to Deep Red
+      ['#00D4FF', '#7C3AED'], // Blue to Violet
     ];
     
     // Use particle ID to consistently assign colors
@@ -502,6 +539,8 @@ const PhysicsParticleSystem = forwardRef(({ onParticleClick, onCollision }, ref)
           }
         `}
       </style>
+      
+      {/* Physics Particle System Container */}
       <div 
         ref={containerRef}
         style={{
