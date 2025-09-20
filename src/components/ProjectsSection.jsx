@@ -8,6 +8,7 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImages, setLightboxImages] = useState([]);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [otherProjectModal, setOtherProjectModal] = useState({ isOpen: false, project: null });
 
   // Utility function to prioritize videos in gallery
   const prioritizeVideosInGallery = (gallery) => {
@@ -154,29 +155,29 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
       technologies: ['WordPress', 'WooCommerce', 'PHP', 'CSS3', 'JavaScript'],
       color: '#10B981',
       gradient: 'from-green-400 to-emerald-500',
-      category: 'Website Creation'
+      category: 'E-commerce'
     },
     {
       id: 'femme-fits',
       title: 'Femme Fits',
-      subtitle: 'Fashion & Fitness Platform',
-      description: 'A modern fashion and fitness website targeting women with workout guides, fashion tips, and lifestyle content.',
+      subtitle: 'Women\'s Fashion E-commerce',
+      description: 'A modern e-commerce platform for women\'s fashion and fitness with workout guides, fashion tips, and lifestyle products.',
       image: websiteAssets.femmeFits,
-      technologies: ['WordPress', 'PHP', 'CSS3', 'JavaScript'],
+      technologies: ['WordPress', 'WooCommerce', 'PHP', 'CSS3', 'JavaScript'],
       color: '#F59E0B',
       gradient: 'from-amber-400 to-orange-500',
-      category: 'Website Creation'
+      category: 'E-commerce'
     },
     {
       id: 'gents-den',
       title: 'Gents Den',
-      subtitle: 'Men\'s Lifestyle Platform',
-      description: 'A sophisticated men\'s lifestyle website featuring grooming tips, fashion advice, and lifestyle content for the modern gentleman.',
+      subtitle: 'Men\'s Fashion E-commerce',
+      description: 'A sophisticated e-commerce platform for men\'s lifestyle featuring grooming products, fashion items, and lifestyle accessories.',
       image: websiteAssets.gentsDen,
-      technologies: ['WordPress', 'PHP', 'CSS3', 'JavaScript'],
+      technologies: ['WordPress', 'WooCommerce', 'PHP', 'CSS3', 'JavaScript'],
       color: '#6B7280',
       gradient: 'from-gray-400 to-slate-500',
-      category: 'Website Creation'
+      category: 'E-commerce'
     },
     {
       id: 'plush-pendants',
@@ -187,18 +188,18 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
       technologies: ['WordPress', 'WooCommerce', 'PHP', 'CSS3'],
       color: '#8B5CF6',
       gradient: 'from-purple-400 to-violet-500',
-      category: 'Website Creation'
+      category: 'E-commerce'
     },
     {
       id: 'starlet-style',
       title: 'Starlet Style',
-      subtitle: 'Fashion & Beauty Blog',
-      description: 'A vibrant fashion and beauty blog website with trend updates, style guides, and beauty tips for fashion enthusiasts.',
+      subtitle: 'Kids Toys & Fashion E-commerce',
+      description: 'A vibrant e-commerce platform for kids toys and fashion with trend updates, style guides, and children\'s products.',
       image: websiteAssets.starletStyle,
-      technologies: ['WordPress', 'PHP', 'CSS3', 'JavaScript'],
+      technologies: ['WordPress', 'WooCommerce', 'PHP', 'CSS3', 'JavaScript'],
       color: '#EC4899',
       gradient: 'from-pink-400 to-rose-500',
-      category: 'Website Creation'
+      category: 'E-commerce'
     },
     {
       id: 'cebu-first',
@@ -249,6 +250,26 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
   const closeLightbox = () => {
     setLightboxOpen(false);
     onLightboxChange(false);
+  };
+
+  const openOtherProjectModal = (project) => {
+    setOtherProjectModal({ isOpen: true, project });
+    document.body.style.overflow = 'hidden';
+    // Hide navigation when modal opens
+    const navigation = document.querySelector('nav');
+    if (navigation) {
+      navigation.style.display = 'none';
+    }
+  };
+
+  const closeOtherProjectModal = () => {
+    setOtherProjectModal({ isOpen: false, project: null });
+    document.body.style.overflow = 'unset';
+    // Show navigation when modal closes
+    const navigation = document.querySelector('nav');
+    if (navigation) {
+      navigation.style.display = 'block';
+    }
   };
 
   return (
@@ -380,15 +401,15 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
             >
               {projects[activeProject].video ? (
                 <div className="relative">
-                  <video 
-                    className="w-full h-64 object-cover rounded-lg"
-                    poster={projects[activeProject].image}
-                    controls
-                    muted
+                <video 
+                  className="w-full h-64 object-cover rounded-lg"
+                  poster={projects[activeProject].image}
+                  controls
+                  muted
                     onClick={(e) => e.stopPropagation()}
-                  >
-                    <source src={projects[activeProject].video} type="video/mp4" />
-                  </video>
+                >
+                  <source src={projects[activeProject].video} type="video/mp4" />
+                </video>
                   {/* Video overlay for gallery access */}
                   <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-300 rounded-lg flex items-center justify-center">
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/20 backdrop-blur-sm rounded-full p-3">
@@ -466,7 +487,8 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
             {otherProjects.map((project, index) => (
               <div 
                 key={project.id}
-                className="glass-content-pane group hover:scale-105 transition-all duration-300 relative overflow-hidden"
+                className="glass-content-pane group hover:scale-105 transition-all duration-300 relative overflow-hidden cursor-pointer"
+                onClick={() => openOtherProjectModal(project)}
               >
                 {/* Project Image */}
                 <div className="relative overflow-hidden rounded-lg">
@@ -543,9 +565,9 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
               <div className="relative z-10">
                 <h3 className="text-4xl md:text-5xl font-bold mb-6">
                   <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-purple-600 bg-clip-text text-transparent">
-                    Interested in Working Together?
+              Interested in Working Together?
                   </span>
-                </h3>
+            </h3>
                 
                 {/* Why Choose Me Section */}
                 <div className="grid md:grid-cols-3 gap-8 mb-12">
@@ -714,15 +736,15 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
                       </svg>
                     </button>
                     
-                    <button
-                      onClick={scrollToContact}
+            <button 
+              onClick={scrollToContact}
                       className="flex-1 bg-gray-700/80 hover:bg-gray-600/80 text-white font-bold py-4 px-8 rounded-full border border-gray-500 hover:border-gray-400 transition-all duration-300 min-w-[200px]"
-                    >
+            >
                       Skip to Contact Form
-                    </button>
-                  </div>
-                </div>
-              </div>
+            </button>
+          </div>
+        </div>
+      </div>
             </div>
           </div>
         </div>
@@ -735,6 +757,144 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
         onClose={closeLightbox}
         initialIndex={lightboxIndex}
       />
+
+      {/* Other Project Modal */}
+      {otherProjectModal.isOpen && (
+        <div className="fixed inset-0 bg-black/95 backdrop-blur-md z-[9999] flex items-center justify-center p-4">
+          <div className="bg-gradient-to-br from-gray-800/90 to-gray-900/90 backdrop-blur-md rounded-2xl p-6 border border-cyan-400/30 shadow-2xl relative max-w-2xl w-full max-h-[85vh] overflow-y-auto overflow-x-hidden">
+            {/* Close Button */}
+            <button
+              onClick={closeOtherProjectModal}
+              className="absolute top-6 right-6 w-10 h-10 bg-gray-700/50 hover:bg-gray-600/50 rounded-full flex items-center justify-center transition-all duration-300 text-gray-300 hover:text-white"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            {otherProjectModal.project && (
+              <div className="space-y-4">
+                {/* Header */}
+                <div className="text-center space-y-3">
+                  <div className="flex items-center justify-center space-x-4">
+                    <span 
+                      className="px-2 py-1 rounded-full text-xs font-medium text-white"
+                      style={{ 
+                        background: `${otherProjectModal.project.color}40`,
+                        backdropFilter: 'blur(10px)'
+                      }}
+                    >
+                      {otherProjectModal.project.category}
+                    </span>
+                  </div>
+                  
+                  <h3 className="text-2xl md:text-3xl font-bold text-white">
+                    {otherProjectModal.project.title}
+                  </h3>
+                  <p className="text-lg text-cyan-400 font-medium">
+                    {otherProjectModal.project.subtitle}
+                  </p>
+                </div>
+
+                {/* Project Image */}
+                <div className="relative">
+                  <div className={`absolute inset-0 bg-gradient-to-r ${otherProjectModal.project.gradient} rounded-lg blur-3xl opacity-20 scale-110`} />
+                  <div className="relative">
+                    <img 
+                      src={otherProjectModal.project.image} 
+                      alt={otherProjectModal.project.title}
+                      className="w-full h-32 object-cover rounded-lg"
+                    />
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div className="space-y-2">
+                  <h4 className="text-xl font-bold text-white">Project Overview</h4>
+                  <p className="text-gray-300 leading-relaxed">
+                    {otherProjectModal.project.description}
+                  </p>
+                </div>
+
+                {/* Technologies */}
+                <div className="space-y-2">
+                  <h4 className="text-xl font-bold text-white">Technologies Used</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {otherProjectModal.project.technologies.map((tech, techIndex) => (
+                      <span 
+                        key={techIndex}
+                        className="px-3 py-1 rounded-lg text-white text-sm font-medium"
+                        style={{ 
+                          background: `${otherProjectModal.project.color}40`,
+                          border: `1px solid ${otherProjectModal.project.color}60`,
+                          backdropFilter: 'blur(10px)'
+                        }}
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Project Details */}
+                <div className="space-y-2">
+                  <h4 className="text-xl font-bold text-white">Project Details</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 flex-shrink-0" />
+                        <span className="text-gray-300 text-sm">
+                          <strong className="text-white">Category:</strong> {otherProjectModal.project.category}
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 flex-shrink-0" />
+                        <span className="text-gray-300 text-sm">
+                          <strong className="text-white">Type:</strong> {otherProjectModal.project.subtitle}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 flex-shrink-0" />
+                        <span className="text-gray-300 text-sm">
+                          <strong className="text-white">Status:</strong> Completed
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-400 to-red-500 flex-shrink-0" />
+                        <span className="text-gray-300 text-sm">
+                          <strong className="text-white">Delivery:</strong> High Quality
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-700">
+                  <button
+                    onClick={onShowServiceSelector}
+                    className="flex-1 bg-gradient-to-r from-cyan-400 to-purple-500 text-white font-bold py-2 px-4 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center justify-center group text-sm"
+                  >
+                    <span>Start Similar Project</span>
+                    <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </button>
+                  
+                  <button
+                    onClick={closeOtherProjectModal}
+                    className="flex-1 bg-gray-700/80 hover:bg-gray-600/80 text-white font-bold py-2 px-4 rounded-lg border border-gray-500 hover:border-gray-400 transition-all duration-300 text-sm"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </section>
   );
 };
