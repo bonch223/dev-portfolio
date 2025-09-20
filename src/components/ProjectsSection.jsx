@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import LightboxGallery from './LightboxGallery';
 import { projectAssets, websiteAssets } from '../utils/assets';
 
-const ProjectsSection = ({ onLightboxChange }) => {
+const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
   const [activeProject, setActiveProject] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -537,23 +537,40 @@ const ProjectsSection = ({ onLightboxChange }) => {
 
         {/* Call to Action */}
         <div className="text-center mt-16">
-          <div className="card p-8 max-w-2xl mx-auto">
-            <h3 className="heading-tertiary mb-4 text-gradient">
-              Interested in Working Together?
-            </h3>
-            <p className="text-gray-300 mb-6">
-              I'm always excited to work on new projects and collaborate with amazing people. 
-              Let's create something incredible together!
-            </p>
-            <button 
-              onClick={scrollToContact}
-              className="btn btn-primary"
-            >
-              <span>Get In Touch</span>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-            </button>
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-gradient-to-br from-gray-800/90 to-gray-900/90 backdrop-blur-md rounded-3xl p-12 border border-cyan-400/30 shadow-2xl relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/5 to-purple-500/5 rounded-3xl"></div>
+              <div className="relative z-10">
+                <h3 className="text-4xl md:text-5xl font-bold mb-6">
+                  <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-purple-600 bg-clip-text text-transparent">
+                    Interested in Working Together?
+                  </span>
+                </h3>
+                <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
+                  I'm always excited to work on new projects and collaborate with amazing people. 
+                  Try out our interactive tools first to experience what we can do, then let's create something incredible together!
+                </p>
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-2xl mx-auto">
+                  <button
+                    onClick={onShowServiceSelector}
+                    className="flex-1 bg-gradient-to-r from-cyan-400 to-purple-500 text-white font-bold py-4 px-8 rounded-full hover:shadow-lg hover:shadow-cyan-400/25 transition-all duration-300 flex items-center justify-center group min-w-[200px]"
+                  >
+                    <span>Try It Out First</span>
+                    <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </button>
+                  
+                  <button
+                    onClick={scrollToContact}
+                    className="flex-1 bg-gray-700/80 hover:bg-gray-600/80 text-white font-bold py-4 px-8 rounded-full border border-gray-500 hover:border-gray-400 transition-all duration-300 min-w-[200px]"
+                  >
+                    Skip to Contact Form
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

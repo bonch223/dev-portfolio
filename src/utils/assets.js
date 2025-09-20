@@ -41,6 +41,7 @@ import armetLimited from '/src/assets/Companies/ArmetLimited.svg'
 import atci from '/src/assets/webp/Companies/ATCI.webp'
 import whiteHat from '/src/assets/webp/Companies/WhiteHat.webp'
 import travelingCalifornian from '/src/assets/webp/Companies/TravelingCalifornian.webp'
+import skillfoundriLogo from '/src/assets/webp/Companies/skillfoundri.webp'
 
 // Social Media Assets (WebP optimized)
 import socMed1 from '/src/assets/webp/SocMed/1.webp'
@@ -100,7 +101,8 @@ export const companyAssets = {
   armetLimited,
   atci,
   whiteHat,
-  travelingCalifornian
+  travelingCalifornian,
+  skillfoundriLogo
 }
 
 export const socialMediaAssets = [socMed1, socMed6, socMed7]

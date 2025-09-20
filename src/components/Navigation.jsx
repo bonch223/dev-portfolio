@@ -36,7 +36,9 @@ const Navigation = ({ activeSection, lightboxOpen }) => {
             <div className="logo-icon">
               <span>&lt;/&gt;</span>
             </div>
-            <span className="logo-text">Portfolio</span>
+            <span className="logo-text">
+              MJR <span className="text-gradient">ELAYRON</span>
+            </span>
           </div>
 
           {/* Desktop Navigation */}

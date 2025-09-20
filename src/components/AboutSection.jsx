@@ -120,7 +120,7 @@ const AboutSection = () => {
   const companies = [
     {
       name: 'SkillFoundri',
-      logo: companyAssets.skillFoundri || '/src/assets/SkillFoundri/1.png',
+      logo: companyAssets.skillfoundriLogo,
       role: 'COO & Lead Developer',
       period: '2024-Present',
       description: 'Ed-tech startup co-founder and technical leader',
@@ -187,6 +187,7 @@ const AboutSection = () => {
     }
   }, []);
 
+
   return (
     <section ref={sectionRef} id="about" className="section relative z-10 overflow-hidden">
       {/* Dynamic Interactive Background */}
@@ -230,10 +231,10 @@ const AboutSection = () => {
           </div>
           
           {/* Profile Card */}
-          <div className="glass-content-pane max-w-4xl mx-auto mb-8 group hover:scale-105 transition-all duration-500 relative overflow-hidden">
+          <div className="glass-content-pane max-w-4xl mx-auto mb-8 group hover:scale-105 transition-all duration-500 relative overflow-visible">
             <div className="flex flex-col lg:flex-row items-center gap-8">
               {/* Profile Image */}
-              <div className="relative">
+              <div className="relative group">
                 <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gradient-to-r from-cyan-400 to-purple-500 relative group-hover:rotate-12 transition-transform duration-500">
                   <img 
                     src={profileAssets.photo} 
@@ -242,6 +243,11 @@ const AboutSection = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                 </div>
+                
+                {/* Animated glow effect on hover */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-400/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl scale-110"></div>
+                
+                {/* Outer glow ring */}
                 <div className="absolute -inset-2 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full opacity-20 group-hover:opacity-40 transition-opacity animate-pulse"></div>
               </div>
               

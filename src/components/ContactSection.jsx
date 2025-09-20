@@ -89,6 +89,7 @@ const ContactSection = () => {
   return (
     <section id="contact" className="section relative z-10">
       <div className="section-content">
+
         <div className="text-center mb-16">
           <h2 className="heading-secondary mb-4">
             Get In <span className="text-gradient">Touch</span>
@@ -194,7 +195,7 @@ const ContactSection = () => {
             <div className="card p-8">
               <h3 className="heading-tertiary mb-6 text-gradient">Send Message</h3>
               
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form id="contact-form" onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name" className="block text-white font-medium mb-2">

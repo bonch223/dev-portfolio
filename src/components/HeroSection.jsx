@@ -11,6 +11,7 @@ const HeroSection = () => {
   const [isShaking, setIsShaking] = useState(false);
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
   const profileContainerRef = useRef(null);
   const physicsSystemRef = useRef(null);
 
@@ -25,6 +26,7 @@ const HeroSection = () => {
   useEffect(() => {
     setIsVisible(true);
   }, []);
+
 
   // Typewriter effect for roles
   useEffect(() => {
@@ -398,15 +400,27 @@ const HeroSection = () => {
               />
 
               {/* Profile image container */}
-              <div className="profile-image-wrapper">
+              <div 
+                className="profile-image-wrapper relative"
+                onMouseEnter={() => setShowTooltip(true)}
+                onMouseLeave={() => setShowTooltip(false)}
+              >
                 <img 
                   src={profileAssets.photo} 
                   alt="MJR Elayron Profile" 
-                  className="profile-image"
+                  className="profile-image cursor-pointer"
                 />
                 
                 {/* Overlay gradient */}
                 <div className="profile-overlay" />
+              </div>
+              
+              {/* Tooltip */}
+              <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-6 transition-opacity duration-300 pointer-events-none z-[9999] ${showTooltip ? 'opacity-100' : 'opacity-0'}`}>
+                <div className="bg-black/95 text-white px-5 py-3 rounded-xl text-sm font-bold whitespace-nowrap border-2 border-cyan-400/70 shadow-2xl">
+                  ✨ Click any orbit to spawn particles and have fun!
+                  <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-black/95 rotate-45 border-l-2 border-t-2 border-cyan-400/70"></div>
+                </div>
               </div>
 
             </div>
