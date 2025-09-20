@@ -12,6 +12,11 @@ const HeroSection = () => {
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [collisionCount, setCollisionCount] = useState(0);
+  const [showSimulationMessage, setShowSimulationMessage] = useState(false);
+  const [showTechLogos, setShowTechLogos] = useState(false);
+  const [currentTechLogo, setCurrentTechLogo] = useState(null);
+  const [logoPosition, setLogoPosition] = useState({ x: 0, y: 0 });
   const profileContainerRef = useRef(null);
   const physicsSystemRef = useRef(null);
 
@@ -21,6 +26,17 @@ const HeroSection = () => {
     'WordPress Developer',
     'No Code Expert',
     'Marketing Specialist'
+  ];
+
+  const techLogos = [
+    { name: 'React', color: '#61DAFB', icon: '⚛️' },
+    { name: 'JavaScript', color: '#F7DF1E', icon: '🟨' },
+    { name: 'Node.js', color: '#339933', icon: '🟢' },
+    { name: 'WordPress', color: '#21759B', icon: '🔵' },
+    { name: 'PHP', color: '#777BB4', icon: '🟣' },
+    { name: 'CSS3', color: '#1572B6', icon: '🔷' },
+    { name: 'HTML5', color: '#E34F26', icon: '🔶' },
+    { name: 'Python', color: '#3776AB', icon: '🐍' }
   ];
 
   useEffect(() => {
@@ -132,6 +148,48 @@ const HeroSection = () => {
   const triggerShake = useCallback(() => {
     setIsShaking(true);
     setTimeout(() => setIsShaking(false), 300);
+  }, []);
+
+  const handleCollision = useCallback(() => {
+    setCollisionCount(prev => {
+      const newCount = prev + 1;
+      
+      // Show "Simulations Activated!" at 5 collisions
+      if (newCount === 5) {
+        setShowSimulationMessage(true);
+        setTimeout(() => setShowSimulationMessage(false), 3000);
+      }
+      
+      // Show one tech logo every 5 collisions (5, 10, 15, 20, etc.)
+      if (newCount % 5 === 0) {
+        const logoIndex = (newCount / 5 - 1) % techLogos.length;
+        const logo = techLogos[logoIndex];
+        
+        // Calculate position once when logo is spawned
+        if (profileContainerRef.current) {
+          const containerRect = profileContainerRef.current.getBoundingClientRect();
+          const containerCenterX = containerRect.left + containerRect.width / 2;
+          const containerCenterY = containerRect.top + containerRect.height / 2;
+          
+          // Random position around the profile image
+          const angle = Math.random() * 2 * Math.PI;
+          const radius = 150 + Math.random() * 100;
+          const x = containerCenterX + Math.cos(angle) * radius;
+          const y = containerCenterY + Math.sin(angle) * radius;
+          
+          setLogoPosition({ x, y });
+        }
+        
+        setCurrentTechLogo(logo);
+        setShowTechLogos(true);
+        setTimeout(() => {
+          setShowTechLogos(false);
+          setCurrentTechLogo(null);
+        }, 3000);
+      }
+      
+      return newCount;
+    });
   }, []);
 
   const getNearestPath = (clickX, clickY, containerRect) => {
@@ -396,7 +454,7 @@ const HeroSection = () => {
               <PhysicsParticleSystem 
                 ref={physicsSystemRef}
                 onParticleClick={handleProfileClick}
-                onCollision={triggerShake}
+                onCollision={handleCollision}
               />
 
               {/* Profile image container */}
@@ -433,6 +491,48 @@ const HeroSection = () => {
             <div className="scroll-dot" />
           </div>
         </div>
+
+        {/* Simulation Activation Message */}
+        {showSimulationMessage && (
+          <div className="fixed inset-0 flex items-center justify-center z-[9999] pointer-events-none">
+            <div className="bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-8 py-4 rounded-2xl shadow-2xl animate-pulse">
+              <h3 className="text-2xl font-bold text-center">
+                🚀 Simulations Activated!
+              </h3>
+              <p className="text-center text-sm mt-2 opacity-90">
+                Interactive portfolio features unlocked
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Tech Logo Floating Animation */}
+        {showTechLogos && currentTechLogo && (
+          <div className="fixed inset-0 pointer-events-none z-[9998]">
+            <div
+              className="absolute animate-float-up"
+              style={{
+                left: logoPosition.x,
+                top: logoPosition.y,
+                transform: 'translate(-50%, -50%)',
+                animationDuration: '3s'
+              }}
+            >
+              <div 
+                className="bg-white/20 backdrop-blur-md rounded-2xl px-4 py-3 shadow-lg border border-white/30"
+                style={{ 
+                  background: `linear-gradient(135deg, ${currentTechLogo.color}20, ${currentTechLogo.color}40)`,
+                  borderColor: `${currentTechLogo.color}60`
+                }}
+              >
+                <div className="flex items-center space-x-2">
+                  <span className="text-2xl">{currentTechLogo.icon}</span>
+                  <span className="text-white font-semibold text-sm">{currentTechLogo.name}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
