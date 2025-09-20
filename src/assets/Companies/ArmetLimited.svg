@@ -1,0 +1,22 @@
+<svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="armetGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00D4FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B5CF6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="40" cy="40" r="35" fill="url(#armetGradient)" opacity="0.1"/>
+  
+  <!-- Main icon - stylized "A" -->
+  <path d="M25 55 L35 25 L45 25 L55 55 L50 55 L47 45 L33 45 L30 55 Z M35 35 L40 40 L45 35 Z" 
+        fill="url(#armetGradient)" stroke="url(#armetGradient)" stroke-width="1"/>
+  
+  <!-- Company text -->
+  <text x="75" y="30" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">ARMET</text>
+  <text x="75" y="50" font-family="Arial, sans-serif" font-size="12" fill="#B8BCC8">LIMITED, INC.</text>
+  
+  <!-- Tech accent -->
+  <rect x="75" y="55" width="60" height="2" fill="url(#armetGradient)" opacity="0.6"/>
+</svg>

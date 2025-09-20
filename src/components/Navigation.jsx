@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const Navigation = ({ activeSection }) => {
+const Navigation = ({ activeSection, lightboxOpen }) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -23,11 +23,12 @@ const Navigation = ({ activeSection }) => {
     { id: 'home', label: 'Home' },
     { id: 'about', label: 'About' },
     { id: 'projects', label: 'Projects' },
+    { id: 'digital-marketing', label: 'Marketing' },
     { id: 'contact', label: 'Contact' }
   ];
 
   return (
-    <nav className={`navigation ${isScrolled ? 'navigation-scrolled' : ''}`}>
+    <nav className={`navigation ${isScrolled ? 'navigation-scrolled' : ''} ${lightboxOpen ? 'navigation-hidden' : ''}`}>
       <div className="nav-container">
         <div className="nav-content">
           {/* Logo */}

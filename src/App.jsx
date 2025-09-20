@@ -4,15 +4,17 @@ import HeroSection from './components/HeroSection';
 import AboutSection from './components/AboutSection';
 import ProjectsSection from './components/ProjectsSection';
 import ContactSection from './components/ContactSection';
+import DigitalMarketingSection from './components/DigitalMarketingSection';
 import AnimatedBackground from './components/AnimatedBackground';
 import './App.css';
 
 function App() {
   const [activeSection, setActiveSection] = useState('home');
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['home', 'about', 'projects', 'contact'];
+      const sections = ['home', 'about', 'projects', 'digital-marketing', 'contact'];
       const scrollPosition = window.scrollY + 100;
 
       for (const section of sections) {
@@ -34,12 +36,13 @@ function App() {
   return (
     <div className="App">
       <AnimatedBackground />
-      <Navigation activeSection={activeSection} />
+      <Navigation activeSection={activeSection} lightboxOpen={lightboxOpen} />
       <div className="main-layout">
         <main className="content-area">
           <HeroSection />
           <AboutSection />
-          <ProjectsSection />
+          <ProjectsSection onLightboxChange={setLightboxOpen} />
+          <DigitalMarketingSection onLightboxChange={setLightboxOpen} />
           <ContactSection />
         </main>
         <div className="sticky-profile-wrapper">

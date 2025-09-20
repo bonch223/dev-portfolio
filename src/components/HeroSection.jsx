@@ -315,19 +315,16 @@ const HeroSection = () => {
               
               <div className="hero-text">
                 <h1 className="heading-primary">
-                  Hi, I'm{' '}
-                  <span className="text-gradient animate-pulse">
-                    Mel
-                  </span>
+                  Hi, I'm <span className="text-gradient animate-pulse">Mel</span>
                 </h1>
                 
                 <div className="role-container">
                   <span className="role-label">I'm a</span>
-                  <div className="role-display">
+                  <div className="role-display" style={{ minHeight: '2.5rem', minWidth: '12rem', display: 'flex', alignItems: 'center' }}>
                     <span className="role-text">
                       {displayedText}
                     </span>
-                    <span className={`cursor-blink ${isTyping ? 'typing' : ''}`}>|</span>
+                    <span className="cursor-blink">|</span>
                   </div>
                 </div>
               </div>
