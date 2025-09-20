@@ -10,6 +10,7 @@ const SEOSimulator = ({ onBack, onProceedToQuote, onShowProcessPage }) => {
   const [metaTitle, setMetaTitle] = useState('');
   const [metaDescription, setMetaDescription] = useState('');
   const [isVisible, setIsVisible] = useState(false);
+  const [urlValidation, setUrlValidation] = useState({ isValid: false, message: '', isValidating: false });
 
   useEffect(() => {
     setIsVisible(true);
@@ -28,6 +29,96 @@ const SEOSimulator = ({ onBack, onProceedToQuote, onShowProcessPage }) => {
     'Meta Optimization',
     'Results & Recommendations'
   ];
+
+  // URL validation functions
+  const validateUrl = (url) => {
+    if (!url.trim()) {
+      return { isValid: false, message: 'Website URL is required' };
+    }
+    
+    // Remove protocol for validation
+    const cleanUrl = url.replace(/^https?:\/\//, '').split('/')[0]; // Get domain only
+    
+    // Must contain at least one dot for domain extension
+    if (!cleanUrl.includes('.')) {
+      return { isValid: false, message: 'Please include a domain extension (.com, .org, .net, etc.)' };
+    }
+    
+    // Split domain and extension
+    const domainParts = cleanUrl.split('.');
+    
+    // Must have at least 2 parts (domain + extension)
+    if (domainParts.length < 2) {
+      return { isValid: false, message: 'Please enter a complete domain (e.g., example.com)' };
+    }
+    
+    // Check domain name (before extension)
+    const domainName = domainParts[0];
+    if (!domainName || domainName.length === 0) {
+      return { isValid: false, message: 'Domain name cannot be empty' };
+    }
+    
+    // Domain must not contain spaces or invalid characters
+    if (domainName.includes(' ') || /[^a-zA-Z0-9\-]/.test(domainName)) {
+      return { isValid: false, message: 'Domain name can only contain letters, numbers, and hyphens' };
+    }
+    
+    // Check extension (last part)
+    const extension = domainParts[domainParts.length - 1];
+    if (!extension || extension.length < 2 || extension.length > 6) {
+      return { isValid: false, message: 'Domain extension must be 2-6 characters (e.g., .com, .org)' };
+    }
+    
+    // Extension must be letters only
+    if (!/^[a-zA-Z]+$/.test(extension)) {
+      return { isValid: false, message: 'Domain extension must contain only letters (.com, .org, etc.)' };
+    }
+    
+    // Final URL pattern validation
+    const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/i;
+    if (!urlPattern.test(url)) {
+      return { isValid: false, message: 'Please enter a valid website URL' };
+    }
+    
+    // Add https:// if not present
+    const formattedUrl = url.startsWith('http') ? url : `https://${url}`;
+    
+    return { isValid: true, message: 'Valid website URL', formattedUrl };
+  };
+
+  const handleUrlChange = (url) => {
+    // Filter out invalid characters in real-time
+    const filteredUrl = url
+      .toLowerCase() // Convert to lowercase
+      .replace(/[^a-z0-9\.\-\/]/g, '') // Only allow letters, numbers, dots, hyphens, and slashes
+      .replace(/\/+/g, '/') // Remove multiple consecutive slashes
+      .replace(/^\/+/, ''); // Remove leading slashes
+    
+    setWebsiteUrl(filteredUrl);
+    
+    // Debounced validation
+    setUrlValidation({ isValid: false, message: '', isValidating: true });
+    
+    setTimeout(() => {
+      const validation = validateUrl(filteredUrl);
+      setUrlValidation({
+        isValid: validation.isValid,
+        message: validation.message,
+        isValidating: false
+      });
+      
+      if (validation.formattedUrl) {
+        setWebsiteUrl(validation.formattedUrl);
+      }
+    }, 500);
+  };
+
+  const formatUrl = (url) => {
+    if (!url) return '';
+    
+    // Remove protocol for display
+    return url.replace(/^https?:\/\//, '');
+  };
 
   // Simulate website analysis
   const analyzeWebsite = async () => {
@@ -99,7 +190,19 @@ const SEOSimulator = ({ onBack, onProceedToQuote, onShowProcessPage }) => {
       keywords: keywords,
       metaTitle: metaTitle,
       metaDescription: metaDescription,
-      analysis: analysisResults
+      analysis: analysisResults,
+      keywordResults: keywordResults,
+      // Pass comprehensive simulator data for quote generation
+      simulatorData: {
+        websiteUrl: websiteUrl,
+        keywords: keywords,
+        analysisResults: analysisResults,
+        keywordResults: keywordResults,
+        metaOptimization: {
+          title: metaTitle,
+          description: metaDescription
+        }
+      }
     };
     onProceedToQuote(serviceData);
   };
@@ -172,26 +275,86 @@ const SEOSimulator = ({ onBack, onProceedToQuote, onShowProcessPage }) => {
                 <div>
                   <label className="block text-white font-medium mb-2">
                     Website URL
+                    {urlValidation.message && !urlValidation.isValid && !urlValidation.isValidating && (
+                      <span className="text-red-400 text-sm ml-2">*</span>
+                    )}
                   </label>
-                  <input
-                    type="url"
-                    value={websiteUrl}
-                    onChange={(e) => setWebsiteUrl(e.target.value)}
-                    placeholder="https://your-website.com"
-                    className="w-full px-4 py-3 rounded-lg bg-white/10 border border-gray-600 text-white placeholder-gray-400 focus:border-cyan-400 focus:outline-none"
-                  />
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                      </svg>
+                    </div>
+                    <input
+                      type="text"
+                      value={formatUrl(websiteUrl)}
+                      onChange={(e) => handleUrlChange(e.target.value)}
+                      placeholder="example.com"
+                      className={`w-full pl-10 pr-12 py-3 rounded-lg bg-white/10 text-white placeholder-gray-400 focus:outline-none transition-all duration-300 ${
+                        urlValidation.isValid 
+                          ? 'border-green-400 bg-green-400/5' 
+                          : urlValidation.message && !urlValidation.isValidating
+                          ? 'border-red-400 bg-red-400/5'
+                          : 'border-gray-600 focus:border-cyan-400'
+                      }`}
+                    />
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                      {urlValidation.isValidating ? (
+                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-cyan-400 border-t-transparent"></div>
+                      ) : urlValidation.isValid ? (
+                        <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : urlValidation.message && !urlValidation.isValidating ? (
+                        <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      ) : (
+                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                  {urlValidation.message && (
+                    <p className={`text-sm mt-2 flex items-center space-x-1 ${
+                      urlValidation.isValid ? 'text-green-400' : 'text-red-400'
+                    }`}>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {urlValidation.isValid ? (
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        ) : (
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        )}
+                      </svg>
+                      <span>{urlValidation.message}</span>
+                    </p>
+                  )}
+                  {!urlValidation.message && !urlValidation.isValidating && (
+                    <p className="text-xs text-gray-500 mt-2">
+                      Enter your domain with extension (e.g., example.com, company.org, business.net)
+                    </p>
+                  )}
                 </div>
 
                 <button
                   onClick={analyzeWebsite}
-                  disabled={!websiteUrl || isAnalyzing}
-                  className="w-full bg-gradient-to-r from-green-400 to-emerald-600 text-white font-bold py-4 px-8 rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={!websiteUrl || !urlValidation.isValid || isAnalyzing}
+                  className={`w-full font-bold py-4 px-8 rounded-lg transition-all duration-300 ${
+                    !websiteUrl || !urlValidation.isValid || isAnalyzing
+                      ? 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
+                      : urlValidation.isValid
+                      ? 'bg-gradient-to-r from-green-400 to-emerald-600 text-white hover:shadow-lg'
+                      : 'bg-red-500/20 text-red-400 border border-red-500/30 cursor-not-allowed'
+                  }`}
                 >
                   {isAnalyzing ? (
                     <div className="flex items-center justify-center">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
                       Analyzing Website...
                     </div>
+                  ) : !urlValidation.isValid && websiteUrl ? (
+                    'Invalid URL'
                   ) : (
                     'Analyze Website'
                   )}

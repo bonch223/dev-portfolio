@@ -10,6 +10,9 @@ import SEOSimulator from './components/SEOSimulator';
 import WordPressSimulator from './components/WordPressSimulator';
 import FullStackSimulator from './components/FullStackSimulator';
 import ProcessPage from './components/ProcessPage';
+import SEOQuoteGenerator from './components/SEOQuoteGenerator';
+import WordPressQuoteGenerator from './components/WordPressQuoteGenerator';
+import FullStackQuoteGenerator from './components/FullStackQuoteGenerator';
 import AnimatedBackground from './components/AnimatedBackground';
 import './App.css';
 
@@ -21,8 +24,12 @@ function App() {
   const [showWordPressSimulator, setShowWordPressSimulator] = useState(false);
   const [showFullStackSimulator, setShowFullStackSimulator] = useState(false);
   const [showProcessPage, setShowProcessPage] = useState(false);
+  const [showSEOQuoteGenerator, setShowSEOQuoteGenerator] = useState(false);
+  const [showWordPressQuoteGenerator, setShowWordPressQuoteGenerator] = useState(false);
+  const [showFullStackQuoteGenerator, setShowFullStackQuoteGenerator] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [processService, setProcessService] = useState(null);
+  const [currentServiceData, setCurrentServiceData] = useState(null);
 
   const handleShowServiceSelector = () => {
     setShowServiceSelector(true);
@@ -56,10 +63,23 @@ function App() {
 
   const handleProceedToQuote = (serviceData) => {
     // Handle proceeding to quote with service data
+    setCurrentServiceData(serviceData);
+    
+    // Close current simulator
     setShowSEOSimulator(false);
     setShowWordPressSimulator(false);
     setShowFullStackSimulator(false);
-    // You could store the serviceData and show a quote form
+    
+    // Show appropriate quote generator based on service
+    if (serviceData.service === 'SEO Optimization') {
+      setShowSEOQuoteGenerator(true);
+    } else if (serviceData.service === 'WordPress Development') {
+      setShowWordPressQuoteGenerator(true);
+    } else if (serviceData.service === 'FullStack Development') {
+      setShowFullStackQuoteGenerator(true);
+    }
+    // Add more quote generators here for other services
+    
     console.log('Proceeding to quote with:', serviceData);
   };
 
@@ -73,6 +93,34 @@ function App() {
     setProcessService(null);
     // Ensure body scroll is restored when process page closes
     document.body.style.overflow = 'unset';
+  };
+
+  const handleCloseSEOQuoteGenerator = () => {
+    setShowSEOQuoteGenerator(false);
+    setCurrentServiceData(null);
+  };
+
+  const handleCloseWordPressQuoteGenerator = () => {
+    setShowWordPressQuoteGenerator(false);
+    setCurrentServiceData(null);
+  };
+
+  const handleCloseFullStackQuoteGenerator = () => {
+    setShowFullStackQuoteGenerator(false);
+    setCurrentServiceData(null);
+  };
+
+  const handleGenerateQuote = (quoteData, formData) => {
+    // Handle quote generation - could save to database, send email, etc.
+    // Here you could:
+    // 1. Save quote to database
+    // 2. Send email with quote
+    // 3. Generate PDF
+    // 4. Redirect to payment
+    
+    // Note: The quote generators handle their own display and closing
+    // They will show the quote summary on the final step
+    // and only close when the user explicitly closes them
   };
 
   useEffect(() => {
@@ -157,6 +205,33 @@ function App() {
         <ProcessPage
           service={processService}
           onBack={handleCloseProcessPage}
+        />
+      )}
+
+      {/* SEO Quote Generator Modal */}
+      {showSEOQuoteGenerator && (
+        <SEOQuoteGenerator
+          onBack={handleCloseSEOQuoteGenerator}
+          onGenerateQuote={handleGenerateQuote}
+          simulatorData={currentServiceData?.simulatorData}
+        />
+      )}
+
+      {/* WordPress Quote Generator Modal */}
+      {showWordPressQuoteGenerator && (
+        <WordPressQuoteGenerator
+          onBack={handleCloseWordPressQuoteGenerator}
+          onGenerateQuote={handleGenerateQuote}
+          simulatorData={currentServiceData}
+        />
+      )}
+
+      {/* FullStack Quote Generator Modal */}
+      {showFullStackQuoteGenerator && (
+        <FullStackQuoteGenerator
+          onBack={handleCloseFullStackQuoteGenerator}
+          onGenerateQuote={handleGenerateQuote}
+          simulatorData={currentServiceData}
         />
       )}
     </div>

@@ -706,10 +706,10 @@ const FullStackSimulator = ({ onBack, onProceedToQuote, onShowProcessPage }) => 
                 {/* Main Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4">
                   <button
-                    onClick={handleProceedToQuote}
-                    className="flex-1 bg-gradient-to-r from-purple-400 to-purple-600 text-white font-bold py-4 px-8 rounded-lg hover:shadow-lg transition-all duration-300"
+                    disabled
+                    className="flex-1 bg-gray-600 text-gray-400 font-bold py-4 px-8 rounded-lg cursor-not-allowed opacity-50 transition-all duration-300"
                   >
-                    Get Your Full Stack Quote
+                    Get Your Full Stack Quote (Disabled)
                   </button>
                   
                   <button
