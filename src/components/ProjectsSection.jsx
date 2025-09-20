@@ -535,9 +535,9 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
           </div>
         </div>
 
-        {/* Call to Action */}
+        {/* Enhanced Call to Action - Why Choose Me */}
         <div className="text-center mt-16">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <div className="bg-gradient-to-br from-gray-800/90 to-gray-900/90 backdrop-blur-md rounded-3xl p-12 border border-cyan-400/30 shadow-2xl relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/5 to-purple-500/5 rounded-3xl"></div>
               <div className="relative z-10">
@@ -546,28 +546,181 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
                     Interested in Working Together?
                   </span>
                 </h3>
-                <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
-                  I'm always excited to work on new projects and collaborate with amazing people. 
-                  Try out our interactive tools first to experience what we can do, then let's create something incredible together!
-                </p>
                 
-                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-2xl mx-auto">
-                  <button
-                    onClick={onShowServiceSelector}
-                    className="flex-1 bg-gradient-to-r from-cyan-400 to-purple-500 text-white font-bold py-4 px-8 rounded-full hover:shadow-lg hover:shadow-cyan-400/25 transition-all duration-300 flex items-center justify-center group min-w-[200px]"
-                  >
-                    <span>Try It Out First</span>
-                    <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                  </button>
+                {/* Why Choose Me Section */}
+                <div className="grid md:grid-cols-3 gap-8 mb-12">
+                  <div className="text-center space-y-4">
+                    <div className="w-16 h-16 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center mx-auto">
+                      <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <h4 className="text-xl font-bold text-white">Proven Results</h4>
+                    <p className="text-gray-300 text-sm">
+                      From AI-powered platforms to e-commerce solutions, I've delivered 15+ successful projects that drive real business value and user engagement.
+                    </p>
+                  </div>
                   
-                  <button
-                    onClick={scrollToContact}
-                    className="flex-1 bg-gray-700/80 hover:bg-gray-600/80 text-white font-bold py-4 px-8 rounded-full border border-gray-500 hover:border-gray-400 transition-all duration-300 min-w-[200px]"
-                  >
-                    Skip to Contact Form
-                  </button>
+                  <div className="text-center space-y-4">
+                    <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto">
+                      <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      </svg>
+                    </div>
+                    <h4 className="text-xl font-bold text-white">Innovation First</h4>
+                    <p className="text-gray-300 text-sm">
+                      I stay ahead of technology trends, implementing cutting-edge solutions with modern frameworks and best practices for scalable, future-proof applications.
+                    </p>
+                  </div>
+                  
+                  <div className="text-center space-y-4">
+                    <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto">
+                      <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                      </svg>
+                    </div>
+                    <h4 className="text-xl font-bold text-white">Dedicated Partnership</h4>
+                    <p className="text-gray-300 text-sm">
+                      As your development partner, I provide ongoing support, transparent communication, and continuous optimization to ensure your project's long-term success.
+                    </p>
+                  </div>
+                </div>
+
+                {/* How I Create Services */}
+                <div className="bg-gradient-to-r from-gray-700/50 to-gray-800/50 rounded-2xl p-8 mb-8 border border-gray-600/30">
+                  <h4 className="text-2xl font-bold text-white mb-8 text-left">
+                    <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                      How I Create Exceptional Services
+                    </span>
+                  </h4>
+                  
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div className="space-y-6">
+                      <div className="flex items-start space-x-4">
+                        <div className="w-10 h-10 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-white font-bold">1</span>
+                        </div>
+                        <div className="text-left">
+                          <h5 className="text-white font-semibold mb-2 text-lg">Discovery & Strategy</h5>
+                          <p className="text-gray-300">
+                            Deep dive into your business goals, target audience, and technical requirements to create a tailored solution strategy.
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start space-x-4">
+                        <div className="w-10 h-10 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-white font-bold">2</span>
+                        </div>
+                        <div className="text-left">
+                          <h5 className="text-white font-semibold mb-2 text-lg">Design & Development</h5>
+                          <p className="text-gray-300">
+                            Create intuitive user experiences and robust technical architecture using modern technologies and industry best practices.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-6">
+                      <div className="flex items-start space-x-4">
+                        <div className="w-10 h-10 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-white font-bold">3</span>
+                        </div>
+                        <div className="text-left">
+                          <h5 className="text-white font-semibold mb-2 text-lg">Testing & Optimization</h5>
+                          <p className="text-gray-300">
+                            Rigorous testing across devices and browsers, performance optimization, and SEO implementation for maximum impact.
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start space-x-4">
+                        <div className="w-10 h-10 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-white font-bold">4</span>
+                        </div>
+                        <div className="text-left">
+                          <h5 className="text-white font-semibold mb-2 text-lg">Launch & Support</h5>
+                          <p className="text-gray-300">
+                            Smooth deployment with ongoing maintenance, analytics setup, and continuous improvements to ensure long-term success.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quality Assurance */}
+                <div className="mb-8">
+                  <h4 className="text-2xl font-bold text-white mb-6">
+                    <span className="bg-gradient-to-r from-emerald-400 to-cyan-500 bg-clip-text text-transparent">
+                      Quality Assurance Promise
+                    </span>
+                  </h4>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center space-y-2">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto">
+                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <p className="text-white font-medium text-sm">100% Responsive</p>
+                    </div>
+                    
+                    <div className="text-center space-y-2">
+                      <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto">
+                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                      </div>
+                      <p className="text-white font-medium text-sm">SEO Optimized</p>
+                    </div>
+                    
+                    <div className="text-center space-y-2">
+                      <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full flex items-center justify-center mx-auto">
+                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                      </div>
+                      <p className="text-white font-medium text-sm">Secure & Fast</p>
+                    </div>
+                    
+                    <div className="text-center space-y-2">
+                      <div className="w-12 h-12 bg-gradient-to-r from-pink-400 to-pink-600 rounded-full flex items-center justify-center mx-auto">
+                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                      </div>
+                      <p className="text-white font-medium text-sm">Ongoing Support</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Main CTA */}
+                <div className="text-center">
+                  <p className="text-gray-300 text-lg mb-8 max-w-3xl mx-auto">
+                    Ready to transform your ideas into reality? Try our interactive simulators first to experience what we can do, 
+                    then let's create something incredible together!
+                  </p>
+                  
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-2xl mx-auto">
+                    <button
+                      onClick={onShowServiceSelector}
+                      className="flex-1 bg-gradient-to-r from-cyan-400 to-purple-500 text-white font-bold py-4 px-8 rounded-full hover:shadow-lg hover:shadow-cyan-400/25 transition-all duration-300 flex items-center justify-center group min-w-[200px]"
+                    >
+                      <span>Try It Out First</span>
+                      <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </button>
+                    
+                    <button
+                      onClick={scrollToContact}
+                      className="flex-1 bg-gray-700/80 hover:bg-gray-600/80 text-white font-bold py-4 px-8 rounded-full border border-gray-500 hover:border-gray-400 transition-all duration-300 min-w-[200px]"
+                    >
+                      Skip to Contact Form
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

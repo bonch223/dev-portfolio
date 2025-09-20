@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import emailjs from '@emailjs/browser';
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +10,8 @@ const ContactSection = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // null, 'success', 'error'
+  const [errorMessage, setErrorMessage] = useState('');
 
   const socialLinks = [
     {
@@ -55,6 +58,8 @@ const ContactSection = () => {
 
   useEffect(() => {
     setIsVisible(true);
+    // Initialize EmailJS with your public key
+    emailjs.init('tBuSbZ57Q0Hn6k-dJ');
   }, []);
 
   const handleInputChange = (e) => {
@@ -63,27 +68,100 @@ const ContactSection = () => {
       ...prev,
       [name]: value
     }));
+    // Clear status when user starts typing
+    if (submitStatus) {
+      setSubmitStatus(null);
+      setErrorMessage('');
+    }
+  };
+
+  const validateForm = () => {
+    const { name, email, subject, message } = formData;
+    
+    if (!name.trim()) {
+      setErrorMessage('Please enter your name.');
+      return false;
+    }
+    
+    if (!email.trim()) {
+      setErrorMessage('Please enter your email address.');
+      return false;
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setErrorMessage('Please enter a valid email address.');
+      return false;
+    }
+    
+    if (!subject.trim()) {
+      setErrorMessage('Please enter a subject.');
+      return false;
+    }
+    
+    if (!message.trim()) {
+      setErrorMessage('Please enter your message.');
+      return false;
+    }
+    
+    if (message.trim().length < 10) {
+      setErrorMessage('Please enter a more detailed message (at least 10 characters).');
+      return false;
+    }
+    
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitStatus(null);
+    setErrorMessage('');
     
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Validate form
+    if (!validateForm()) {
+      setIsSubmitting(false);
+      return;
+    }
     
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      subject: '',
-      message: ''
-    });
-    
-    setIsSubmitting(false);
-    
-    // Show success message (you can implement a toast notification here)
-    alert('Message sent successfully! I\'ll get back to you soon.');
+    try {
+      // EmailJS template parameters
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+        to_name: 'MJR Elayron',
+        reply_to: formData.email,
+      };
+
+      // Send email using EmailJS
+      const result = await emailjs.send(
+        'service_2wtte0j', // Your EmailJS service ID
+        'template_5arjl6k', // Your EmailJS template ID
+        templateParams,
+        'tBuSbZ57Q0Hn6k-dJ' // Your EmailJS public key
+      );
+
+      if (result.status === 200) {
+        setSubmitStatus('success');
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        });
+      } else {
+        throw new Error('Failed to send email');
+      }
+    } catch (error) {
+      console.error('EmailJS Error:', error);
+      setSubmitStatus('error');
+      setErrorMessage('Failed to send message. Please try again or contact me directly at mjr.elayron@gmail.com');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -196,6 +274,35 @@ const ContactSection = () => {
               <h3 className="heading-tertiary mb-6 text-gradient">Send Message</h3>
               
               <form id="contact-form" onSubmit={handleSubmit} className="space-y-6">
+                {/* Status Messages */}
+                {submitStatus === 'success' && (
+                  <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-4 mb-6">
+                    <div className="flex items-center space-x-3">
+                      <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <div>
+                        <h4 className="text-green-400 font-semibold">Message Sent Successfully!</h4>
+                        <p className="text-gray-300 text-sm">Thank you for reaching out! Your message has been sent to mjr.elayron@gmail.com. I'll get back to you within 24 hours.</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {submitStatus === 'error' && (
+                  <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-4 mb-6">
+                    <div className="flex items-center space-x-3">
+                      <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <div>
+                        <h4 className="text-red-400 font-semibold">Failed to Send Message</h4>
+                        <p className="text-gray-300 text-sm">{errorMessage}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name" className="block text-white font-medium mb-2">
