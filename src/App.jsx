@@ -8,6 +8,8 @@ import DigitalMarketingSection from './components/DigitalMarketingSection';
 import ServiceSelector from './components/ServiceSelector';
 import SEOSimulator from './components/SEOSimulator';
 import WordPressSimulator from './components/WordPressSimulator';
+import FullStackSimulator from './components/FullStackSimulator';
+import ProcessPage from './components/ProcessPage';
 import AnimatedBackground from './components/AnimatedBackground';
 import './App.css';
 
@@ -17,7 +19,10 @@ function App() {
   const [showServiceSelector, setShowServiceSelector] = useState(false);
   const [showSEOSimulator, setShowSEOSimulator] = useState(false);
   const [showWordPressSimulator, setShowWordPressSimulator] = useState(false);
+  const [showFullStackSimulator, setShowFullStackSimulator] = useState(false);
+  const [showProcessPage, setShowProcessPage] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
+  const [processService, setProcessService] = useState(null);
 
   const handleShowServiceSelector = () => {
     setShowServiceSelector(true);
@@ -32,17 +37,20 @@ function App() {
     setShowServiceSelector(false);
     
     // Show the appropriate simulator based on service
-    if (service.id === 'seo') {
-      setShowSEOSimulator(true);
-    } else if (service.id === 'wordpress') {
-      setShowWordPressSimulator(true);
-    }
+        if (service.id === 'seo') {
+          setShowSEOSimulator(true);
+        } else if (service.id === 'wordpress') {
+          setShowWordPressSimulator(true);
+        } else if (service.id === 'fullstack') {
+          setShowFullStackSimulator(true);
+        }
     // Add more simulators here as we build them
   };
 
   const handleBackFromSimulator = () => {
     setShowSEOSimulator(false);
     setShowWordPressSimulator(false);
+    setShowFullStackSimulator(false);
     setShowServiceSelector(true);
   };
 
@@ -50,8 +58,21 @@ function App() {
     // Handle proceeding to quote with service data
     setShowSEOSimulator(false);
     setShowWordPressSimulator(false);
+    setShowFullStackSimulator(false);
     // You could store the serviceData and show a quote form
     console.log('Proceeding to quote with:', serviceData);
+  };
+
+  const handleShowProcessPage = (service) => {
+    setProcessService(service);
+    setShowProcessPage(true);
+  };
+
+  const handleCloseProcessPage = () => {
+    setShowProcessPage(false);
+    setProcessService(null);
+    // Ensure body scroll is restored when process page closes
+    document.body.style.overflow = 'unset';
   };
 
   useEffect(() => {
@@ -97,8 +118,10 @@ function App() {
       {/* Service Selector Modal */}
       {showServiceSelector && (
         <ServiceSelector
+          key={`service-selector-${showProcessPage}`}
           onSelectService={handleSelectService}
           onClose={handleCloseServiceSelector}
+          onShowProcessPage={handleShowProcessPage}
         />
       )}
 
@@ -107,6 +130,7 @@ function App() {
         <SEOSimulator
           onBack={handleBackFromSimulator}
           onProceedToQuote={handleProceedToQuote}
+          onShowProcessPage={handleShowProcessPage}
         />
       )}
 
@@ -115,6 +139,24 @@ function App() {
         <WordPressSimulator
           onBack={handleBackFromSimulator}
           onProceedToQuote={handleProceedToQuote}
+          onShowProcessPage={handleShowProcessPage}
+        />
+      )}
+
+      {/* Full Stack Simulator Modal */}
+      {showFullStackSimulator && (
+        <FullStackSimulator
+          onBack={handleBackFromSimulator}
+          onProceedToQuote={handleProceedToQuote}
+          onShowProcessPage={handleShowProcessPage}
+        />
+      )}
+
+      {/* Process Page Modal */}
+      {showProcessPage && (
+        <ProcessPage
+          service={processService}
+          onBack={handleCloseProcessPage}
         />
       )}
     </div>

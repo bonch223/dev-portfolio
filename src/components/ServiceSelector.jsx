@@ -1,19 +1,34 @@
 import React, { useState, useEffect } from 'react';
 
-const ServiceSelector = ({ onSelectService, onClose }) => {
+const ServiceSelector = ({ onSelectService, onClose, onShowProcessPage }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
 
   useEffect(() => {
     setIsVisible(true);
-    // Lock body scroll when modal is open
+    // Reset any existing scroll issues and lock body scroll
     document.body.style.overflow = 'hidden';
+    // Force a reflow to ensure styles are applied
+    document.body.offsetHeight;
     
     return () => {
       // Restore body scroll when modal closes
       document.body.style.overflow = 'unset';
     };
   }, []);
+
+  // Additional effect to handle reopening after returning from process page
+  useEffect(() => {
+    if (isVisible) {
+      // Reset scroll position and lock body scroll
+      document.body.style.overflow = 'hidden';
+      // Reset any scroll position in the modal
+      const modalContainer = document.querySelector('.service-selector-modal');
+      if (modalContainer) {
+        modalContainer.scrollTop = 0;
+      }
+    }
+  }, [isVisible]);
 
   const services = [
     {
@@ -50,8 +65,7 @@ const ServiceSelector = ({ onSelectService, onClose }) => {
       gradient: 'from-purple-400 to-purple-600',
       features: ['Database Design', 'API Development', 'Frontend & Backend', 'Deployment'],
       simulator: 'Full Stack Designer',
-      available: false,
-      status: 'Coming Soon'
+      available: true
     },
     {
       id: 'uiux',
@@ -67,7 +81,7 @@ const ServiceSelector = ({ onSelectService, onClose }) => {
       status: 'Under Development'
     },
     {
-      id: 'marketing',
+      id: 'digital-marketing',
       title: 'Digital Marketing',
       subtitle: 'Grow Your Business',
       description: 'Create campaigns, analyze performance, and drive conversions.',
@@ -80,7 +94,7 @@ const ServiceSelector = ({ onSelectService, onClose }) => {
       status: 'Coming Soon'
     },
     {
-      id: 'consultation',
+      id: 'tech-consult',
       title: 'Tech Consultation',
       subtitle: 'Strategic Guidance',
       description: 'Get expert advice on technology choices and business strategy.',
@@ -106,6 +120,8 @@ const ServiceSelector = ({ onSelectService, onClose }) => {
 
   const handleClose = () => {
     setIsVisible(false);
+    // Restore body scroll immediately
+    document.body.style.overflow = 'unset';
     setTimeout(() => {
       onClose();
     }, 300);
@@ -113,7 +129,7 @@ const ServiceSelector = ({ onSelectService, onClose }) => {
 
   return (
     <div className={`fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] transition-all duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-      <div className="container mx-auto px-4 py-8 h-full overflow-y-auto">
+      <div className="service-selector-modal container mx-auto px-4 py-8 h-full overflow-y-auto">
         {/* Header */}
         <div className="text-center mb-12">
           <button
@@ -174,17 +190,20 @@ const ServiceSelector = ({ onSelectService, onClose }) => {
               </div>
 
               {/* Action Buttons */}
-              <div className="text-center space-y-3">
-                {service.available ? (
-                  <button
-                    onClick={() => handleServiceSelect(service)}
-                    className={`w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r ${service.gradient} text-white font-bold hover:shadow-lg transition-all duration-300 group-hover:scale-105`}
-                  >
-                    <span>Try {service.simulator}</span>
-                    <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                  </button>
+              <div className="text-center space-y-3 relative z-10">
+                      {service.available ? (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleServiceSelect(service);
+                          }}
+                          className={`w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r ${service.gradient} text-white font-bold hover:shadow-lg transition-all duration-300 group-hover:scale-105`}
+                        >
+                          <span>Try {service.simulator}</span>
+                          <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                          </svg>
+                        </button>
                 ) : (
                   <div className="inline-flex items-center px-6 py-3 rounded-xl bg-gray-600/50 text-gray-300 font-bold border border-gray-500/50 w-full justify-center">
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -194,20 +213,23 @@ const ServiceSelector = ({ onSelectService, onClose }) => {
                   </div>
                 )}
                 
-                {/* Complete Process Link - Always visible */}
-                <a 
-                  href={`/process/${service.id}`}
-                  className="inline-flex items-center text-cyan-400 hover:text-cyan-300 transition-colors text-sm font-medium"
-                >
-                  <span>View Complete Process Details</span>
-                  <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </a>
+                      {/* Complete Process Link - Always visible */}
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onShowProcessPage(service.id);
+                        }}
+                        className="inline-flex items-center text-cyan-400 hover:text-cyan-300 transition-colors text-sm font-medium no-focus-outline"
+                      >
+                        <span>View Complete Process Details</span>
+                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </button>
               </div>
 
               {/* Hover Effect */}
-              <div className={`absolute inset-0 bg-gradient-to-r ${service.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
+              <div className={`absolute inset-0 bg-gradient-to-r ${service.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300 pointer-events-none`}></div>
             </div>
           ))}
         </div>

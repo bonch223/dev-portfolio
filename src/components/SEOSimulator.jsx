@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const SEOSimulator = ({ onBack, onProceedToQuote }) => {
+const SEOSimulator = ({ onBack, onProceedToQuote, onShowProcessPage }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [websiteUrl, setWebsiteUrl] = useState('');
   const [analysisResults, setAnalysisResults] = useState(null);
@@ -110,10 +110,10 @@ const SEOSimulator = ({ onBack, onProceedToQuote }) => {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <button
-              onClick={onBack}
-              className="flex items-center text-white/70 hover:text-white transition-colors"
-            >
+          <button
+            onClick={onBack}
+            className="flex items-center text-white/70 hover:text-white transition-colors no-focus-outline"
+          >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
@@ -441,19 +441,33 @@ const SEOSimulator = ({ onBack, onProceedToQuote }) => {
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <button
-                  onClick={onBack}
-                  className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-4 px-8 rounded-lg transition-all duration-300"
-                >
-                  Try Another Service
-                </button>
-                <button
-                  onClick={handleProceedToQuote}
-                  className="flex-1 bg-gradient-to-r from-green-400 to-emerald-600 text-white font-bold py-4 px-8 rounded-lg hover:shadow-lg transition-all duration-300"
-                >
-                  Get Your SEO Quote
-                </button>
+              <div className="space-y-4">
+                {/* Main Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <button
+                    onClick={handleProceedToQuote}
+                    className="flex-1 bg-gradient-to-r from-green-400 to-emerald-600 text-white font-bold py-4 px-8 rounded-lg hover:shadow-lg transition-all duration-300"
+                  >
+                    Get Your SEO Quote
+                  </button>
+                  
+                  <button
+                    onClick={() => onShowProcessPage('seo')}
+                    className="flex-1 bg-gradient-to-r from-cyan-400 to-purple-500 text-white font-bold py-4 px-8 rounded-lg hover:shadow-lg transition-all duration-300"
+                  >
+                    See Complete Process Details
+                  </button>
+                </div>
+                
+                {/* Secondary Action */}
+                <div className="text-center">
+                  <button
+                    onClick={onBack}
+                    className="text-gray-400 hover:text-white transition-colors text-sm font-medium no-focus-outline"
+                  >
+                    Try Another Service
+                  </button>
+                </div>
               </div>
             </div>
           )}

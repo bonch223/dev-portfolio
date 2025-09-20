@@ -579,6 +579,28 @@
   outline-offset: 2px;
 }
 
+/* Remove focus outline from text links and buttons without backgrounds */
+.no-focus-outline:focus,
+.no-focus-outline:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove focus outline from navigation links */
+.nav-link:focus,
+.nav-link:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove focus outline from text-only buttons */
+.text-button:focus,
+.text-button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  ring: none !important;
+}
+
 /* Navigation Styles */
 .navigation {
   position: fixed;
