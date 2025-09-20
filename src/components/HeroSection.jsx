@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { profileAssets } from '../utils/assets';
 import PhysicsParticleSystem from './PhysicsParticleSystem';
 
 const HeroSection = () => {
@@ -399,7 +400,7 @@ const HeroSection = () => {
               {/* Profile image container */}
               <div className="profile-image-wrapper">
                 <img 
-                  src="/src/assets/Pro-photo.png" 
+                  src={profileAssets.photo} 
                   alt="MJR Elayron Profile" 
                   className="profile-image"
                 />

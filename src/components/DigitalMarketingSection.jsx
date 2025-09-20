@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import LightboxGallery from './LightboxGallery';
+import { socialMediaAssets, printMaterialsAssets, seoAssets } from '../utils/assets';
 
 const DigitalMarketingSection = ({ onLightboxChange }) => {
   const [activeCategory, setActiveCategory] = useState('social-media');
@@ -14,24 +15,9 @@ const DigitalMarketingSection = ({ onLightboxChange }) => {
     { id: 'seo-results', label: 'SEO Results', icon: '📈' }
   ];
 
-  const socialMediaAssets = [
-    '/src/assets/SocMed/1.png',
-    '/src/assets/SocMed/6.png',
-    '/src/assets/SocMed/7.png'
-  ];
-
-  const printMaterials = [
-    '/src/assets/printed materials/8.png',
-    '/src/assets/printed materials/9.png',
-    '/src/assets/printed materials/10.png',
-    '/src/assets/printed materials/11.png',
-    '/src/assets/printed materials/12.png'
-  ];
-
-  const seoResults = [
-    '/src/assets/SEO/seo-before.png',
-    '/src/assets/SEO/seo-after.png'
-  ];
+  const socialMedia = socialMediaAssets;
+  const printMaterials = printMaterialsAssets;
+  const seoResults = seoAssets;
 
   useEffect(() => {
     setIsVisible(true);
@@ -52,7 +38,7 @@ const DigitalMarketingSection = ({ onLightboxChange }) => {
   const getCurrentAssets = () => {
     switch (activeCategory) {
       case 'social-media':
-        return socialMediaAssets;
+        return socialMedia;
       case 'print-materials':
         return printMaterials;
       case 'seo-results':

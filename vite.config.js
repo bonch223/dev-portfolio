@@ -9,4 +9,12 @@ export default defineConfig({
   css: {
     postcss: './postcss.config.js',
   },
+  assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif', '**/*.svg', '**/*.mp4', '**/*.webm', '**/*.mov'],
+  build: {
+    rollupOptions: {
+      output: {
+        assetFileNames: 'assets/[name].[hash].[ext]'
+      }
+    }
+  }
 })

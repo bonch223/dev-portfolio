@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import LightboxGallery from './LightboxGallery';
+import { projectAssets, websiteAssets } from '../utils/assets';
 
 const ProjectsSection = ({ onLightboxChange }) => {
   const [activeProject, setActiveProject] = useState(0);
@@ -29,13 +30,11 @@ const ProjectsSection = ({ onLightboxChange }) => {
       subtitle: 'AI Lesson Plan Generator',
       description: 'An innovative AI-powered platform that generates personalized lesson plans for Filipino teachers, making education more accessible and efficient.',
       longDescription: 'Guro.AI revolutionizes education by leveraging artificial intelligence to create customized lesson plans. The platform analyzes curriculum requirements, student needs, and teaching preferences to generate comprehensive, engaging lesson plans that save teachers hours of preparation time.',
-      image: '/src/assets/guro.ai/536270183_24671247665820897_5850011110701414279_n.jpg',
-      video: '/src/assets/guro.ai/Guro.AI - AI Lesson Plan Generator for Filipino Teachers.mp4',
+      image: projectAssets.guro.main,
+      video: projectAssets.guro.video,
       gallery: [
-        '/src/assets/guro.ai/Guro.AI - AI Lesson Plan Generator for Filipino Teachers.mp4',
-        '/src/assets/guro.ai/536270183_24671247665820897_5850011110701414279_n.jpg',
-        '/src/assets/guro.ai/536279927_24671248132487517_3002615940259727901_n.jpg',
-        '/src/assets/guro.ai/540621977_24671253052487025_4440463990289559173_n.jpg'
+        projectAssets.guro.video,
+        ...projectAssets.guro.images
       ],
       technologies: ['React', 'Node.js', 'OpenAI API', 'MongoDB', 'Tailwind CSS'],
       features: [
@@ -57,12 +56,8 @@ const ProjectsSection = ({ onLightboxChange }) => {
       subtitle: 'Learning Platform',
       description: 'A comprehensive learning platform combining Upwork, Asana, Blackboard, and Coursera features for a complete educational experience.',
       longDescription: 'SkillFoundri transforms online education by offering project-based learning experiences. As COO and Co-Founder, I lead the development of this platform that combines theoretical knowledge with practical applications, providing students with industry-relevant skills through interactive courses and mentorship programs.',
-      image: '/src/assets/SkillFoundri/1.png',
-      gallery: [
-        '/src/assets/SkillFoundri/1.png',
-        '/src/assets/SkillFoundri/2.png',
-        '/src/assets/SkillFoundri/3.png'
-      ],
+      image: projectAssets.skillFoundri.main,
+      gallery: projectAssets.skillFoundri.images,
       technologies: ['WordPress', 'PHP', 'MySQL', 'JavaScript', 'CSS'],
       features: [
         'Interactive courses',
@@ -83,12 +78,8 @@ const ProjectsSection = ({ onLightboxChange }) => {
       subtitle: 'Gym Management System',
       description: 'A comprehensive gym management system with POS functionality for local fitness centers.',
       longDescription: 'Rage Fitness Gym App is a complete gym management solution featuring membership management, POS system, class scheduling, and member tracking. Built for local fitness centers to streamline their operations and improve member experience.',
-      image: '/src/assets/rage/1.png',
-      gallery: [
-        '/src/assets/rage/1.png',
-        '/src/assets/rage/2.png',
-        '/src/assets/rage/3.png'
-      ],
+      image: projectAssets.rage.main,
+      gallery: projectAssets.rage.images,
       technologies: ['React', 'Node.js', 'MongoDB', 'Stripe API', 'CSS'],
       features: [
         'Membership management',
@@ -109,12 +100,8 @@ const ProjectsSection = ({ onLightboxChange }) => {
       subtitle: 'Service Provider Platform',
       description: 'Connect with trusted, vetted service providers for all your home care, renovation, and maintenance needs.',
       longDescription: 'UrbanCare Services bridges the gap between customers and trusted service providers. The platform offers seamless booking, provider vetting, and service tracking, making professional services more accessible and reliable for urban communities.',
-      image: '/src/assets/urbancare/1.png',
-      gallery: [
-        '/src/assets/urbancare/1.png',
-        '/src/assets/urbancare/2.png',
-        '/src/assets/urbancare/3.png'
-      ],
+      image: projectAssets.urbanCare.main,
+      gallery: projectAssets.urbanCare.images,
       technologies: ['React', 'Node.js', 'MongoDB', 'Payment Gateway', 'Mobile Responsive'],
       features: [
         'Service provider network',
@@ -135,12 +122,8 @@ const ProjectsSection = ({ onLightboxChange }) => {
       subtitle: 'Fashion E-commerce Platform',
       description: 'A complete e-commerce website for a trendy fashion brand, featuring modern design, seamless shopping experience, and mobile-first approach.',
       longDescription: 'Fantastic Baby Shakalaka is a cutting-edge fashion e-commerce platform that showcases trendy clothing and accessories. The website features a modern, responsive design with seamless shopping experience, integrated payment systems, and optimized for both desktop and mobile users. The platform includes advanced filtering, wishlist functionality, and social media integration.',
-      image: '/src/assets/fantasticbabyshakala/1.png',
-      gallery: [
-        '/src/assets/fantasticbabyshakala/1.png',
-        '/src/assets/fantasticbabyshakala/2.png',
-        '/src/assets/fantasticbabyshakala/3.png'
-      ],
+      image: projectAssets.fantasticBaby.main,
+      gallery: projectAssets.fantasticBaby.images,
       technologies: ['WordPress', 'WooCommerce', 'PHP', 'CSS3', 'JavaScript', 'SEO', 'Payment Integration'],
       features: [
         'Modern responsive design',
@@ -167,7 +150,7 @@ const ProjectsSection = ({ onLightboxChange }) => {
       title: 'Decor Meadow',
       subtitle: 'Home Decor E-commerce',
       description: 'A beautiful e-commerce website for home decor and interior design products with modern UI/UX and seamless shopping experience.',
-      image: '/src/assets/Websites Created and Maintained/decormeadow.png',
+      image: websiteAssets.decorMeadow,
       technologies: ['WordPress', 'WooCommerce', 'PHP', 'CSS3', 'JavaScript'],
       color: '#10B981',
       gradient: 'from-green-400 to-emerald-500',
@@ -178,7 +161,7 @@ const ProjectsSection = ({ onLightboxChange }) => {
       title: 'Femme Fits',
       subtitle: 'Fashion & Fitness Platform',
       description: 'A modern fashion and fitness website targeting women with workout guides, fashion tips, and lifestyle content.',
-      image: '/src/assets/Websites Created and Maintained/femmefits.png',
+      image: websiteAssets.femmeFits,
       technologies: ['WordPress', 'PHP', 'CSS3', 'JavaScript'],
       color: '#F59E0B',
       gradient: 'from-amber-400 to-orange-500',
@@ -189,7 +172,7 @@ const ProjectsSection = ({ onLightboxChange }) => {
       title: 'Gents Den',
       subtitle: 'Men\'s Lifestyle Platform',
       description: 'A sophisticated men\'s lifestyle website featuring grooming tips, fashion advice, and lifestyle content for the modern gentleman.',
-      image: '/src/assets/Websites Created and Maintained/gentsden.png',
+      image: websiteAssets.gentsDen,
       technologies: ['WordPress', 'PHP', 'CSS3', 'JavaScript'],
       color: '#6B7280',
       gradient: 'from-gray-400 to-slate-500',
@@ -200,7 +183,7 @@ const ProjectsSection = ({ onLightboxChange }) => {
       title: 'Plush Pendants',
       subtitle: 'Jewelry E-commerce',
       description: 'An elegant e-commerce website for jewelry and accessories with beautiful product showcases and secure online shopping.',
-      image: '/src/assets/Websites Created and Maintained/plushpendants.png',
+      image: websiteAssets.plushPendants,
       technologies: ['WordPress', 'WooCommerce', 'PHP', 'CSS3'],
       color: '#8B5CF6',
       gradient: 'from-purple-400 to-violet-500',
@@ -211,7 +194,7 @@ const ProjectsSection = ({ onLightboxChange }) => {
       title: 'Starlet Style',
       subtitle: 'Fashion & Beauty Blog',
       description: 'A vibrant fashion and beauty blog website with trend updates, style guides, and beauty tips for fashion enthusiasts.',
-      image: '/src/assets/Websites Created and Maintained/starletstyle.png',
+      image: websiteAssets.starletStyle,
       technologies: ['WordPress', 'PHP', 'CSS3', 'JavaScript'],
       color: '#EC4899',
       gradient: 'from-pink-400 to-rose-500',
@@ -222,7 +205,7 @@ const ProjectsSection = ({ onLightboxChange }) => {
       title: 'Cebu First',
       subtitle: 'SEO Analysis & Insights',
       description: 'Provided SEO analysis and strategic insights for Cebu First website, offering recommendations for search ranking improvements.',
-      image: '/src/assets/Websites Created and Maintained/Cebufirst.png',
+      image: websiteAssets.cebuFirst,
       technologies: ['SEO Analysis', 'Technical Audit', 'Strategic Insights'],
       color: '#3B82F6',
       gradient: 'from-blue-400 to-indigo-500',
@@ -233,7 +216,7 @@ const ProjectsSection = ({ onLightboxChange }) => {
       title: 'Cebu Land Masters',
       subtitle: 'SEO Analysis & Insights',
       description: 'Conducted SEO analysis for Cebu Land Masters real estate website, providing strategic recommendations for local search optimization.',
-      image: '/src/assets/Websites Created and Maintained/cebulandmasters.png',
+      image: websiteAssets.cebuLandMasters,
       technologies: ['Local SEO Analysis', 'Real Estate SEO', 'Strategic Recommendations'],
       color: '#059669',
       gradient: 'from-emerald-400 to-green-500',

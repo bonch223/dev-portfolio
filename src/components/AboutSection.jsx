@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { companyAssets, profileAssets } from '../utils/assets';
 
 const AboutSection = () => {
   const [activeTab, setActiveTab] = useState('story');
@@ -119,7 +120,7 @@ const AboutSection = () => {
   const companies = [
     {
       name: 'SkillFoundri',
-      logo: '/src/assets/SkillFoundri/1.png',
+      logo: companyAssets.skillFoundri || '/src/assets/SkillFoundri/1.png',
       role: 'COO & Lead Developer',
       period: '2024-Present',
       description: 'Ed-tech startup co-founder and technical leader',
@@ -127,7 +128,7 @@ const AboutSection = () => {
     },
     {
       name: 'Armet Limited, Inc.',
-      logo: '/src/assets/Companies/ArmetLimited.svg',
+      logo: companyAssets.armetLimited,
       role: 'Tech Director & Web Dev Team Lead',
       period: '2023-2024',
       description: 'Leading web development projects and team management',
@@ -135,7 +136,7 @@ const AboutSection = () => {
     },
     {
       name: 'Aces Tagum College, Inc.',
-      logo: '/src/assets/Companies/ATCI.jpg',
+      logo: companyAssets.atci,
       role: 'MIS Manager, BSIT Instructor & SAS Director',
       period: '2019-2023',
       description: 'IT management, teaching, and student affairs leadership',
@@ -143,7 +144,7 @@ const AboutSection = () => {
     },
     {
       name: 'White-Hat SEO',
-      logo: '/src/assets/Companies/WhiteHat.png',
+      logo: companyAssets.whiteHat,
       role: 'SEO Specialist',
       period: '2016-2019',
       description: 'Digital marketing and SEO optimization specialist',
@@ -151,7 +152,7 @@ const AboutSection = () => {
     },
     {
       name: 'Traveling Californian',
-      logo: '/src/assets/Companies/TravelingCalifornian.png',
+      logo: companyAssets.travelingCalifornian,
       role: 'SEO & Web Development',
       period: '2016-2019',
       description: 'SEO optimization and web development services',
@@ -235,7 +236,7 @@ const AboutSection = () => {
               <div className="relative">
                 <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gradient-to-r from-cyan-400 to-purple-500 relative group-hover:rotate-12 transition-transform duration-500">
                   <img 
-                    src="/src/assets/Pro-photo.png" 
+                    src={profileAssets.photo} 
                     alt="Profile" 
                     className="w-full h-full object-cover"
                   />
