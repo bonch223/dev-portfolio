@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics, track } from '@vercel/analytics/react';
 import Navigation from './components/Navigation';
 import HeroSection from './components/HeroSection';
 import AboutSection from './components/AboutSection';
@@ -35,6 +35,9 @@ function App() {
 
   const handleShowServiceSelector = () => {
     setShowServiceSelector(true);
+    
+    // Track service selector opened
+    track('service_selector_opened');
   };
 
   const handleCloseServiceSelector = () => {
@@ -44,6 +47,9 @@ function App() {
   const handleSelectService = (service) => {
     setSelectedService(service);
     setShowServiceSelector(false);
+    
+    // Track simulator opened
+    track('simulator_opened', { simulator: service.id });
     
     // Show the appropriate simulator based on service
         if (service.id === 'seo') {
@@ -57,6 +63,15 @@ function App() {
   };
 
   const handleBackFromSimulator = () => {
+    // Track simulator abandoned
+    if (showSEOSimulator) {
+      track('simulator_abandoned', { simulator: 'seo' });
+    } else if (showWordPressSimulator) {
+      track('simulator_abandoned', { simulator: 'wordpress' });
+    } else if (showFullStackSimulator) {
+      track('simulator_abandoned', { simulator: 'fullstack' });
+    }
+    
     setShowSEOSimulator(false);
     setShowWordPressSimulator(false);
     setShowFullStackSimulator(false);
@@ -66,6 +81,9 @@ function App() {
   const handleProceedToQuote = (serviceData) => {
     // Handle proceeding to quote with service data
     setCurrentServiceData(serviceData);
+    
+    // Track quote generator opened
+    track('quote_generator_opened', { service: serviceData.service.toLowerCase().replace(' ', '_') });
     
     // Close current simulator
     setShowSEOSimulator(false);

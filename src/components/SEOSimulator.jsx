@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { track } from '@vercel/analytics/react';
 
 const SEOSimulator = ({ onBack, onProceedToQuote, onShowProcessPage }) => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -124,6 +125,14 @@ const SEOSimulator = ({ onBack, onProceedToQuote, onShowProcessPage }) => {
   const analyzeWebsite = async () => {
     setIsAnalyzing(true);
     
+    // Track step completion
+    track('simulator_step_completed', { 
+      simulator: 'seo', 
+      step: 'website_analysis',
+      step_number: 1,
+      website_url: websiteUrl
+    });
+    
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 2000));
     
@@ -158,6 +167,14 @@ const SEOSimulator = ({ onBack, onProceedToQuote, onShowProcessPage }) => {
   const researchKeywords = async () => {
     if (!keywords.trim()) return;
     
+    // Track step completion
+    track('simulator_step_completed', { 
+      simulator: 'seo', 
+      step: 'keyword_research',
+      step_number: 2,
+      keywords_count: keywords.split(',').length
+    });
+    
     const keywordList = keywords.split(',').map(k => k.trim()).filter(k => k);
     const results = keywordList.map(keyword => ({
       keyword,
@@ -184,6 +201,13 @@ const SEOSimulator = ({ onBack, onProceedToQuote, onShowProcessPage }) => {
   };
 
   const handleProceedToQuote = () => {
+    // Track simulator completion
+    track('simulator_completed', { 
+      simulator: 'seo',
+      completion_rate: 100,
+      steps_completed: 4
+    });
+    
     const serviceData = {
       service: 'SEO Optimization',
       url: websiteUrl,
@@ -534,7 +558,15 @@ const SEOSimulator = ({ onBack, onProceedToQuote, onShowProcessPage }) => {
               </div>
 
               <button
-                onClick={() => setCurrentStep(3)}
+                onClick={() => {
+                  // Track step completion
+                  track('simulator_step_completed', { 
+                    simulator: 'seo', 
+                    step: 'meta_optimization',
+                    step_number: 3
+                  });
+                  setCurrentStep(3);
+                }}
                 className="w-full bg-gradient-to-r from-purple-400 to-purple-600 text-white font-bold py-4 px-8 rounded-lg hover:shadow-lg transition-all duration-300 mt-8"
               >
                 Generate Final Report
