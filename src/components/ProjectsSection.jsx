@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import LightboxGallery from './LightboxGallery';
-import { projectAssets, websiteAssets } from '../utils/assets';
+import { projectAssets, websiteAssets, socialMediaAssets } from '../utils/assets';
 
 const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
   const [activeProject, setActiveProject] = useState(0);
@@ -9,6 +9,7 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
   const [lightboxImages, setLightboxImages] = useState([]);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [otherProjectModal, setOtherProjectModal] = useState({ isOpen: false, project: null });
+  const [showMobileSimulatorMessage, setShowMobileSimulatorMessage] = useState(false);
 
   // Utility function to prioritize videos in gallery
   const prioritizeVideosInGallery = (gallery) => {
@@ -222,6 +223,39 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
       color: '#059669',
       gradient: 'from-emerald-400 to-green-500',
       category: 'SEO Consultation'
+    },
+    {
+      id: 'social-media-1',
+      title: 'Social Media Campaign 1',
+      subtitle: 'Digital Marketing',
+      description: 'Creative social media campaign featuring engaging content, brand awareness strategies, and community building for enhanced online presence.',
+      image: socialMediaAssets[0],
+      technologies: ['Social Media', 'Content Creation', 'Digital Marketing', 'Brand Strategy'],
+      color: '#3B82F6',
+      gradient: 'from-blue-400 to-cyan-500',
+      category: 'Social Media'
+    },
+    {
+      id: 'social-media-2',
+      title: 'Social Media Campaign 2',
+      subtitle: 'Digital Marketing',
+      description: 'Strategic social media marketing campaign with targeted content, audience engagement, and performance optimization for maximum reach and impact.',
+      image: socialMediaAssets[1],
+      technologies: ['Social Media', 'Content Strategy', 'Analytics', 'Community Management'],
+      color: '#10B981',
+      gradient: 'from-emerald-400 to-teal-500',
+      category: 'Social Media'
+    },
+    {
+      id: 'social-media-3',
+      title: 'Social Media Campaign 3',
+      subtitle: 'Digital Marketing',
+      description: 'Comprehensive social media strategy with creative visuals, interactive content, and data-driven approach to boost brand visibility and engagement.',
+      image: socialMediaAssets[2],
+      technologies: ['Social Media', 'Visual Design', 'Content Marketing', 'Performance Tracking'],
+      color: '#F59E0B',
+      gradient: 'from-amber-400 to-orange-500',
+      category: 'Social Media'
     }
   ];
 
@@ -272,8 +306,22 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
     }
   };
 
+  const handleTryItOutClick = () => {
+    // Check if it's mobile
+    if (window.innerWidth <= 768) {
+      setShowMobileSimulatorMessage(true);
+      // Hide message after 3 seconds
+      setTimeout(() => {
+        setShowMobileSimulatorMessage(false);
+      }, 3000);
+    } else {
+      // Desktop - open simulator
+      onShowServiceSelector();
+    }
+  };
+
   return (
-    <section id="projects" className="section relative z-10">
+    <section id="projects" className="section projects-section relative z-10">
       <div className="section-content">
         <div className="text-center mb-16">
           <h2 className="heading-secondary mb-4">
@@ -482,8 +530,8 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
             </p>
           </div>
 
-          {/* Other Projects Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-12">
+          {/* Desktop Other Projects Grid */}
+          <div className="hidden md:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-12">
             {otherProjects.map((project, index) => (
               <div 
                 key={project.id}
@@ -555,6 +603,93 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
               </div>
             ))}
           </div>
+
+          {/* Mobile Swipeable Other Projects */}
+          <div className="md:hidden mb-12">
+            <div className="overflow-x-auto scrollbar-hide pb-4" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+              <div className="flex space-x-4 min-w-max px-4">
+                {otherProjects.map((project, index) => (
+                  <div 
+                    key={project.id}
+                    className="flex-shrink-0 w-64 glass-content-pane group hover:scale-105 transition-all duration-300 relative overflow-hidden cursor-pointer"
+                    onClick={() => openOtherProjectModal(project)}
+                  >
+                    {/* Project Image */}
+                    <div className="relative overflow-hidden rounded-lg">
+                      <img 
+                        src={project.image} 
+                        alt={project.title}
+                        className="w-full h-24 object-cover transition-transform duration-300 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      
+                      {/* Category Badge */}
+                      <div className="absolute top-2 left-2">
+                        <span 
+                          className="px-2 py-1 rounded text-xs font-medium text-white"
+                          style={{ 
+                            background: `${project.color}40`,
+                            backdropFilter: 'blur(10px)'
+                          }}
+                        >
+                          {project.category.split(' ')[0]}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Project Info */}
+                    <div className="p-3">
+                      <h4 className="text-white font-semibold text-sm mb-1 group-hover:text-cyan-400 transition-colors truncate">
+                        {project.title}
+                      </h4>
+                      <p className="text-cyan-400 text-xs font-medium mb-2 truncate">
+                        {project.subtitle}
+                      </p>
+                      <p className="text-gray-300 text-xs leading-relaxed mb-3 line-clamp-2">
+                        {project.description}
+                      </p>
+
+                      {/* Technologies */}
+                      <div className="flex flex-wrap gap-1">
+                        {project.technologies.slice(0, 2).map((tech, techIndex) => (
+                          <span 
+                            key={techIndex}
+                            className="px-2 py-1 rounded text-xs text-gray-300"
+                            style={{ 
+                              background: `${project.color}20`,
+                              border: `1px solid ${project.color}30`
+                            }}
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                        {project.technologies.length > 2 && (
+                          <span className="text-gray-400 text-xs">
+                            +{project.technologies.length - 2}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Accent Line */}
+                    <div 
+                      className="absolute bottom-0 left-0 right-0 h-0.5 transition-all duration-300"
+                      style={{ background: `${project.color}` }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Swipe indicator */}
+            <div className="text-center mt-4">
+              <div className="inline-flex items-center space-x-2 text-cyan-400 text-sm">
+                <span>←</span>
+                <span>Swipe to explore more projects</span>
+                <span>→</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Enhanced Call to Action - Why Choose Me */}
@@ -569,8 +704,8 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
                   </span>
             </h3>
                 
-                {/* Why Choose Me Section */}
-                <div className="grid md:grid-cols-3 gap-8 mb-12">
+                {/* Desktop Why Choose Me Section */}
+                <div className="hidden md:grid grid-cols-3 gap-8 mb-12">
                   <div className="text-center space-y-4">
                     <div className="w-16 h-16 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center mx-auto">
                       <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -608,15 +743,67 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
                   </div>
                 </div>
 
-                {/* How I Create Services */}
-                <div className="bg-gradient-to-r from-gray-700/50 to-gray-800/50 rounded-2xl p-8 mb-8 border border-gray-600/30">
+                {/* Mobile Swipeable Why Choose Me Section */}
+                <div className="md:hidden mb-8">
+                  <div className="overflow-x-auto scrollbar-hide pb-4" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+                    <div className="flex space-x-4 min-w-max px-4">
+                      <div className="flex-shrink-0 w-72 text-center space-y-4">
+                        <div className="w-16 h-16 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center mx-auto">
+                          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                        </div>
+                        <h4 className="text-xl font-bold text-white">Proven Results</h4>
+                        <p className="text-gray-300 text-sm">
+                          From AI-powered platforms to e-commerce solutions, I've delivered 15+ successful projects that drive real business value and user engagement.
+                        </p>
+                      </div>
+                      
+                      <div className="flex-shrink-0 w-72 text-center space-y-4">
+                        <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto">
+                          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                          </svg>
+                        </div>
+                        <h4 className="text-xl font-bold text-white">Innovation First</h4>
+                        <p className="text-gray-300 text-sm">
+                          I stay ahead of technology trends, implementing cutting-edge solutions with modern frameworks and best practices for scalable, future-proof applications.
+                        </p>
+                      </div>
+                      
+                      <div className="flex-shrink-0 w-72 text-center space-y-4">
+                        <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto">
+                          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                          </svg>
+                        </div>
+                        <h4 className="text-xl font-bold text-white">Dedicated Partnership</h4>
+                        <p className="text-gray-300 text-sm">
+                          As your development partner, I provide ongoing support, transparent communication, and continuous optimization to ensure your project's long-term success.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Swipe indicator */}
+                  <div className="text-center mt-4">
+                    <div className="inline-flex items-center space-x-2 text-cyan-400 text-sm">
+                      <span>←</span>
+                      <span>Swipe to see more</span>
+                      <span>→</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Desktop How I Create Services */}
+                <div className="hidden md:block bg-gradient-to-r from-gray-700/50 to-gray-800/50 rounded-2xl p-8 mb-8 border border-gray-600/30">
                   <h4 className="text-2xl font-bold text-white mb-8 text-left">
                     <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
                       How I Create Exceptional Services
                     </span>
                   </h4>
                   
-                  <div className="grid md:grid-cols-2 gap-8">
+                  <div className="grid grid-cols-2 gap-8">
                     <div className="space-y-6">
                       <div className="flex items-start space-x-4">
                         <div className="w-10 h-10 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
@@ -668,6 +855,83 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
                         </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+
+                {/* Mobile Swipeable How I Create Services */}
+                <div className="md:hidden mb-8">
+                  <h4 className="text-2xl font-bold text-white mb-6 text-center">
+                    <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                      How I Create Exceptional Services
+                    </span>
+                  </h4>
+                  
+                  <div className="overflow-x-auto scrollbar-hide pb-4" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+                    <div className="flex space-x-4 min-w-max px-4">
+                      <div className="flex-shrink-0 w-80 bg-gradient-to-r from-gray-700/50 to-gray-800/50 rounded-2xl p-6 border border-gray-600/30">
+                        <div className="flex items-start space-x-4">
+                          <div className="w-10 h-10 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span className="text-white font-bold">1</span>
+                          </div>
+                          <div className="text-left">
+                            <h5 className="text-white font-semibold mb-2 text-lg">Discovery & Strategy</h5>
+                            <p className="text-gray-300">
+                              Deep dive into your business goals, target audience, and technical requirements to create a tailored solution strategy.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex-shrink-0 w-80 bg-gradient-to-r from-gray-700/50 to-gray-800/50 rounded-2xl p-6 border border-gray-600/30">
+                        <div className="flex items-start space-x-4">
+                          <div className="w-10 h-10 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span className="text-white font-bold">2</span>
+                          </div>
+                          <div className="text-left">
+                            <h5 className="text-white font-semibold mb-2 text-lg">Design & Development</h5>
+                            <p className="text-gray-300">
+                              Create intuitive user experiences and robust technical architecture using modern technologies and industry best practices.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex-shrink-0 w-80 bg-gradient-to-r from-gray-700/50 to-gray-800/50 rounded-2xl p-6 border border-gray-600/30">
+                        <div className="flex items-start space-x-4">
+                          <div className="w-10 h-10 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span className="text-white font-bold">3</span>
+                          </div>
+                          <div className="text-left">
+                            <h5 className="text-white font-semibold mb-2 text-lg">Testing & Optimization</h5>
+                            <p className="text-gray-300">
+                              Rigorous testing across devices and browsers, performance optimization, and SEO implementation for maximum impact.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex-shrink-0 w-80 bg-gradient-to-r from-gray-700/50 to-gray-800/50 rounded-2xl p-6 border border-gray-600/30">
+                        <div className="flex items-start space-x-4">
+                          <div className="w-10 h-10 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span className="text-white font-bold">4</span>
+                          </div>
+                          <div className="text-left">
+                            <h5 className="text-white font-semibold mb-2 text-lg">Launch & Support</h5>
+                            <p className="text-gray-300">
+                              Smooth deployment with ongoing maintenance, analytics setup, and continuous improvements to ensure long-term success.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Numbered indicators */}
+                  <div className="flex justify-center space-x-2 mt-4">
+                    <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
+                    <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+                    <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+                    <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
                   </div>
                 </div>
 
@@ -727,7 +991,7 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
                   
                   <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-2xl mx-auto">
                     <button
-                      onClick={onShowServiceSelector}
+                      onClick={handleTryItOutClick}
                       className="flex-1 bg-gradient-to-r from-cyan-400 to-purple-500 text-white font-bold py-4 px-8 rounded-full hover:shadow-lg hover:shadow-cyan-400/25 transition-all duration-300 flex items-center justify-center group min-w-[200px]"
                     >
                       <span>Try It Out First</span>
@@ -743,6 +1007,7 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
                       Skip to Contact Form
             </button>
           </div>
+          
         </div>
       </div>
             </div>
@@ -892,6 +1157,42 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Simulator Message - Portal-like positioning */}
+      {showMobileSimulatorMessage && (
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 9999
+          }}
+        >
+          <div className="bg-gradient-to-br from-gray-800/95 to-gray-900/95 backdrop-blur-md rounded-2xl p-6 border border-cyan-400/30 shadow-2xl max-w-sm mx-auto text-center">
+            <div className="w-16 h-16 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-white mb-3">
+              Desktop Experience Required
+            </h3>
+            <p className="text-gray-300 text-sm leading-relaxed mb-4">
+              Interactive simulators are optimized for desktop and laptop experiences. 
+              Please visit on a larger screen to try out our service simulators.
+            </p>
+            <button
+              onClick={() => setShowMobileSimulatorMessage(false)}
+              className="bg-gradient-to-r from-cyan-400 to-purple-500 text-white font-semibold py-2 px-6 rounded-full hover:shadow-lg transition-all duration-300"
+            >
+              Got it!
+            </button>
           </div>
         </div>
       )}

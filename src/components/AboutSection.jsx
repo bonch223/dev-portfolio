@@ -5,7 +5,7 @@ const AboutSection = () => {
   const [activeTab, setActiveTab] = useState('story');
   const [isVisible, setIsVisible] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [showFullTimeline, setShowFullTimeline] = useState(false);
+  const [showFullTimeline, setShowFullTimeline] = useState(true);
   const sectionRef = useRef(null);
 
   const skills = [
@@ -189,7 +189,7 @@ const AboutSection = () => {
 
 
   return (
-    <section ref={sectionRef} id="about" className="section relative z-10 overflow-hidden">
+    <section ref={sectionRef} id="about" className="section about-section relative z-10 overflow-hidden">
       {/* Dynamic Interactive Background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-pink-900/20"></div>
@@ -426,7 +426,9 @@ const AboutSection = () => {
                   {showFullTimeline ? 'Show Recent Only' : 'Show Full Timeline'}
                 </button>
               </div>
-              <div className="relative">
+              
+              {/* Desktop Timeline */}
+              <div className="hidden md:block relative">
                 {/* Timeline line */}
                 <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-cyan-400 via-purple-500 to-pink-500"></div>
                 
@@ -454,17 +456,66 @@ const AboutSection = () => {
                   ))}
                 </div>
               </div>
+
+              {/* Mobile Swipeable Timeline */}
+              <div className="md:hidden">
+                <div className="relative">
+                  {/* Timeline line - horizontal for mobile */}
+                  <div className="absolute top-8 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500"></div>
+                  
+                  {/* Swipeable container */}
+                  <div className="overflow-x-auto scrollbar-hide pb-4" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+                    <div className="flex space-x-6 min-w-max px-4">
+                      {(showFullTimeline ? experiences : condensedExperiences).map((exp, index) => (
+                        <div key={index} className="flex-shrink-0 w-80 group/item">
+                          {/* Timeline dot */}
+                          <div className="w-16 h-16 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4 relative z-10 group-hover/item:rotate-12 group-hover/item:scale-110 transition-all duration-300">
+                            <span className="text-xl group-hover/item:scale-110 transition-transform">{exp.icon}</span>
+                          </div>
+                          
+                          {/* Content */}
+                          <div className="bg-white/5 rounded-lg p-4 group-hover/item:bg-white/10 transition-all duration-300">
+                            <div className="text-cyan-400 font-bold text-sm mb-2 text-center">{exp.year}</div>
+                            <h4 className="text-white font-bold text-lg group-hover/item:text-cyan-400 transition-colors mb-1 text-center">{exp.title}</h4>
+                            <p className="text-cyan-400 font-medium text-sm group-hover/item:text-white transition-colors mb-3 text-center">{exp.company}</p>
+                            <p className="text-gray-300 leading-relaxed mb-4 text-sm">{exp.description}</p>
+                            <div className="flex flex-wrap gap-1 justify-center">
+                              {exp.achievements.slice(0, 3).map((achievement, achIndex) => (
+                                <span key={achIndex} className="code-text text-xs">{achievement}</span>
+                              ))}
+                              {exp.achievements.length > 3 && (
+                                <span className="code-text text-xs">+{exp.achievements.length - 3} more</span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Swipe indicator */}
+                  <div className="text-center mt-4">
+                    <div className="inline-flex items-center space-x-2 text-cyan-400 text-sm">
+                      <span>←</span>
+                      <span>Swipe to explore timeline</span>
+                      <span>→</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
           {activeTab === 'achievements' && (
-            <div className="grid lg:grid-cols-2 gap-8">
+            <div className="space-y-6">
               {/* Stats Grid */}
               <div className="glass-content-pane group hover:scale-105 transition-all duration-500 relative overflow-hidden">
                 <div className="absolute top-4 right-4 w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full opacity-20 group-hover:opacity-40 transition-opacity animate-spin" style={{animationDuration: '6s'}}></div>
                 
                 <h3 className="heading-tertiary mb-6 text-gradient">Impact & Achievements</h3>
-                <div className="grid grid-cols-2 gap-6">
+                
+                {/* Desktop Stats Grid */}
+                <div className="hidden md:grid grid-cols-2 gap-6">
                   {stats.map((stat, index) => (
                     <div key={index} className="text-center group-hover:scale-110 transition-transform">
                       <div 
@@ -477,12 +528,29 @@ const AboutSection = () => {
                     </div>
                   ))}
                 </div>
+
+                {/* Mobile Stats Grid */}
+                <div className="md:hidden grid grid-cols-2 gap-4">
+                  {stats.map((stat, index) => (
+                    <div key={index} className="text-center group-hover:scale-110 transition-transform">
+                      <div 
+                        className="text-2xl font-bold mb-1 group-hover:text-white transition-colors animate-pulse"
+                        style={{ color: stat.color }}
+                      >
+                        {stat.value}
+                      </div>
+                      <p className="text-gray-300 text-xs group-hover:text-cyan-400 transition-colors">{stat.label}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {/* Awards & Recognition */}
               <div className="glass-content-pane group hover:scale-105 transition-all duration-500 relative overflow-hidden">
                 <h3 className="heading-tertiary mb-6 text-gradient">Recognition</h3>
-                <div className="space-y-4">
+                
+                {/* Desktop Recognition */}
+                <div className="hidden md:block space-y-4">
                   <div className="flex items-center space-x-4 p-4 rounded-lg border border-gray-600 hover:border-gray-500 hover:bg-white/5 transition-all duration-300">
                     <div className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
                       <span className="text-2xl">🏆</span>
@@ -516,6 +584,61 @@ const AboutSection = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Mobile Recognition - Swipeable */}
+                <div className="md:hidden">
+                  <div className="overflow-x-auto scrollbar-hide pb-4" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+                    <div className="flex space-x-4 min-w-max px-4">
+                      <div className="flex-shrink-0 w-72 p-3 rounded-lg border border-gray-600 hover:border-gray-500 hover:bg-white/5 transition-all duration-300">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
+                            <span className="text-xl">🏆</span>
+                          </div>
+                          <div>
+                            <h4 className="text-white font-semibold text-sm">Programmer-of-the-Year</h4>
+                            <p className="text-cyan-400 text-xs">Davao Oriental State University</p>
+                            <p className="text-gray-400 text-xs">2015</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex-shrink-0 w-72 p-3 rounded-lg border border-gray-600 hover:border-gray-500 hover:bg-white/5 transition-all duration-300">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-gradient-to-r from-green-400 to-blue-500 rounded-lg flex items-center justify-center">
+                            <span className="text-xl">🚀</span>
+                          </div>
+                          <div>
+                            <h4 className="text-white font-semibold text-sm">Tech Leadership</h4>
+                            <p className="text-cyan-400 text-xs">Leading Digital Transformation</p>
+                            <p className="text-gray-400 text-xs">2023-Present</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex-shrink-0 w-72 p-3 rounded-lg border border-gray-600 hover:border-gray-500 hover:bg-white/5 transition-all duration-300">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-gradient-to-r from-green-400 to-cyan-500 rounded-lg flex items-center justify-center">
+                            <span className="text-xl">🎓</span>
+                          </div>
+                          <div>
+                            <h4 className="text-white font-semibold text-sm">Ed-Tech Co-Founder</h4>
+                            <p className="text-cyan-400 text-xs">SkillFoundri COO & Lead Developer</p>
+                            <p className="text-gray-400 text-xs">2024-Present</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Swipe indicator */}
+                  <div className="text-center mt-4">
+                    <div className="inline-flex items-center space-x-2 text-cyan-400 text-sm">
+                      <span>←</span>
+                      <span>Swipe to explore achievements</span>
+                      <span>→</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -523,7 +646,9 @@ const AboutSection = () => {
           {activeTab === 'companies' && (
             <div className="glass-content-pane group hover:scale-105 transition-all duration-500 relative overflow-hidden">
               <h3 className="heading-tertiary mb-8 text-gradient text-center">Companies I've Worked With</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              
+              {/* Desktop Companies Grid */}
+              <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {companies.map((company, index) => (
                   <div 
                     key={index} 
@@ -564,6 +689,63 @@ const AboutSection = () => {
                     />
                   </div>
                 ))}
+              </div>
+
+              {/* Mobile Swipeable Companies */}
+              <div className="md:hidden">
+                <div className="overflow-x-auto scrollbar-hide pb-4" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+                  <div className="flex space-x-4 min-w-max px-4">
+                    {companies.map((company, index) => (
+                      <div 
+                        key={index} 
+                        className="flex-shrink-0 w-64 company-card group/card hover:scale-105 transition-all duration-300 p-4 rounded-xl border border-gray-600 hover:border-gray-500 hover:bg-white/5 relative overflow-hidden"
+                      >
+                        {/* Company logo */}
+                        <div className="flex justify-center mb-3">
+                          <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-gray-600 group-hover/card:border-gray-500 transition-all duration-300 bg-white/10 backdrop-blur-sm">
+                            <div className="w-full h-full bg-gradient-to-br from-white/20 via-white/10 to-transparent absolute inset-0 z-10"></div>
+                            <img 
+                              src={company.logo} 
+                              alt={`${company.name} logo`}
+                              className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-300 relative z-20"
+                            />
+                          </div>
+                        </div>
+                        
+                        {/* Company info */}
+                        <div className="text-center">
+                          <h4 className="text-white font-bold text-base mb-1 group-hover/card:text-cyan-400 transition-colors">
+                            {company.name}
+                          </h4>
+                          <p className="text-cyan-400 text-xs font-medium mb-1">
+                            {company.role}
+                          </p>
+                          <p className="text-gray-400 text-xs mb-2">
+                            {company.period}
+                          </p>
+                          <p className="text-gray-300 text-xs leading-relaxed">
+                            {company.description}
+                          </p>
+                        </div>
+                        
+                        {/* Accent line */}
+                        <div 
+                          className="absolute bottom-0 left-0 right-0 h-1 rounded-b-xl transition-all duration-300"
+                          style={{ background: `linear-gradient(90deg, ${company.color}, ${company.color}80)` }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Swipe indicator */}
+                <div className="text-center mt-4">
+                  <div className="inline-flex items-center space-x-2 text-cyan-400 text-sm">
+                    <span>←</span>
+                    <span>Swipe to explore companies</span>
+                    <span>→</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}

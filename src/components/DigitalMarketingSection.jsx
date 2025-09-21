@@ -96,8 +96,8 @@ const DigitalMarketingSection = ({ onLightboxChange }) => {
           </p>
         </div>
 
-        {/* Category Navigation */}
-        <div className="flex justify-center mb-12">
+        {/* Desktop Category Navigation */}
+        <div className="hidden md:flex justify-center mb-12">
           <div className="glass-content-pane p-2">
             <div className="flex space-x-2">
               {categories.map((category) => (
@@ -118,10 +118,35 @@ const DigitalMarketingSection = ({ onLightboxChange }) => {
           </div>
         </div>
 
+        {/* Mobile Swipeable Category Navigation */}
+        <div className="md:hidden mb-8">
+          <div className="overflow-x-auto scrollbar-hide py-2" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+            <div className="flex space-x-3 min-w-max px-4">
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => setActiveCategory(category.id)}
+                  className={`flex-shrink-0 px-4 py-3 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 min-w-fit relative ${
+                    activeCategory === category.id
+                      ? 'bg-gradient-to-r from-cyan-400 to-purple-500 text-white shadow-lg'
+                      : 'text-gray-300 hover:text-white hover:bg-white/10 bg-white/5'
+                  }`}
+                  style={{
+                    boxShadow: activeCategory === category.id ? '0 4px 15px rgba(6, 182, 212, 0.3)' : 'none'
+                  }}
+                >
+                  <span className="text-lg">{category.icon}</span>
+                  <span className="text-sm whitespace-nowrap">{category.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {/* Content Display */}
         <div className={`${isVisible ? 'animate-slide-up' : 'opacity-0'}`}>
-          {/* Category Info */}
-          <div className="glass-content-pane mb-8 group hover:scale-105 transition-all duration-500 relative overflow-hidden">
+          {/* Desktop Category Info */}
+          <div className="hidden md:block glass-content-pane mb-8 group hover:scale-105 transition-all duration-500 relative overflow-hidden">
             <div className={`absolute top-4 right-4 w-16 h-16 bg-gradient-to-r ${categoryInfo.gradient} rounded-full opacity-10 group-hover:opacity-20 transition-opacity animate-pulse`}></div>
             
             <div className="flex items-center space-x-4 mb-6">
@@ -137,10 +162,30 @@ const DigitalMarketingSection = ({ onLightboxChange }) => {
             <p className="text-gray-300 leading-relaxed mb-6">
               {categoryInfo.description}
             </p>
+          </div>
 
-            {/* SEO Results Special Layout */}
+          {/* Mobile Category Info */}
+          <div className="md:hidden mb-6">
+            <div className="glass-content-pane p-4">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className={`w-12 h-12 bg-gradient-to-r ${categoryInfo.gradient} rounded-lg flex items-center justify-center`}>
+                  <span className="text-xl">{categories.find(c => c.id === activeCategory)?.icon}</span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">{categoryInfo.title}</h3>
+                  <p className="text-cyan-400 text-xs">Digital Marketing Solutions</p>
+                </div>
+              </div>
+              
+              <p className="text-gray-300 text-sm leading-relaxed">
+                {categoryInfo.description}
+              </p>
+            </div>
+          </div>
+
+            {/* Desktop SEO Results Special Layout */}
             {activeCategory === 'seo-results' && (
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="hidden md:grid grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <h4 className="text-white font-semibold text-lg">Before SEO Optimization</h4>
                   <div 
@@ -185,9 +230,69 @@ const DigitalMarketingSection = ({ onLightboxChange }) => {
               </div>
             )}
 
-            {/* Gallery Layout for Other Categories */}
+            {/* Mobile Swipeable SEO Results Layout */}
+            {activeCategory === 'seo-results' && (
+              <div className="md:hidden">
+                <div className="overflow-x-auto scrollbar-hide pb-4" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+                  <div className="flex space-x-4 min-w-max px-4">
+                    <div className="flex-shrink-0 w-80 space-y-4">
+                      <h4 className="text-white font-semibold text-lg">Before SEO Optimization</h4>
+                      <div 
+                        className="relative cursor-pointer group"
+                        onClick={() => openLightbox(seoResults, 0)}
+                      >
+                        <img 
+                          src={seoResults[0]} 
+                          alt="SEO Before" 
+                          className="w-full rounded-lg border border-gray-600 hover:border-gray-500 transition-all duration-300 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-black/0 hover:bg-black/20 rounded-lg transition-all duration-300 flex items-center justify-center">
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/20 backdrop-blur-sm rounded-full p-3">
+                            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex-shrink-0 w-80 space-y-4">
+                      <h4 className="text-white font-semibold text-lg">After SEO Optimization</h4>
+                      <div 
+                        className="relative cursor-pointer group"
+                        onClick={() => openLightbox(seoResults, 1)}
+                      >
+                        <img 
+                          src={seoResults[1]} 
+                          alt="SEO After" 
+                          className="w-full rounded-lg border border-gray-600 hover:border-gray-500 transition-all duration-300 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-black/0 hover:bg-black/20 rounded-lg transition-all duration-300 flex items-center justify-center">
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/20 backdrop-blur-sm rounded-full p-3">
+                            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Swipe indicator */}
+                <div className="text-center mt-4">
+                  <div className="inline-flex items-center space-x-2 text-cyan-400 text-sm">
+                    <span>←</span>
+                    <span>Swipe to see more</span>
+                    <span>→</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Desktop Gallery Layout for Other Categories */}
             {activeCategory !== 'seo-results' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6">
                 {getCurrentAssets().map((asset, index) => (
                   <div 
                     key={index}
@@ -210,17 +315,55 @@ const DigitalMarketingSection = ({ onLightboxChange }) => {
                 ))}
               </div>
             )}
+
+            {/* Mobile Swipeable Gallery Layout for Other Categories */}
+            {activeCategory !== 'seo-results' && (
+              <div className="md:hidden">
+                <div className="overflow-x-auto scrollbar-hide pb-4" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+                  <div className="flex space-x-4 min-w-max px-4">
+                    {getCurrentAssets().map((asset, index) => (
+                      <div 
+                        key={index}
+                        className="flex-shrink-0 w-80 relative cursor-pointer group"
+                        onClick={() => openLightbox(getCurrentAssets(), index)}
+                      >
+                        <img 
+                          src={asset} 
+                          alt={`${categoryInfo.title} ${index + 1}`}
+                          className="w-full h-48 object-cover rounded-lg border border-gray-600 hover:border-gray-500 transition-all duration-300 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-black/0 hover:bg-black/20 rounded-lg transition-all duration-300 flex items-center justify-center">
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/20 backdrop-blur-sm rounded-full p-3">
+                            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Swipe indicator */}
+                <div className="text-center mt-4">
+                  <div className="inline-flex items-center space-x-2 text-cyan-400 text-sm">
+                    <span>←</span>
+                    <span>Swipe to see more</span>
+                    <span>→</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      </div>
 
-      {/* Lightbox Gallery */}
-      <LightboxGallery
-        images={lightboxImages}
-        isOpen={lightboxOpen}
-        onClose={closeLightbox}
-        initialIndex={lightboxIndex}
-      />
+        {/* Lightbox Gallery */}
+        <LightboxGallery
+          images={lightboxImages}
+          isOpen={lightboxOpen}
+          onClose={closeLightbox}
+          initialIndex={lightboxIndex}
+        />
     </section>
   );
 };

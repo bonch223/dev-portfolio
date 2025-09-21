@@ -508,29 +508,162 @@
     font-size: 0.9rem;
   }
   
-  .profile-container {
-    min-height: 25rem;
+  /* Mobile Hero Grid - Profile on top */
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: flex-start;
   }
   
+  .hero-image-container {
+    order: -1; /* Move profile to top on mobile */
+    margin-bottom: 1rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0; /* Add padding to ensure orbits don't get cut off */
+  }
+  
+  /* Smaller profile container for mobile - increased to fit all orbits */
+  .profile-container {
+    min-height: 24rem;
+    max-width: 24rem;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  /* Smaller profile image and glow for mobile */
   .profile-image-wrapper,
   .profile-glow {
-    width: 16rem;
-    height: 16rem;
+    width: 10rem;
+    height: 10rem;
   }
   
+  /* Smaller orbital paths for mobile - ensuring all are visible within container */
   .orbit-path-1 {
+    width: 12rem;
+    height: 12rem;
+  }
+  
+  .orbit-path-2 {
+    width: 15rem;
+    height: 15rem;
+  }
+  
+  .orbit-path-3 {
     width: 18rem;
     height: 18rem;
   }
   
-  .orbit-path-2 {
-    width: 22rem;
-    height: 22rem;
+  /* Ensure profile glow fits within mobile container */
+  .profile-glow {
+    width: 12rem;
+    height: 12rem;
   }
   
-  .orbit-path-3 {
-    width: 26rem;
-    height: 26rem;
+  /* Enhanced mobile hero content spacing and alignment */
+  .hero-content {
+    text-align: center;
+    padding: 0.5rem;
+    width: 100%;
+  }
+  
+  /* Mobile glass content pane improvements */
+  .glass-content-pane {
+    padding: 1.5rem;
+    margin: 0 auto;
+    max-width: 100%;
+    border-radius: 20px;
+  }
+  
+  /* Better mobile hero text sizing */
+  .heading-primary {
+    font-size: clamp(2.2rem, 8vw, 3.5rem);
+    margin-bottom: 0.5rem;
+    line-height: 1.1;
+  }
+  
+  /* Improved role display for mobile */
+  .role-container {
+    margin: 0.5rem 0 1rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .role-label {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+  }
+  
+  .role-display {
+    min-height: 2rem !important;
+    min-width: 10rem !important;
+  }
+  
+  .role-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  
+  /* Mobile-specific tooltip adjustments */
+  .profile-container .absolute {
+    display: none; /* Hide tooltip on mobile to avoid touch issues */
+  }
+  
+  /* Ensure physics particles work well on mobile */
+  .profile-container {
+    touch-action: manipulation; /* Optimize for touch */
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
+  }
+  
+  /* Enhanced mobile hero description */
+  .hero-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 1rem 0;
+    padding: 0 0.5rem;
+    text-align: center;
+  }
+  
+  /* Improved mobile button layout */
+  .hero-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+    align-items: center;
+  }
+  
+  .btn {
+    width: 100%;
+    max-width: 280px;
+    padding: 0.9rem 1.5rem;
+    font-size: 0.95rem;
+    justify-content: center;
+  }
+  
+  /* Enhanced mobile tech stack */
+  .tech-stack {
+    margin-top: 1.5rem;
+    text-align: center;
+  }
+  
+  .tech-stack-label {
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .tech-badges {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    max-width: 100%;
+  }
+  
+  .code-text {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
   }
   
   .floating-1 {
@@ -546,6 +679,974 @@
   .floating-3 {
     width: 1.6rem;
     height: 1.6rem;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  /* Even smaller profile container for very small screens */
+  .profile-container {
+    min-height: 22rem;
+    max-width: 22rem;
+    padding: 1.5rem;
+  }
+  
+  /* Further reduce orbital paths for very small screens */
+  .orbit-path-1 {
+    width: 10rem;
+    height: 10rem;
+  }
+  
+  .orbit-path-2 {
+    width: 13rem;
+    height: 13rem;
+  }
+  
+  .orbit-path-3 {
+    width: 16rem;
+    height: 16rem;
+  }
+  
+  /* Smaller profile image for very small screens */
+  .profile-image-wrapper,
+  .profile-glow {
+    width: 10rem;
+    height: 10rem;
+  }
+  
+  /* Extra small mobile hero enhancements */
+  .glass-content-pane {
+    padding: 1rem;
+    border-radius: 16px;
+  }
+  
+  .heading-primary {
+    font-size: clamp(1.8rem, 7vw, 2.8rem);
+  }
+  
+  .hero-description {
+    font-size: 0.9rem;
+    padding: 0 0.25rem;
+  }
+  
+  .btn {
+    max-width: 260px;
+    padding: 0.8rem 1.2rem;
+    font-size: 0.9rem;
+  }
+  
+  .tech-badges {
+    gap: 0.3rem;
+  }
+  
+  .code-text {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+/* About Section Profile Card Padding - All Sizes */
+.about-section .glass-content-pane .flex.flex-col.lg\\:flex-row {
+  padding: 1rem;
+}
+
+/* Tech Arsenal - General Improvements */
+.about-section .grid.grid-cols-3 {
+  gap: 0.75rem;
+}
+
+.about-section .grid.grid-cols-3 .text-center {
+  padding: 0.5rem;
+}
+
+.about-section .grid.grid-cols-3 .w-16.h-16 {
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 0.5rem auto;
+}
+
+.about-section .grid.grid-cols-3 p {
+  font-size: 0.8rem;
+  margin: 0;
+  padding: 0;
+}
+
+.about-section .glass-content-pane .flex-1 {
+  padding: 1rem 0;
+}
+
+.about-section .glass-content-pane h3 {
+  margin-bottom: 1rem;
+  padding: 0 0.75rem;
+}
+
+.about-section .glass-content-pane p {
+  padding: 0 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.about-section .glass-content-pane .flex.items-center.space-x-4 {
+  padding: 0 0.75rem;
+}
+
+/* About Section Mobile Enhancements */
+@media (max-width: 768px) {
+  /* About section profile card mobile improvements */
+  .about-section .glass-content-pane {
+    padding: 1.25rem;
+    margin: 0 0.5rem;
+  }
+  
+  /* Profile card content padding */
+  .about-section .glass-content-pane .flex.flex-col.lg\\:flex-row {
+    padding: 0.5rem;
+  }
+  
+  .about-section .glass-content-pane .flex-1 {
+    padding: 0.75rem 0;
+  }
+  
+  .about-section .glass-content-pane h3 {
+    margin-bottom: 0.75rem;
+    padding: 0 0.5rem;
+  }
+  
+  .about-section .glass-content-pane p {
+    padding: 0 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .about-section .glass-content-pane .flex.items-center.space-x-4 {
+    padding: 0 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  
+  /* Profile image in about section */
+  .about-section .w-32 {
+    width: 6rem;
+    height: 6rem;
+  }
+  
+  /* About section heading */
+  .about-section .heading-secondary {
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
+    margin-bottom: 1rem;
+  }
+  
+  /* Tab navigation mobile improvements */
+  .about-section .glass-content-pane.p-2 {
+    padding: 0.75rem;
+    margin: 0 0.5rem;
+    overflow-x: auto;
+  }
+  
+  .about-section .flex.space-x-2 {
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    min-width: max-content;
+  }
+  
+  .about-section button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    min-width: fit-content;
+  }
+  
+  .about-section button span:first-child {
+    font-size: 1rem;
+  }
+  
+  .about-section button span:last-child {
+    font-size: 0.75rem;
+  }
+  
+  /* Tab content mobile improvements */
+  .about-section .grid.lg\\:grid-cols-2 {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .about-section .heading-tertiary {
+    font-size: clamp(1.3rem, 4vw, 1.8rem);
+    margin-bottom: 1rem;
+  }
+  
+  /* Skills grid mobile */
+  .about-section .grid.grid-cols-2 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  /* Tech Arsenal grid - more compact on mobile */
+  .about-section .grid.grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+  
+  /* Tech Arsenal individual items */
+  .about-section .grid.grid-cols-3 .text-center {
+    padding: 0.25rem;
+  }
+  
+  .about-section .grid.grid-cols-3 .w-16.h-16 {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 0 auto 0.25rem auto;
+  }
+  
+  .about-section .grid.grid-cols-3 p {
+    font-size: 0.7rem;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Timeline mobile improvements */
+  .about-section .space-y-8 {
+    gap: 1.5rem;
+  }
+  
+  .about-section .w-16.h-16 {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  /* Swipeable timeline mobile styles */
+  .about-section .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  .about-section .overflow-x-auto::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Mobile timeline cards */
+  .about-section .flex-shrink-0.w-80 {
+    width: 18rem;
+  }
+  
+  .about-section .flex-shrink-0.w-80 .w-16.h-16 {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  /* Companies grid mobile */
+  .about-section .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  /* Swipeable companies mobile styles */
+  .about-section .flex-shrink-0.w-64 {
+    width: 16rem;
+  }
+  
+  .about-section .flex-shrink-0.w-64 .w-16.h-16 {
+    width: 4rem;
+    height: 4rem;
+  }
+  
+  /* Swipeable achievements mobile styles */
+  .about-section .flex-shrink-0.w-72 {
+    width: 18rem;
+  }
+  
+  .about-section .flex-shrink-0.w-72 .w-10.h-10 {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  /* Stats grid mobile */
+  .about-section .grid.grid-cols-2.gap-6 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+/* About Section Extra Small Mobile */
+@media (max-width: 480px) {
+  /* About section profile card extra small */
+  .about-section .glass-content-pane {
+    padding: 1rem;
+    margin: 0 0.25rem;
+  }
+  
+  /* Profile card content padding extra small */
+  .about-section .glass-content-pane .flex.flex-col.lg\\:flex-row {
+    padding: 0.25rem;
+  }
+  
+  .about-section .glass-content-pane .flex-1 {
+    padding: 0.5rem 0;
+  }
+  
+  .about-section .glass-content-pane h3 {
+    margin-bottom: 0.5rem;
+    padding: 0 0.25rem;
+    font-size: 1.1rem;
+  }
+  
+  .about-section .glass-content-pane p {
+    padding: 0 0.25rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  
+  .about-section .glass-content-pane .flex.items-center.space-x-4 {
+    padding: 0 0.25rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  /* Profile image extra small */
+  .about-section .w-32 {
+    width: 5rem;
+    height: 5rem;
+  }
+  
+  /* Tab navigation extra small */
+  .about-section .glass-content-pane.p-2 {
+    padding: 0.5rem;
+    margin: 0 0.25rem;
+  }
+  
+  .about-section button {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+  }
+  
+  .about-section button span:first-child {
+    font-size: 0.9rem;
+  }
+  
+  .about-section button span:last-child {
+    font-size: 0.7rem;
+  }
+  
+  /* Tab content extra small */
+  .about-section .heading-tertiary {
+    font-size: clamp(1.1rem, 4vw, 1.5rem);
+  }
+  
+  /* Skills grid extra small */
+  .about-section .grid.grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.25rem;
+  }
+  
+  /* Tech Arsenal extra small - ultra compact */
+  .about-section .grid.grid-cols-3 .text-center {
+    padding: 0.15rem;
+  }
+  
+  .about-section .grid.grid-cols-3 .w-16.h-16 {
+    width: 2rem;
+    height: 2rem;
+    margin: 0 auto 0.15rem auto;
+  }
+  
+  .about-section .grid.grid-cols-3 p {
+    font-size: 0.6rem;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Timeline extra small */
+  .about-section .w-16.h-16 {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  /* Swipeable timeline extra small */
+  .about-section .flex-shrink-0.w-80 {
+    width: 16rem;
+  }
+  
+  .about-section .flex-shrink-0.w-80 .w-16.h-16 {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .about-section .flex-shrink-0.w-80 .bg-white\\/5 {
+    padding: 0.75rem;
+  }
+  
+  .about-section .flex-shrink-0.w-80 h4 {
+    font-size: 1rem;
+  }
+  
+  .about-section .flex-shrink-0.w-80 p {
+    font-size: 0.8rem;
+  }
+  
+  /* Stats grid extra small */
+  .about-section .grid.grid-cols-2.gap-6 {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  /* Swipeable companies extra small */
+  .about-section .flex-shrink-0.w-64 {
+    width: 14rem;
+  }
+  
+  .about-section .flex-shrink-0.w-64 .w-16.h-16 {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  .about-section .flex-shrink-0.w-64 h4 {
+    font-size: 0.9rem;
+  }
+  
+  .about-section .flex-shrink-0.w-64 p {
+    font-size: 0.7rem;
+  }
+  
+  /* Swipeable achievements extra small */
+  .about-section .flex-shrink-0.w-72 {
+    width: 16rem;
+  }
+  
+  .about-section .flex-shrink-0.w-72 .w-10.h-10 {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .about-section .flex-shrink-0.w-72 h4 {
+    font-size: 0.8rem;
+  }
+  
+  .about-section .flex-shrink-0.w-72 p {
+    font-size: 0.65rem;
+  }
+}
+
+/* Projects Section Mobile Enhancements */
+@media (max-width: 768px) {
+  /* Projects section heading */
+  .projects-section .heading-secondary {
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
+    margin-bottom: 1rem;
+  }
+  
+  /* Project navigation mobile */
+  .projects-section .flex.flex-wrap.justify-center.gap-4 {
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .projects-section .flex.flex-wrap.justify-center.gap-4 button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+  
+  /* Project display mobile */
+  .projects-section .grid.lg\\:grid-cols-2 {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  /* Project info mobile */
+  .projects-section .space-y-8 {
+    gap: 1.5rem;
+  }
+  
+  .projects-section .heading-tertiary {
+    font-size: clamp(1.3rem, 4vw, 1.8rem);
+  }
+  
+  .projects-section .text-xl {
+    font-size: 1.1rem;
+  }
+  
+  .projects-section .text-lg {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  /* Features mobile */
+  .projects-section .grid.grid-cols-1.gap-2 {
+    gap: 0.75rem;
+  }
+  
+  .projects-section .flex.items-center.space-x-3 {
+    gap: 0.5rem;
+  }
+  
+  /* Technologies mobile */
+  .projects-section .flex.flex-wrap.gap-2 {
+    gap: 0.5rem;
+  }
+  
+  .projects-section .code-text {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  /* Action buttons mobile */
+  .projects-section .flex.flex-wrap.gap-4 {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .projects-section .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.9rem 1.5rem;
+    font-size: 0.95rem;
+  }
+  
+  /* Project visual mobile */
+  .projects-section .card {
+    padding: 0.75rem;
+  }
+  
+  .projects-section .w-full.h-64 {
+    height: 12rem;
+  }
+  
+  /* Other projects section mobile */
+  .projects-section .grid.grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  
+  /* Swipeable other projects mobile styles */
+  .projects-section .flex-shrink-0.w-64 {
+    width: 16rem;
+  }
+  
+  .projects-section .flex-shrink-0.w-64 .h-24 {
+    height: 6rem;
+  }
+  
+  .projects-section .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  .projects-section .overflow-x-auto::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .projects-section .glass-content-pane {
+    padding: 0.75rem;
+  }
+  
+  .projects-section .h-32 {
+    height: 6rem;
+  }
+  
+  .projects-section .p-3 {
+    padding: 0.75rem;
+  }
+  
+  .projects-section .text-sm {
+    font-size: 0.8rem;
+  }
+  
+  .projects-section .text-xs {
+    font-size: 0.7rem;
+  }
+  
+  /* CTA section mobile */
+  .projects-section .p-12 {
+    padding: 1.5rem;
+  }
+  
+  .projects-section .text-4xl.md\\:text-5xl {
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+  }
+  
+  .projects-section .grid.md\\:grid-cols-3 {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .projects-section .w-16.h-16 {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  .projects-section .text-xl {
+    font-size: 1.1rem;
+  }
+  
+  .projects-section .grid.md\\:grid-cols-2 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .projects-section .grid.grid-cols-2.md\\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  
+  .projects-section .w-12.h-12 {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .projects-section .flex.flex-col.sm\\:flex-row {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .projects-section .min-w-\\[200px\\] {
+    min-width: 100%;
+  }
+}
+
+/* Projects Section Extra Small Mobile */
+@media (max-width: 480px) {
+  /* Project navigation extra small */
+  .projects-section .flex.flex-wrap.justify-center.gap-4 button {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+  }
+  
+  /* Project info extra small */
+  .projects-section .heading-tertiary {
+    font-size: clamp(1.1rem, 4vw, 1.5rem);
+  }
+  
+  .projects-section .text-xl {
+    font-size: 1rem;
+  }
+  
+  .projects-section .text-lg {
+    font-size: 0.9rem;
+  }
+  
+  /* Features extra small */
+  .projects-section .grid.grid-cols-1.gap-2 {
+    gap: 0.5rem;
+  }
+  
+  /* Technologies extra small */
+  .projects-section .code-text {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+  }
+  
+  /* Action buttons extra small */
+  .projects-section .btn {
+    padding: 0.8rem 1.2rem;
+    font-size: 0.9rem;
+  }
+  
+  /* Project visual extra small */
+  .projects-section .card {
+    padding: 0.5rem;
+  }
+  
+  .projects-section .w-full.h-64 {
+    height: 10rem;
+  }
+  
+  /* Other projects extra small */
+  .projects-section .grid.grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-4 {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  /* Swipeable other projects extra small */
+  .projects-section .flex-shrink-0.w-64 {
+    width: 14rem;
+  }
+  
+  .projects-section .flex-shrink-0.w-64 .h-24 {
+    height: 5rem;
+  }
+  
+  .projects-section .flex-shrink-0.w-64 .p-3 {
+    padding: 0.5rem;
+  }
+  
+  .projects-section .flex-shrink-0.w-64 h4 {
+    font-size: 0.8rem;
+  }
+  
+  .projects-section .flex-shrink-0.w-64 p {
+    font-size: 0.65rem;
+  }
+  
+  .projects-section .glass-content-pane {
+    padding: 0.5rem;
+  }
+  
+  /* CTA section mobile styles - make swipeable */
+  .projects-section .p-12 {
+    padding: 1.5rem;
+  }
+  
+  .projects-section .text-4xl.md\\:text-5xl {
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    margin-bottom: 1.5rem;
+  }
+  
+  .projects-section .grid.md\\:grid-cols-3 {
+    display: none;
+  }
+  
+  .projects-section .w-16.h-16 {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  .projects-section .text-xl {
+    font-size: 1.1rem;
+  }
+  
+  .projects-section .grid.md\\:grid-cols-2 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .projects-section .grid.grid-cols-2.md\\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  
+  .projects-section .w-12.h-12 {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .projects-section .flex.flex-col.sm\\:flex-row {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .projects-section .min-w-\\[200px\\] {
+    min-width: 100%;
+  }
+  
+  .projects-section .text-lg {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Swipeable CTA section mobile styles */
+  .projects-section .flex-shrink-0.w-72 {
+    width: 18rem;
+  }
+  
+  .projects-section .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  .projects-section .overflow-x-auto::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Swipeable Services section mobile styles */
+  .projects-section .flex-shrink-0.w-80 {
+    width: 20rem;
+  }
+  
+  /* CTA section extra small mobile */
+  .projects-section .p-12 {
+    padding: 1rem;
+  }
+  
+  .projects-section .text-4xl.md\\:text-5xl {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    margin-bottom: 1rem;
+  }
+  
+  .projects-section .grid.md\\:grid-cols-3 {
+    display: none;
+  }
+  
+  .projects-section .w-16.h-16 {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .projects-section .text-xl {
+    font-size: 1rem;
+  }
+  
+  .projects-section .grid.md\\:grid-cols-2 {
+    gap: 0.75rem;
+  }
+  
+  .projects-section .grid.grid-cols-2.md\\:grid-cols-4 {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .projects-section .w-12.h-12 {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .projects-section .flex.flex-col.sm\\:flex-row {
+    gap: 0.5rem;
+  }
+  
+  .projects-section .text-lg {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+  
+  /* Swipeable CTA section extra small mobile */
+  .projects-section .flex-shrink-0.w-72 {
+    width: 16rem;
+  }
+  
+  .projects-section .flex-shrink-0.w-72 .w-16.h-16 {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  .projects-section .flex-shrink-0.w-72 h4 {
+    font-size: 1rem;
+  }
+  
+  .projects-section .flex-shrink-0.w-72 p {
+    font-size: 0.8rem;
+  }
+  
+  /* Swipeable Services section extra small mobile */
+  .projects-section .flex-shrink-0.w-80 {
+    width: 18rem;
+  }
+  
+  .projects-section .flex-shrink-0.w-80 .w-10.h-10 {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .projects-section .flex-shrink-0.w-80 h5 {
+    font-size: 1rem;
+  }
+  
+  .projects-section .flex-shrink-0.w-80 p {
+    font-size: 0.85rem;
+  }
+  
+  .projects-section .h-32 {
+    height: 5rem;
+  }
+  
+  /* Digital Marketing section mobile styles */
+  .section .flex-shrink-0.w-80 {
+    width: 20rem;
+  }
+  
+  .section .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  .section .overflow-x-auto::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Digital Marketing navigation mobile styles */
+  .section .flex-shrink-0.min-w-fit {
+    min-width: fit-content;
+    margin: 0;
+    border: none;
+    outline: none;
+  }
+  
+  .section .flex-shrink-0.min-w-fit .text-lg {
+    font-size: 1.1rem;
+  }
+  
+  .section .flex-shrink-0.min-w-fit .text-sm {
+    font-size: 0.85rem;
+  }
+  
+  /* Ensure navigation container has proper spacing */
+  .section .overflow-x-auto.scrollbar-hide {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  /* Digital Marketing section extra small mobile */
+  .section .flex-shrink-0.w-80 {
+    width: 18rem;
+  }
+  
+  .section .flex-shrink-0.w-80 h4 {
+    font-size: 1rem;
+  }
+  
+  .section .flex-shrink-0.w-80 img {
+    height: 12rem;
+  }
+  
+  /* Digital Marketing navigation extra small mobile */
+  .section .flex-shrink-0.min-w-fit {
+    padding: 0.5rem 0.75rem;
+    margin: 0;
+    border: none;
+    outline: none;
+  }
+  
+  .section .flex-shrink-0.min-w-fit .text-lg {
+    font-size: 1rem;
+  }
+  
+  .section .flex-shrink-0.min-w-fit .text-sm {
+    font-size: 0.75rem;
+  }
+  
+  /* Extra small mobile navigation container spacing */
+  .section .overflow-x-auto.scrollbar-hide {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+  
+  .projects-section .p-3 {
+    padding: 0.5rem;
+  }
+  
+  .projects-section .text-sm {
+    font-size: 0.75rem;
+  }
+  
+  .projects-section .text-xs {
+    font-size: 0.65rem;
+  }
+  
+  /* CTA section extra small */
+  .projects-section .p-12 {
+    padding: 1rem;
+  }
+  
+  .projects-section .text-4xl.md\\:text-5xl {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+  }
+  
+  .projects-section .w-16.h-16 {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .projects-section .text-xl {
+    font-size: 1rem;
+  }
+  
+  .projects-section .grid.grid-cols-2.md\\:grid-cols-4 {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .projects-section .w-12.h-12 {
+    width: 2rem;
+    height: 2rem;
   }
 }
 
