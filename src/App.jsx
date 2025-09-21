@@ -14,7 +14,6 @@ import ProcessPage from './components/ProcessPage';
 import SEOQuoteGenerator from './components/SEOQuoteGenerator';
 import WordPressQuoteGenerator from './components/WordPressQuoteGenerator';
 import FullStackQuoteGenerator from './components/FullStackQuoteGenerator';
-import VisitorCounter from './components/VisitorCounter';
 import AnimatedBackground from './components/AnimatedBackground';
 import './App.css';
 
@@ -254,9 +253,6 @@ function App() {
           simulatorData={currentServiceData}
         />
       )}
-
-      {/* Visitor Counter */}
-      <VisitorCounter />
 
       {/* Vercel Analytics */}
       <Analytics />
