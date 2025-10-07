@@ -223,14 +223,39 @@ router.post('/jobs/:id/start', async (req, res) => {
     );
     
     // Trigger the actual scraping (asynchronously)
-    // We'll import and call the scraper here
     setImmediate(async () => {
       try {
-        const { IntelligentYouTubeScraper } = require('../scripts/intelligent-scraper');
-        const scraper = new IntelligentYouTubeScraper();
-        
-        // TODO: Run scraper with job tracking
         console.log(`🚀 Starting scraper for job ${id}...`);
+        
+        // Call the intelligent scraper API endpoint
+        const scraperResponse = await fetch(`${req.protocol}://${req.get('host')}/api/videos/scrape-intelligent`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tool: job.tool,
+            max_videos_per_term: job.max_videos_per_term || 50,
+            min_quality_score: job.min_quality_score || 60
+          })
+        });
+
+        if (scraperResponse.ok) {
+          const result = await scraperResponse.json();
+          console.log(`✅ Scraper completed for job ${id}:`, result);
+          
+          // Update job as completed
+          await query(
+            `UPDATE scraping_jobs SET 
+              status = 'completed', 
+              completed_at = CURRENT_TIMESTAMP,
+              total_videos_found = $1,
+              total_videos_saved = $2,
+              updated_at = CURRENT_TIMESTAMP 
+              WHERE id = $3`,
+            [result.stats?.total_videos_found || 0, result.stats?.total_videos_saved || 0, id]
+          );
+        } else {
+          throw new Error(`Scraper API returned ${scraperResponse.status}`);
+        }
         
       } catch (error) {
         console.error(`❌ Scraper failed for job ${id}:`, error);
@@ -445,6 +470,64 @@ router.patch('/schedules/:id/toggle', async (req, res) => {
       success: false,
       error: 'Failed to toggle schedule',
       message: error.message
+    });
+  }
+});
+
+// Delete schedule
+router.delete('/schedules/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Check if schedule exists
+    const checkResult = await query('SELECT id FROM job_schedules WHERE id = $1', [id]);
+    if (checkResult.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Schedule not found'
+      });
+    }
+
+    // Delete schedule
+    await query('DELETE FROM job_schedules WHERE id = $1', [id]);
+
+    res.json({
+      success: true,
+      message: 'Schedule deleted successfully'
+    });
+  } catch (error) {
+    console.error('❌ Failed to delete schedule:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete schedule',
+      error: error.message
+    });
+  }
+});
+
+// Bulk delete schedules
+router.delete('/schedules/bulk/cleanup', async (req, res) => {
+  try {
+    // Delete duplicate schedules (same cron expression and tool)
+    const result = await query(`
+      DELETE FROM job_schedules 
+      WHERE id NOT IN (
+        SELECT DISTINCT ON (cron_expression, tool) id
+        FROM job_schedules
+        ORDER BY cron_expression, tool, created_at ASC
+      )
+    `);
+    
+    res.json({
+      success: true,
+      message: `${result.rowCount} duplicate schedules deleted successfully`
+    });
+  } catch (error) {
+    console.error('❌ Failed to cleanup duplicate schedules:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to cleanup duplicate schedules',
+      error: error.message
     });
   }
 });
