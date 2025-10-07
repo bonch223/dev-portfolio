@@ -10,7 +10,7 @@ const { execSync } = require('child_process');
 class IntelligentScraperAPI {
   constructor() {
     this.backendUrl = 'https://backend-production-cd9f.up.railway.app';
-    this.maxVideosPerTerm = 5; // Reduced for testing
+    this.maxVideosPerTerm = 30; // Increased for lots of videos
     this.minViews = 1000;
     this.minDuration = 120;
     this.maxDuration = 3600;

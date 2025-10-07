@@ -4,24 +4,19 @@
  * Script to call the enhance videos API endpoint
  */
 
-const fetch = require('node-fetch');
+const axios = require('axios');
 
 async function enhanceVideos() {
   try {
     console.log('🚀 Calling enhance videos API...');
     
-    const response = await fetch('https://backend-production-cd9f.up.railway.app/api/enhance/enhance-videos', {
-      method: 'POST',
+    const response = await axios.post('https://backend-production-cd9f.up.railway.app/api/enhance/enhance-videos', {}, {
       headers: {
         'Content-Type': 'application/json'
       }
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result = await response.json();
+    const result = response.data;
     
     if (result.success) {
       console.log('✅ Video enhancement successful!');

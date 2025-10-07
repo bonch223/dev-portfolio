@@ -253,7 +253,7 @@ class IntelligentYouTubeScraper {
       console.log(`🔍 Searching: "${searchTerm}" (max ${maxResults} results)`);
       
       const searchUrl = `ytsearch${maxResults}:${searchTerm}`;
-      const command = `yt-dlp --flat-playlist --print "%(id)s|%(title)s|%(uploader)s|%(duration)s|%(view_count)s|%(thumbnail)s" "${searchUrl}"`;
+      const command = `yt-dlp --flat-playlist --no-warnings --print "%(id)s|%(title)s|%(uploader)s|%(duration)s|%(view_count)s|%(thumbnail)s" "${searchUrl}"`;
       
       const output = execSync(command, { encoding: 'utf8', timeout: 60000 });
       const lines = output.trim().split('\n').filter(line => line.trim());
@@ -270,7 +270,7 @@ class IntelligentYouTubeScraper {
   async getVideoDetails(videoId) {
     try {
       const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
-      const command = `yt-dlp --print "%(description)s|%(upload_date)s|%(tags)s" "${videoUrl}"`;
+      const command = `yt-dlp --no-warnings --print "%(description)s|%(upload_date)s|%(tags)s" "${videoUrl}"`;
       const output = execSync(command, { encoding: 'utf8', timeout: 30000 });
       const parts = output.trim().split('|');
       
