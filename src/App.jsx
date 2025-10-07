@@ -17,6 +17,7 @@ import WordPressQuoteGenerator from './components/WordPressQuoteGenerator';
 import FullStackQuoteGenerator from './components/FullStackQuoteGenerator';
 import WorkflowChallenger from './components/WorkflowChallenger';
 import WorkflowChallengerSection from './components/WorkflowChallengerSection';
+import ScrapingDashboard from './components/ScrapingDashboard';
 import AnimatedBackground from './components/AnimatedBackground';
 import './App.css';
 
@@ -202,6 +203,7 @@ function App() {
           </>
         } />
         <Route path="/workflow-challenger" element={<WorkflowChallenger />} />
+        <Route path="/scraping-dashboard" element={<ScrapingDashboard />} />
       </Routes>
 
       {/* Service Selector Modal */}

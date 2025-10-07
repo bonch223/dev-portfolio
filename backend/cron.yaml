@@ -1,0 +1,19 @@
+# Railway Cron Job Configuration
+# This file defines scheduled tasks for automated video scraping
+
+jobs:
+  - name: scrape-videos-every-6-hours
+    schedule: "0 */6 * * *"  # Every 6 hours
+    command: "node scripts/run-scheduled-scraper.js"
+    description: "Automatically scrape videos from Zapier and n8n every 6 hours"
+
+  - name: scrape-videos-daily
+    schedule: "0 2 * * *"  # Every day at 2 AM
+    command: "node scripts/run-scheduled-scraper.js"
+    description: "Daily comprehensive video scraping at 2 AM"
+
+  - name: cleanup-old-logs
+    schedule: "0 0 * * 0"  # Every Sunday at midnight
+    command: "node scripts/cleanup-logs.js"
+    description: "Weekly cleanup of old job logs and completed jobs"
+
