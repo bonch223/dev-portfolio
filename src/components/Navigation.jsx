@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-const Navigation = ({ activeSection, lightboxOpen }) => {
+const Navigation = ({ activeSection, lightboxOpen, onWorkflowChallengerClick }) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -13,6 +16,23 @@ const Navigation = ({ activeSection, lightboxOpen }) => {
   }, []);
 
   const scrollToSection = (sectionId) => {
+    if (sectionId === 'workflow-challenger') {
+      // Route to the dedicated page
+      navigate('/workflow-challenger');
+      return;
+    }
+
+    // If we're not on the home page, navigate there first then scroll
+    if (location.pathname !== '/') {
+      navigate('/');
+      // give the page a tick to render then scroll
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) element.scrollIntoView({ behavior: 'smooth' });
+      }, 50);
+      return;
+    }
+
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });

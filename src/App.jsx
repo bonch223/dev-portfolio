@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Analytics, track } from '@vercel/analytics/react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import HeroSection from './components/HeroSection';
 import AboutSection from './components/AboutSection';
@@ -14,10 +15,13 @@ import ProcessPage from './components/ProcessPage';
 import SEOQuoteGenerator from './components/SEOQuoteGenerator';
 import WordPressQuoteGenerator from './components/WordPressQuoteGenerator';
 import FullStackQuoteGenerator from './components/FullStackQuoteGenerator';
+import WorkflowChallenger from './components/WorkflowChallenger';
+import WorkflowChallengerSection from './components/WorkflowChallengerSection';
 import AnimatedBackground from './components/AnimatedBackground';
 import './App.css';
 
 function App() {
+  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('home');
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [showServiceSelector, setShowServiceSelector] = useState(false);
@@ -28,6 +32,7 @@ function App() {
   const [showSEOQuoteGenerator, setShowSEOQuoteGenerator] = useState(false);
   const [showWordPressQuoteGenerator, setShowWordPressQuoteGenerator] = useState(false);
   const [showFullStackQuoteGenerator, setShowFullStackQuoteGenerator] = useState(false);
+  const [showWorkflowChallenger, setShowWorkflowChallenger] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [processService, setProcessService] = useState(null);
   const [currentServiceData, setCurrentServiceData] = useState(null);
@@ -129,6 +134,11 @@ function App() {
     setCurrentServiceData(null);
   };
 
+  const handleShowWorkflowChallenger = () => {
+    track('workflow_challenger_opened');
+    navigate('/workflow-challenger');
+  };
+
   const handleGenerateQuote = (quoteData, formData) => {
     // Handle quote generation - could save to database, send email, etc.
     // Here you could:
@@ -166,21 +176,33 @@ function App() {
   return (
     <div className="App">
       <AnimatedBackground />
-      <Navigation activeSection={activeSection} lightboxOpen={lightboxOpen} />
-      <div className="main-layout">
-        <main className="content-area">
-          <HeroSection />
-          <AboutSection />
-          <ProjectsSection onLightboxChange={setLightboxOpen} onShowServiceSelector={handleShowServiceSelector} />
-          <DigitalMarketingSection onLightboxChange={setLightboxOpen} />
-            <ContactSection />
-        </main>
-        <div className="sticky-profile-wrapper">
-          <div className="sticky-profile-container">
-            {/* Profile image will be moved here */}
-          </div>
-        </div>
-      </div>
+      <Routes>
+        <Route path="/" element={
+          <>
+            <Navigation 
+              activeSection={activeSection} 
+              lightboxOpen={lightboxOpen} 
+              onWorkflowChallengerClick={handleShowWorkflowChallenger}
+            />
+            <div className="main-layout">
+              <main className="content-area">
+                <HeroSection />
+                <AboutSection />
+                <ProjectsSection onLightboxChange={setLightboxOpen} onShowServiceSelector={handleShowServiceSelector} />
+                <DigitalMarketingSection onLightboxChange={setLightboxOpen} />
+                <WorkflowChallengerSection />
+                <ContactSection />
+              </main>
+              <div className="sticky-profile-wrapper">
+                <div className="sticky-profile-container">
+                  {/* Profile image will be moved here */}
+                </div>
+              </div>
+            </div>
+          </>
+        } />
+        <Route path="/workflow-challenger" element={<WorkflowChallenger />} />
+      </Routes>
 
       {/* Service Selector Modal */}
       {showServiceSelector && (

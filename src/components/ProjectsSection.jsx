@@ -27,6 +27,27 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
   // Featured Projects (5 main projects with full development and links)
   const featuredProjects = [
     {
+      id: 'workflow-challenger',
+      title: 'Workflow Automation Challenger',
+      subtitle: 'Automation Practice Platform',
+      description: 'A free, self-hosted-friendly platform offering real-world automation challenges with curated tutorials and portfolio-building tools.',
+      longDescription: 'Workflow Automation Challenger bridges the gap between tutorials and real business automation. Users select a preferred tool (Zapier, N8N, Make), explore categorized YouTube tutorials with search, tackle open-ended real-world challenges, and build a comprehensive, verifiable portfolio.',
+      image: websiteAssets.decorMeadow,
+      gallery: [websiteAssets.decorMeadow],
+      technologies: ['React', 'Vite', 'Tailwind CSS', 'Router'],
+      features: [
+        'Tool-focused learning hub',
+        'YouTube tutorial feed with search and difficulty filters',
+        'Open-ended real-world challenges',
+        'Portfolio-ready showcase'
+      ],
+      color: '#6366F1',
+      gradient: 'from-indigo-400 to-purple-500',
+      category: 'Web App',
+      status: 'Live',
+      url: '/workflow-challenger'
+    },
+    {
       id: 'guro-ai',
       title: 'Guro.AI',
       subtitle: 'AI Lesson Plan Generator',

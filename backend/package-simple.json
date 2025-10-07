@@ -1,0 +1,18 @@
+{
+  "name": "workflow-challenger-simple",
+  "version": "1.0.0",
+  "description": "Simple backend for testing YouTube API",
+  "main": "simple-server.js",
+  "scripts": {
+    "start": "node simple-server.js",
+    "dev": "nodemon simple-server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
