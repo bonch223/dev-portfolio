@@ -362,4 +362,80 @@ router.post('/scrape-enhanced', async (req, res) => {
   }
 });
 
+// Simple intelligent scraper endpoint for job execution
+router.post('/scrape-intelligent', async (req, res) => {
+  try {
+    console.log('🚀 Starting intelligent scraping via job...');
+    
+    const { tool = 'all', max_videos_per_term = 50, min_quality_score = 60 } = req.body;
+    
+    // Import the intelligent scraper
+    const { IntelligentYouTubeScraper } = require('../scripts/intelligent-scraper');
+    const scraper = new IntelligentYouTubeScraper();
+    
+    let totalVideos = 0;
+    let totalSaved = 0;
+    const results = [];
+
+    const toolsToScrape = tool === 'all' ? ['zapier', 'n8n'] : [tool];
+
+    for (const toolName of toolsToScrape) {
+      console.log(`📊 Processing ${toolName}...`);
+      
+      try {
+        const videos = await scraper.scrapeVideosForTool(toolName, max_videos_per_term, min_quality_score);
+        totalVideos += videos.length;
+        
+        for (const video of videos) {
+          try {
+            await scraper.saveVideoToDatabase(video);
+            totalSaved++;
+            console.log(`  ✅ Saved: ${video.title.substring(0, 60)}... (Score: ${video.quality_score})`);
+            results.push({
+              video_id: video.video_id,
+              title: video.title,
+              quality_score: video.quality_score,
+              tool: video.tool,
+              difficulty: video.difficulty
+            });
+          } catch (error) {
+            console.error(`  ❌ Failed to save: ${video.title.substring(0, 60)}...`);
+          }
+        }
+        
+        // Delay between tools
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+      } catch (error) {
+        console.error(`❌ Error scraping ${toolName}:`, error.message);
+      }
+    }
+
+    console.log(`🎉 Intelligent scraping completed!`);
+    console.log(`📈 Total videos found: ${totalVideos}`);
+    console.log(`💾 Total videos saved: ${totalSaved}`);
+
+    res.json({
+      success: true,
+      message: 'Intelligent scraping completed successfully',
+      stats: {
+        total_videos_found: totalVideos,
+        total_videos_saved: totalSaved,
+        tools_scraped: toolsToScrape
+      },
+      results: results.slice(0, 10), // Return first 10 results
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Intelligent scraping failed:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Intelligent scraping failed',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;
