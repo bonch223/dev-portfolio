@@ -218,7 +218,7 @@ router.post('/jobs/:id/start', async (req, res) => {
     
     // Log the start
     await query(
-      `INSERT INTO job_logs (job_id, log_level, log_message) VALUES ($1, 'info', 'Job started')`,
+      `INSERT INTO job_logs (job_id, log_level, message) VALUES ($1, 'info', 'Job started')`,
       [id]
     );
     
@@ -304,7 +304,7 @@ router.post('/jobs/:id/pause', async (req, res) => {
     }
     
     await query(
-      `INSERT INTO job_logs (job_id, log_level, log_message) VALUES ($1, 'info', 'Job paused')`,
+      `INSERT INTO job_logs (job_id, log_level, message) VALUES ($1, 'info', 'Job paused')`,
       [id]
     );
     
@@ -346,7 +346,7 @@ router.post('/jobs/:id/cancel', async (req, res) => {
     }
     
     await query(
-      `INSERT INTO job_logs (job_id, log_level, log_message) VALUES ($1, 'warning', 'Job cancelled by user')`,
+      `INSERT INTO job_logs (job_id, log_level, message) VALUES ($1, 'warning', 'Job cancelled by user')`,
       [id]
     );
     

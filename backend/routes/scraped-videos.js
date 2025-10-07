@@ -370,7 +370,7 @@ router.post('/scrape-intelligent', async (req, res) => {
     const { tool = 'all', max_videos_per_term = 50, min_quality_score = 60 } = req.body;
     
     // Import the intelligent scraper
-    const { IntelligentYouTubeScraper } = require('../scripts/intelligent-scraper');
+    const IntelligentYouTubeScraper = require('../scripts/intelligent-scraper');
     const scraper = new IntelligentYouTubeScraper();
     
     let totalVideos = 0;
