@@ -263,6 +263,58 @@ const ScrapingDashboard = () => {
     }
   };
 
+  const rerunJob = async (jobId) => {
+    if (!confirm('Are you sure you want to re-run this job? This will create a new job with the same settings.')) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      
+      // Get the original job details
+      const jobResponse = await fetch(`${BACKEND_URL}/api/jobs/jobs/${jobId}`);
+      if (!jobResponse.ok) {
+        throw new Error('Failed to fetch job details');
+      }
+      
+      const jobData = await jobResponse.json();
+      const originalJob = jobData.job;
+      
+      // Create a new job with the same settings
+      const createResponse = await fetch(`${BACKEND_URL}/api/jobs/jobs/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          job_name: `${originalJob.job_name || `Job #${originalJob.id}`} (Re-run)`,
+          tool: originalJob.tool,
+          max_videos_per_term: originalJob.max_videos_per_term,
+          min_quality_score: originalJob.min_quality_score
+        })
+      });
+
+      if (createResponse.ok) {
+        const newJobData = await createResponse.json();
+        const newJob = newJobData.job;
+        
+        // Start the new job immediately
+        await fetch(`${BACKEND_URL}/api/jobs/jobs/${newJob.id}/start`, {
+          method: 'POST'
+        });
+        
+        alert(`New job created and started! Job ID: ${newJob.id}`);
+        await fetchDashboardData();
+        setShowJobDetails(false);
+      } else {
+        throw new Error('Failed to create new job');
+      }
+    } catch (error) {
+      console.error('Failed to re-run job:', error);
+      alert('Failed to re-run job: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getStatusIcon = (status) => {
     switch (status) {
       case 'running':
@@ -568,7 +620,7 @@ const ScrapingDashboard = () => {
                           <span className="text-gray-400 text-xs w-16 flex-shrink-0 uppercase">
                             [{log.log_level}]
                           </span>
-                          <span className="flex-1">{log.message}</span>
+                          <span className="flex-1">{log.log_message || log.message}</span>
                         </div>
                       ))}
                     </div>
@@ -584,7 +636,16 @@ const ScrapingDashboard = () => {
                 </div>
               )}
 
-              <div className="flex justify-end mt-6">
+              <div className="flex justify-end space-x-4 mt-6">
+                {jobDetails.job?.status === 'failed' && (
+                  <button
+                    onClick={() => rerunJob(jobDetails.job.id)}
+                    disabled={loading}
+                    className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-cyan-600 hover:to-blue-700 transition-all disabled:opacity-50"
+                  >
+                    {loading ? 'Re-running...' : 'Re-run Job'}
+                  </button>
+                )}
                 <button
                   onClick={() => setShowJobDetails(false)}
                   className="bg-white/5 border border-white/10 text-white px-6 py-3 rounded-lg hover:bg-white/10 transition-all"
@@ -699,6 +760,16 @@ const ScrapingDashboard = () => {
                           title="Cancel"
                         >
                           <Square className="w-5 h-5" />
+                        </button>
+                      )}
+
+                      {job.status === 'failed' && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); rerunJob(job.id); }}
+                          className="p-2 bg-cyan-500/20 text-cyan-400 rounded-lg hover:bg-cyan-500/30 transition-all"
+                          title="Re-run Job"
+                        >
+                          <RefreshCw className="w-5 h-5" />
                         </button>
                       )}
 
