@@ -139,7 +139,8 @@ const WorkflowChallenger = () => {
       description: 'Connect your favorite apps and automate workflows',
       icon: '⚡',
       color: 'from-blue-500 to-purple-600',
-      features: ['Easy drag-and-drop', '1000+ integrations', 'Multi-step workflows']
+      features: ['Easy drag-and-drop', '1000+ integrations', 'Multi-step workflows'],
+      available: true
     },
     {
       id: 'n8n',
@@ -147,15 +148,28 @@ const WorkflowChallenger = () => {
       description: 'Open-source workflow automation tool',
       icon: '🔧',
       color: 'from-orange-500 to-red-600',
-      features: ['Self-hosted', 'Node-based editor', 'Custom functions']
+      features: ['Self-hosted', 'Node-based editor', 'Custom functions'],
+      available: true
     },
     {
       id: 'power-automate',
       name: 'Power Automate',
       description: 'Microsoft\'s cloud-based automation service',
-      icon: '🔗',
+      icon: '🔌',
       color: 'from-blue-600 to-indigo-700',
-      features: ['Office 365 integration', 'AI-powered', 'Enterprise-ready']
+      features: ['Office 365 integration', 'AI-powered', 'Enterprise-ready'],
+      available: false,
+      comingSoon: true
+    },
+    {
+      id: 'automate-io',
+      name: 'Automate.io',
+      description: 'Simple automation for your business',
+      icon: '🚀',
+      color: 'from-green-500 to-teal-600',
+      features: ['Multi-app workflows', 'Easy setup', 'Business automation'],
+      available: false,
+      comingSoon: true
     }
   ];
 
@@ -403,16 +417,32 @@ const WorkflowChallenger = () => {
             {tools.map((tool) => (
               <div
                 key={tool.id}
-                onClick={() => setSelectedTool(tool.id)}
-                className="bg-white/5 border border-white/10 rounded-xl p-6 hover:border-cyan-400/40 hover:bg-white/10 transition-all cursor-pointer group"
+                onClick={() => tool.available && setSelectedTool(tool.id)}
+                className={`relative bg-white/5 border border-white/10 rounded-xl p-6 transition-all ${
+                  tool.available 
+                    ? 'hover:border-cyan-400/40 hover:bg-white/10 cursor-pointer' 
+                    : 'opacity-60 cursor-not-allowed'
+                } group`}
               >
+                {tool.comingSoon && (
+                  <div className="absolute top-4 right-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                    Coming Soon
+                  </div>
+                )}
                 <div className="flex items-start space-x-4">
-                  <div className={`w-16 h-16 rounded-lg bg-gradient-to-r ${tool.color} flex items-center justify-center text-2xl`}>
+                  <div className={`w-16 h-16 rounded-lg bg-gradient-to-r ${tool.color} flex items-center justify-center text-2xl ${!tool.available && 'grayscale'}`}>
                     {tool.icon}
                   </div>
                   <div className="flex-1">
                     <h3 className="text-xl font-semibold text-white mb-2">{tool.name}</h3>
                     <p className="text-gray-300 mb-4">{tool.description}</p>
+                    {tool.comingSoon && (
+                      <div className="mb-3 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                        <p className="text-sm text-amber-400 font-medium">
+                          🎬 Curating high-quality videos for you...
+                        </p>
+                      </div>
+                    )}
                     <div className="space-y-1">
                       {tool.features.map((feature, index) => (
                         <div key={index} className="flex items-center text-sm text-gray-300">
@@ -616,7 +646,7 @@ const WorkflowChallenger = () => {
                         <div className="flex items-center justify-between text-sm text-gray-300 mb-3">
                           <div className="flex items-center space-x-1">
                             <Eye className="w-4 h-4" />
-                            <span>{tutorial.views || tutorial.viewCount ? (tutorial.views || tutorial.viewCount).toLocaleString() : 'Views not available'}</span>
+                            <span>{(tutorial.viewCount !== undefined && tutorial.viewCount !== null) ? tutorial.viewCount.toLocaleString() : 'Views not available'}</span>
                           </div>
                           <div className="flex items-center space-x-1">
                             <Star className="w-4 h-4 text-yellow-400 fill-current" />

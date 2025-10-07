@@ -21,7 +21,28 @@ class IntelligentYouTubeScraper {
           'zapier advanced automation',
           'zapier API integration',
           'zapier multi-step zap',
-          'zapier webhook tutorial'
+          'zapier webhook tutorial',
+          'zapier filter tutorial',
+          'zapier paths tutorial',
+          'zapier formatter tutorial',
+          'zapier code step',
+          'zapier python javascript',
+          'zapier error handling',
+          'zapier sub-zap tutorial',
+          'zapier digest tutorial',
+          'zapier delay tutorial',
+          'zapier schedule tutorial',
+          'zapier trigger tutorial',
+          'zapier action tutorial',
+          'zapier search tutorial',
+          'zapier app integration',
+          'zapier gmail automation',
+          'zapier slack automation',
+          'zapier google sheets',
+          'zapier salesforce integration',
+          'zapier crm automation',
+          'zapier email automation',
+          'zapier marketing automation'
         ]
       },
       {
@@ -34,25 +55,33 @@ class IntelligentYouTubeScraper {
           'n8n advanced workflow',
           'n8n API integration',
           'n8n custom node',
-          'n8n webhook tutorial'
-        ]
-      },
-      {
-        name: 'make',
-        searchTerms: [
-          'make.com tutorial beginner',
-          'integromat make automation',
-          'make.com workflow tutorial',
-          'make.com intermediate',
-          'make.com advanced automation',
-          'make.com API integration',
-          'make.com scenario tutorial',
-          'make.com webhook tutorial'
+          'n8n webhook tutorial',
+          'n8n function node',
+          'n8n code node',
+          'n8n if node tutorial',
+          'n8n switch node',
+          'n8n merge node',
+          'n8n split node',
+          'n8n error handling',
+          'n8n credentials tutorial',
+          'n8n http request',
+          'n8n database tutorial',
+          'n8n self-hosted tutorial',
+          'n8n docker setup',
+          'n8n cloud tutorial',
+          'n8n ai agent tutorial',
+          'n8n chatgpt integration',
+          'n8n openai tutorial',
+          'n8n slack integration',
+          'n8n gmail automation',
+          'n8n google sheets',
+          'n8n postgres integration',
+          'n8n mongodb tutorial'
         ]
       }
     ];
     
-    this.maxVideosPerTerm = 10; // Videos per search term
+    this.maxVideosPerTerm = 50; // Videos per search term - INCREASED
     this.minViews = 1000; // Minimum views for quality filtering
     this.minDuration = 120; // Minimum 2 minutes
     this.maxDuration = 3600; // Maximum 1 hour
