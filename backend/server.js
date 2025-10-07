@@ -43,6 +43,7 @@ app.use('/api/videos', require('./routes/simple-videos')); // Curated videos las
 app.use('/api/schema', require('./routes/schema-update'));
 app.use('/api/learning', require('./routes/learning-paths'));
 app.use('/api/feedback', require('./routes/user-feedback'));
+app.use('/api/enhance', require('./routes/enhance-videos'));
 // TODO: Add these routes when implemented
 // app.use('/api/users', require('./routes/users'));
 // app.use('/api/challenges', require('./routes/challenges'));
