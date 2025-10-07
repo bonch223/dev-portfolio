@@ -23,6 +23,7 @@
     "enhanced-scraper-api": "node scripts/run-enhanced-scraper-api.js",
     "enhance-existing-videos": "node scripts/simple-enhanced-scraper.js",
     "enhance-videos-api": "node scripts/run-enhance-videos-api.js",
+    "initialize-system": "node scripts/initialize-system.js",
     "railway:login": "railway login",
     "railway:init": "railway init",
     "railway:add-db": "railway add postgresql",
