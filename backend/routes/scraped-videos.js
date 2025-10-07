@@ -287,4 +287,79 @@ router.get('/unified', async (req, res) => {
   }
 });
 
+// Enhanced scraper endpoint
+router.post('/scrape-enhanced', async (req, res) => {
+  try {
+    console.log('🚀 Starting enhanced intelligent scraping...');
+    
+    const { tools = ['zapier', 'n8n', 'make'], difficulties = ['beginner', 'intermediate', 'advanced'], maxVideosPerTool = 30 } = req.body;
+    
+    // Import the enhanced scraper
+    const { EnhancedIntelligentScraper } = require('../scripts/enhanced-intelligent-scraper');
+    const scraper = new EnhancedIntelligentScraper();
+    
+    let totalVideos = 0;
+    let totalSaved = 0;
+    const results = [];
+
+    for (const tool of tools) {
+      for (const difficulty of difficulties) {
+        console.log(`📊 Processing ${tool} - ${difficulty}...`);
+        
+        try {
+          const videos = await scraper.scrapeVideosForTool(tool, difficulty, maxVideosPerTool);
+          totalVideos += videos.length;
+          
+          for (const video of videos) {
+            try {
+              await scraper.saveVideoToDatabase(video);
+              totalSaved++;
+              console.log(`  ✅ Saved: ${video.title.substring(0, 60)}... (Score: ${video.quality_score})`);
+              results.push({
+                video_id: video.video_id,
+                title: video.title,
+                quality_score: video.quality_score,
+                tool: video.tool,
+                difficulty: video.difficulty
+              });
+            } catch (error) {
+              console.error(`  ❌ Failed to save: ${video.title.substring(0, 60)}...`);
+            }
+          }
+          
+          // Delay between tools
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+        } catch (error) {
+          console.error(`❌ Error scraping ${tool} ${difficulty}:`, error.message);
+        }
+      }
+    }
+
+    console.log(`🎉 Enhanced scraping completed!`);
+    console.log(`📈 Total videos found: ${totalVideos}`);
+    console.log(`💾 Total videos saved: ${totalSaved}`);
+
+    res.json({
+      success: true,
+      message: 'Enhanced scraping completed successfully',
+      stats: {
+        total_videos_found: totalVideos,
+        total_videos_saved: totalSaved,
+        average_quality_score: totalSaved > 0 ? 'High (60+)' : 'N/A'
+      },
+      results: results.slice(0, 10), // Return first 10 results
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('❌ Enhanced scraping failed:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Enhanced scraping failed',
+      message: error.message
+    });
+  }
+});
+
 module.exports = router;

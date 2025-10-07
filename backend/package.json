@@ -20,6 +20,7 @@
     "enhanced-schema": "node scripts/enhanced-schema-update.js",
     "enhanced-scraper": "node scripts/enhanced-intelligent-scraper.js",
     "enhanced-schema-api": "node scripts/run-enhanced-schema-api.js",
+    "enhanced-scraper-api": "node scripts/run-enhanced-scraper-api.js",
     "railway:login": "railway login",
     "railway:init": "railway init",
     "railway:add-db": "railway add postgresql",
