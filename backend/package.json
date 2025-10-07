@@ -21,6 +21,7 @@
     "enhanced-scraper": "node scripts/enhanced-intelligent-scraper.js",
     "enhanced-schema-api": "node scripts/run-enhanced-schema-api.js",
     "enhanced-scraper-api": "node scripts/run-enhanced-scraper-api.js",
+    "enhance-existing-videos": "node scripts/simple-enhanced-scraper.js",
     "railway:login": "railway login",
     "railway:init": "railway init",
     "railway:add-db": "railway add postgresql",
@@ -37,7 +38,6 @@
     "express": "^4.21.2",
     "express-rate-limit": "^7.1.5",
     "helmet": "^7.1.0",
-    "yt-dlp-wrap": "^2.5.3",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.3"
   },
