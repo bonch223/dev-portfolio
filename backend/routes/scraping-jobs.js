@@ -481,5 +481,93 @@ router.get('/dashboard/stats', async (req, res) => {
   }
 });
 
+// Delete single job
+router.delete('/jobs/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Check if job exists
+    const checkResult = await query('SELECT id, status FROM scraping_jobs WHERE id = $1', [id]);
+    if (checkResult.rows.length === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Job not found' 
+      });
+    }
+
+    // Don't allow deleting running jobs
+    if (checkResult.rows[0].status === 'running') {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Cannot delete a running job. Please cancel it first.' 
+      });
+    }
+
+    // Delete job and related data (cascade will handle logs and progress)
+    await query('DELETE FROM scraping_jobs WHERE id = $1', [id]);
+
+    res.json({
+      success: true,
+      message: 'Job deleted successfully'
+    });
+  } catch (error) {
+    console.error('❌ Failed to delete job:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to delete job',
+      error: error.message 
+    });
+  }
+});
+
+// Bulk delete failed jobs
+router.delete('/jobs/bulk/failed', async (req, res) => {
+  try {
+    const result = await query('DELETE FROM scraping_jobs WHERE status = $1', ['failed']);
+    
+    res.json({
+      success: true,
+      message: `${result.rowCount} failed jobs deleted successfully`
+    });
+  } catch (error) {
+    console.error('❌ Failed to bulk delete failed jobs:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to delete failed jobs',
+      error: error.message 
+    });
+  }
+});
+
+// Bulk delete jobs by status
+router.delete('/jobs/bulk/:status', async (req, res) => {
+  try {
+    const { status } = req.params;
+    
+    // Validate status
+    const validStatuses = ['failed', 'completed', 'cancelled'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid status. Allowed: failed, completed, cancelled'
+      });
+    }
+    
+    const result = await query('DELETE FROM scraping_jobs WHERE status = $1', [status]);
+    
+    res.json({
+      success: true,
+      message: `${result.rowCount} ${status} jobs deleted successfully`
+    });
+  } catch (error) {
+    console.error('❌ Failed to bulk delete jobs:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to delete jobs',
+      error: error.message 
+    });
+  }
+});
+
 module.exports = router;
 
