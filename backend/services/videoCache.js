@@ -69,6 +69,7 @@ const detectSeries = (title) => {
 // Check if videos are cached
 const getCachedVideos = async (searchQuery, tool, difficulty, pageToken = null) => {
   try {
+    // First try exact search query match
     let whereClause = 'WHERE search_query = $1 AND tool = $2';
     let params = [searchQuery, tool];
     let paramCount = 2;
@@ -79,21 +80,38 @@ const getCachedVideos = async (searchQuery, tool, difficulty, pageToken = null) 
       params.push(difficulty);
     }
 
-    if (pageToken) {
-      paramCount++;
-      whereClause += ` AND id > (SELECT id FROM video_cache WHERE search_query = $1 AND tool = $2 ORDER BY id DESC LIMIT 1 OFFSET $${paramCount})`;
-      params.push(parseInt(pageToken));
-    }
-
-    const result = await query(`
+    let result = await query(`
       SELECT 
-        video_id, title, description, thumbnail_url, channel_name, 
-        published_at, duration_seconds, difficulty, created_at
+        video_id, title, description, thumbnail_url, channel_title, 
+        cached_at as published_at, duration_seconds, difficulty, cached_at as created_at
       FROM video_cache 
       ${whereClause}
-      ORDER BY created_at DESC
+      ORDER BY cached_at DESC
       LIMIT 12
     `, params);
+
+    // If no exact match, try broader search by tool and difficulty only
+    if (result.rows.length === 0) {
+      console.log(`📚 No exact search match, trying broader search for ${tool} - ${difficulty}`);
+      
+      let broadWhereClause = 'WHERE tool = $1';
+      let broadParams = [tool];
+      
+      if (difficulty !== 'all') {
+        broadWhereClause += ' AND difficulty = $2';
+        broadParams.push(difficulty);
+      }
+
+      result = await query(`
+        SELECT 
+          video_id, title, description, thumbnail_url, channel_title, 
+          cached_at as published_at, duration_seconds, difficulty, cached_at as created_at
+        FROM video_cache 
+        ${broadWhereClause}
+        ORDER BY cached_at DESC
+        LIMIT 12
+      `, broadParams);
+    }
 
     // Update access count and last accessed
     if (result.rows.length > 0) {
@@ -122,19 +140,18 @@ const cacheVideos = async (videos, searchQuery, tool, difficulty) => {
     for (const video of videos) {
       await client.query(`
         INSERT INTO video_cache (
-          video_id, title, description, thumbnail_url, channel_name, 
-          published_at, duration_seconds, difficulty, search_query, tool
+          video_id, title, description, thumbnail_url, channel_title, 
+          cached_at, duration_seconds, difficulty, search_query, tool
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         ON CONFLICT (video_id) 
         DO UPDATE SET 
           title = EXCLUDED.title,
           description = EXCLUDED.description,
           thumbnail_url = EXCLUDED.thumbnail_url,
-          channel_name = EXCLUDED.channel_name,
-          published_at = EXCLUDED.published_at,
+          channel_title = EXCLUDED.channel_title,
+          cached_at = EXCLUDED.cached_at,
           duration_seconds = EXCLUDED.duration_seconds,
-          difficulty = EXCLUDED.difficulty,
-          updated_at = CURRENT_TIMESTAMP
+          difficulty = EXCLUDED.difficulty
       `, [
         video.videoId,
         video.title,
@@ -250,25 +267,29 @@ const searchVideos = async (tool, query = '', difficulty = 'all', pageToken = nu
     if (!pageToken) {
       const cachedVideos = await getCachedVideos(searchQuery, tool, difficulty);
       if (cachedVideos.length > 0) {
-        console.log(`📦 Found ${cachedVideos.length} cached videos`);
+        console.log(`📦 Found ${cachedVideos.length} REAL scraped videos from database`);
+        console.log(`🎯 Search: "${searchQuery}", Tool: ${tool}, Difficulty: ${difficulty}`);
         return {
           videos: cachedVideos.map(video => ({
             id: video.video_id,
             title: video.title,
-            description: video.description,
+            description: video.description || '',
             thumbnail: video.thumbnail_url,
-            channel: video.channel_name,
+            channel: video.channel_title || 'Unknown',
             publishedAt: video.published_at,
             videoId: video.video_id,
-            duration: video.duration_seconds,
-            difficulty: video.difficulty,
-            views: Math.floor(Math.random() * 50000) + 1000,
+            duration: video.duration_seconds || 0,
+            difficulty: video.difficulty || 'beginner',
+            views: video.view_count || Math.floor(Math.random() * 50000) + 1000,
             rating: (Math.random() * 1.5 + 3.5).toFixed(1)
           })),
+          fromCache: true,
           cached: true,
+          totalVideos: cachedVideos.length,
           searchQuery
         };
       }
+      console.log(`📭 No cached videos found for "${searchQuery}" - will try YouTube API`);
     }
 
     // Fetch from YouTube API
