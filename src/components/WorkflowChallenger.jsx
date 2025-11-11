@@ -27,7 +27,7 @@ const WorkflowChallenger = () => {
   const [selectedTool, setSelectedTool] = useState(null);
   const [activeTab, setActiveTab] = useState('tutorials');
   const [searchQuery, setSearchQuery] = useState('');
-  const [difficultyFilter, setDifficultyFilter] = useState('beginner');
+  const [difficultyFilter, setDifficultyFilter] = useState('all'); // Show all difficulty levels by default
   const [tutorials, setTutorials] = useState({ videos: [] });
   const [challenges, setChallenges] = useState([]);
   const [user, setUser] = useState(null);
@@ -38,6 +38,18 @@ const WorkflowChallenger = () => {
   const [totalCachedVideos, setTotalCachedVideos] = useState(0);
   const [apiStatus, setApiStatus] = useState('ready'); // 'ready', 'cached', 'youtube', 'exhausted'
   const [isGeneratingKey, setIsGeneratingKey] = useState(false);
+  const [hasMoreVideos, setHasMoreVideos] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [cachedVideosExhausted, setCachedVideosExhausted] = useState(false);
+  const [consecutiveDuplicatePages, setConsecutiveDuplicatePages] = useState(0);
+  const [nextPageToken, setNextPageToken] = useState(null);
+  
+  // New pagination state
+  const [displayedVideos, setDisplayedVideos] = useState([]);
+  const [allVideos, setAllVideos] = useState([]);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [videosPerPage] = useState(6); // Initial load
+  const [videosPerScroll] = useState(3); // Load 3 more on scroll
 
   // Automatic API key generation
   const attemptAutoKeyGeneration = async () => {
@@ -99,6 +111,43 @@ const WorkflowChallenger = () => {
       searchYouTubeTutorials(selectedTool, '', difficultyFilter);
     }
   }, [selectedTool, difficultyFilter]);
+  
+  // Scroll handler for loading more videos
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isLoadingMore) return; // Don't load if already loading
+      
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = document.documentElement.clientHeight;
+      
+      // Load more when user scrolls to 80% of the page
+      if (scrollTop + clientHeight >= scrollHeight * 0.8) {
+        loadMoreVideos();
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [displayedVideos, allVideos, isLoadingMore]);
+  
+  // Function to load more videos (3 at a time)
+  const loadMoreVideos = () => {
+    if (displayedVideos.length >= allVideos.length) return; // No more videos to load
+    
+    setIsLoadingMore(true);
+    
+    // Simulate "searching and curating" delay
+    setTimeout(() => {
+      const nextVideos = allVideos.slice(
+        displayedVideos.length,
+        displayedVideos.length + videosPerScroll
+      );
+      
+      setDisplayedVideos(prev => [...prev, ...nextVideos]);
+      setIsLoadingMore(false);
+    }, 1500); // 1.5 second delay to give users time to watch current videos
+  };
 
   // Removed scroll handler - no more pagination needed
 
@@ -174,6 +223,7 @@ const WorkflowChallenger = () => {
   ];
 
   const difficultyLevels = [
+    { id: 'all', label: 'All Levels', color: 'bg-gray-100 text-gray-800' },
     { id: 'beginner', label: 'Beginner', color: 'bg-green-100 text-green-800' },
     { id: 'intermediate', label: 'Intermediate', color: 'bg-yellow-100 text-yellow-800' },
     { id: 'advanced', label: 'Advanced', color: 'bg-orange-100 text-orange-800' }
@@ -201,11 +251,21 @@ const WorkflowChallenger = () => {
     try {
       // Call backend API for scraped videos - get all videos at once
       const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://backend-production-cd9f.up.railway.app';
-      const url = `${backendUrl}/api/videos/search?tool=${encodeURIComponent(tool)}&query=${encodeURIComponent(query)}&difficulty=${encodeURIComponent(difficulty)}`;
+      
+      // Try different endpoints
+      let url = `${backendUrl}/api/videos/search?tool=${encodeURIComponent(tool)}&query=${encodeURIComponent(query)}&difficulty=${encodeURIComponent(difficulty)}`;
       
       console.log(`🌐 Calling backend for scraped videos: ${url}`);
       
-      const response = await fetch(url);
+      let response = await fetch(url);
+      
+      // If the main endpoint fails, try without query parameter
+      if (!response.ok) {
+        console.log('🔄 Main endpoint failed, trying without query parameter...');
+        url = `${backendUrl}/api/videos/search?tool=${encodeURIComponent(tool)}&difficulty=${encodeURIComponent(difficulty)}`;
+        console.log(`🌐 Trying alternative URL: ${url}`);
+        response = await fetch(url);
+      }
       
       if (!response.ok) {
         throw new Error(`Backend API error: ${response.status}`);
@@ -225,20 +285,46 @@ const WorkflowChallenger = () => {
         setApiStatus('youtube');
       }
       
-      // Set all videos at once (no pagination)
-      const videos = data.videos || [];
-      setTutorials({ videos });
-      setLoadedVideoIds(new Set(videos.map(v => v.id)));
-      setHasMoreVideos(false); // No more pagination
-      setCurrentPage(0);
+      // Pre-filter videos for relevance to the selected tool
+      let videos = data.videos || [];
       
-      console.log(`📚 Loaded ${videos.length} videos`);
+      // Filter out videos not relevant to the tool
+      videos = videos.filter(video => {
+        const toolName = selectedTool.toLowerCase();
+        const title = (video.title || '').toLowerCase();
+        const description = (video.description || '').toLowerCase();
+        const channel = (video.channelTitle || '').toLowerCase();
+        
+        // Video must mention the tool in title, description, or channel
+        return title.includes(toolName) || 
+               description.includes(toolName) || 
+               channel.includes(toolName) ||
+               video.tool === toolName;
+      });
+      
+      console.log(`📚 Loaded ${videos.length} relevant videos for ${selectedTool}`);
+      
+      // Set all videos but only display first 6
+      setAllVideos(videos);
+      setDisplayedVideos(videos.slice(0, videosPerPage));
+      setTutorials({ videos }); // Keep for compatibility
+      setLoadedVideoIds(new Set(videos.map(v => v.id)));
+      setHasMoreVideos(videos.length > videosPerPage);
+      setCurrentPage(0);
+      setCachedVideosExhausted(false);
+      setConsecutiveDuplicatePages(0);
     } catch (error) {
       console.error('Backend API failed:', error);
       setLoading(false);
       
-      // No YouTube API fallback - database-only mode
-      console.log('📚 Using database-only mode with scraped videos');
+      // No fallback - show empty state
+      console.log('📚 Backend API failed - showing empty state');
+      setTutorials({ videos: [] });
+      setLoadedVideoIds(new Set());
+      setTotalCachedVideos(0);
+      setApiStatus('ready');
+      setHasMoreVideos(false);
+      setCachedVideosExhausted(false);
     } finally {
         setLoading(false);
       }
@@ -374,23 +460,16 @@ const WorkflowChallenger = () => {
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  // Get all tutorials for filtering
-  const getAllTutorials = () => {
-    if (!tutorials || !tutorials.videos || !Array.isArray(tutorials.videos)) return [];
-    return tutorials.videos;
-  };
-
-  const filteredTutorials = getAllTutorials().filter(tutorial => {
-    const matchesSearch = tutorial.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         tutorial.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesDifficulty = difficultyFilter === 'all' || tutorial.difficulty === difficultyFilter;
-    // Enhanced tool matching - check title, description, and channel for tool relevance
-    const matchesTool = !selectedTool || 
-                       tutorial.title.toLowerCase().includes(selectedTool.toLowerCase()) ||
-                       tutorial.description.toLowerCase().includes(selectedTool.toLowerCase()) ||
-                       tutorial.channel?.toLowerCase().includes(selectedTool.toLowerCase());
+  // Filter displayed videos based on search
+  const filteredTutorials = displayedVideos.filter(tutorial => {
+    if (!tutorial) return false;
     
-    return matchesSearch && matchesDifficulty && matchesTool;
+    const matchesSearch = searchQuery === '' || 
+                         tutorial.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         tutorial.description?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesDifficulty = difficultyFilter === 'all' || tutorial.difficulty === difficultyFilter;
+    
+    return matchesSearch && matchesDifficulty;
   });
 
   const filteredChallenges = challenges.filter(challenge => {
@@ -601,9 +680,10 @@ const WorkflowChallenger = () => {
 
               {/* Tutorials Grid */}
               {!loading && (
+                <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-                  {getAllTutorials().map((tutorial) => (
+                  {filteredTutorials.map((tutorial) => (
                     <div key={tutorial.id} className="bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-cyan-400/40 transition">
                       <div className="relative">
                         <img
@@ -761,8 +841,37 @@ const WorkflowChallenger = () => {
                       </div>
                     </div>
                   ))}
-
-
+                </div>
+                
+                {/* Loading More Videos */}
+                {isLoadingMore && (
+                  <div className="mt-8 flex flex-col items-center justify-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mb-4"></div>
+                    <p className="text-cyan-300 text-lg font-medium">🔍 Searching for more quality videos...</p>
+                    <p className="text-gray-400 text-sm mt-2">Curating the best content for you</p>
+                  </div>
+                )}
+                
+                {/* Show More Indicator */}
+                {!isLoadingMore && displayedVideos.length < allVideos.length && (
+                  <div className="mt-8 text-center">
+                    <div className="inline-flex items-center space-x-2 text-gray-400 text-sm">
+                      <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+                      <span>Scroll down to load more videos ({allVideos.length - displayedVideos.length} more available)</span>
+                    </div>
+                  </div>
+                )}
+                
+                {/* All Videos Loaded */}
+                {displayedVideos.length >= allVideos.length && allVideos.length > 0 && (
+                  <div className="mt-8 text-center py-6">
+                    <div className="inline-flex flex-col items-center">
+                      <div className="text-4xl mb-2">🎉</div>
+                      <p className="text-gray-300 font-medium">You've seen all {allVideos.length} videos!</p>
+                      <p className="text-gray-400 text-sm mt-1">Try adjusting your filters to see more content</p>
+                    </div>
+                  </div>
+                )}
 
                   {/* Scraped Videos Information */}
                   {apiStatus === 'cached' && tutorials.videos && tutorials.videos.length > 0 && (
@@ -793,8 +902,8 @@ const WorkflowChallenger = () => {
 
 
                   {/* Empty State */}
-                  {getAllTutorials().length === 0 && (
-                    <div className="col-span-full text-center py-12">
+                  {filteredTutorials.length === 0 && !isLoadingMore && (
+                    <div className="mt-8 text-center py-12">
                       <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                       <h3 className="text-xl font-semibold text-white mb-2">No tutorials found</h3>
                       <p className="text-gray-300 mb-6">Try adjusting your search or difficulty filter</p>
@@ -810,7 +919,7 @@ const WorkflowChallenger = () => {
                       </button>
                     </div>
                   )}
-                </div>
+                </>
               )}
             </div>
           )}

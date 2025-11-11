@@ -41,6 +41,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
+app.use('/api/direct-videos', require('./routes/direct-videos')); // Direct database access
 app.use('/api/videos', require('./routes/scraped-videos')); // Scraped videos first (more specific)
 app.use('/api/videos', require('./routes/add-videos'));
 app.use('/api/videos', require('./routes/simple-videos')); // Curated videos last (fallback)

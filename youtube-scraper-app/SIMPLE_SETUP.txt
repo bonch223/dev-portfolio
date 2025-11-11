@@ -1,0 +1,44 @@
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║           YOUTUBE SCRAPER - SIMPLE SETUP                       ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+
+🎯 WHAT WORKS:
+
+✅ test_launch.bat - Diagnostic test (you confirmed this works!)
+✅ LAUNCH_APP.bat - Simple launcher (double-click to run)
+✅ Database is ready (58 videos already in database)
+
+📝 TO USE:
+
+1. Double-click: LAUNCH_APP.bat
+2. GUI will open
+3. You can browse existing videos with "View Database" button
+
+⚠️  SCRAPING NOTE:
+
+YouTube API key is required for scraping new videos.
+Without it, you can:
+- Browse existing videos (58 in database)
+- View database statistics
+- Export data
+
+🔑 TO ENABLE SCRAPING:
+
+1. Get YouTube API key from: https://console.cloud.google.com/
+2. Edit .env file
+3. Add: YOUTUBE_API_KEY_1=your_key_here
+4. Restart app
+
+═══════════════════════════════════════════════════════════════
+
+🚀 QUICK START:
+
+Just double-click: LAUNCH_APP.bat
+
+═══════════════════════════════════════════════════════════════
+
+
+
+

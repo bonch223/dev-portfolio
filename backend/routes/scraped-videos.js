@@ -101,7 +101,7 @@ router.get('/search', async (req, res) => {
         title: video.title,
         description: video.description,
         thumbnail: thumbnailUrl,
-        channelTitle: video.channelTitle,
+        channelTitle: video.channeltitle || video.channelTitle,
         duration: video.duration_seconds,
         duration_seconds: video.duration_seconds,
         views: viewCount,
@@ -377,37 +377,29 @@ router.post('/scrape-intelligent', async (req, res) => {
     let totalSaved = 0;
     const results = [];
 
-    const toolsToScrape = tool === 'all' ? ['zapier', 'n8n'] : [tool];
+    // Set the scraper parameters
+    scraper.maxVideosPerTerm = max_videos_per_term;
+    scraper.minViews = Math.max(1000, min_quality_score * 10); // Adjust min views based on quality score
+    
+    // Get tools to scrape
+    const toolsToScrape = tool === 'all' ? scraper.tools : scraper.tools.filter(t => t.name === tool);
 
-    for (const toolName of toolsToScrape) {
-      console.log(`📊 Processing ${toolName}...`);
+    for (const toolData of toolsToScrape) {
+      console.log(`📊 Processing ${toolData.name}...`);
       
       try {
-        const videos = await scraper.scrapeVideosForTool(toolName, max_videos_per_term, min_quality_score);
-        totalVideos += videos.length;
+        // Use the existing scrapeTool method
+        const stats = await scraper.scrapeTool(toolData);
+        totalVideos += stats.totalVideos;
+        totalSaved += stats.successfulInserts;
         
-        for (const video of videos) {
-          try {
-            await scraper.saveVideoToDatabase(video);
-            totalSaved++;
-            console.log(`  ✅ Saved: ${video.title.substring(0, 60)}... (Score: ${video.quality_score})`);
-            results.push({
-              video_id: video.video_id,
-              title: video.title,
-              quality_score: video.quality_score,
-              tool: video.tool,
-              difficulty: video.difficulty
-            });
-          } catch (error) {
-            console.error(`  ❌ Failed to save: ${video.title.substring(0, 60)}...`);
-          }
-        }
+        console.log(`  ✅ Completed ${toolData.name}: ${stats.successfulInserts}/${stats.totalVideos} videos saved`);
         
         // Delay between tools
         await new Promise(resolve => setTimeout(resolve, 1000));
         
       } catch (error) {
-        console.error(`❌ Error scraping ${toolName}:`, error.message);
+        console.error(`❌ Error scraping ${toolData.name}:`, error.message);
       }
     }
 
@@ -421,9 +413,8 @@ router.post('/scrape-intelligent', async (req, res) => {
       stats: {
         total_videos_found: totalVideos,
         total_videos_saved: totalSaved,
-        tools_scraped: toolsToScrape
+        success_rate: totalVideos > 0 ? (totalSaved / totalVideos * 100).toFixed(1) : 0
       },
-      results: results.slice(0, 10), // Return first 10 results
       timestamp: new Date().toISOString()
     });
     

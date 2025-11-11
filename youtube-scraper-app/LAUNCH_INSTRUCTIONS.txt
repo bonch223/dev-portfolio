@@ -1,0 +1,58 @@
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║           YOUTUBE SCRAPER - LAUNCH INSTRUCTIONS                ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+
+🎯 EASIEST WAY - DOUBLE-CLICK ONE OF THESE:
+
+Option 1: YouTube Scraper.vbs
+  ✓ Double-click this file
+  ✓ No console window appears
+  ✓ GUI opens directly
+  ✓ Recommended!
+
+Option 2: main.pyw
+  ✓ Double-click this file
+  ✓ Windows recognizes .pyw as GUI Python
+  ✓ No console window
+  ✓ Same as Option 1
+
+Option 3: Create Desktop Shortcut
+  1. Double-click "create_shortcut.vbs"
+  2. A shortcut appears on your desktop
+  3. Double-click the desktop shortcut anytime!
+
+═══════════════════════════════════════════════════════════════
+
+📝 FIRST-TIME SETUP:
+
+Before launching, make sure:
+  ✓ You ran: pip install -r requirements.txt
+  ✓ Database is fixed (ran fix_database.py)
+  ✓ .env file exists (copy from env.example)
+
+Note: YouTube API key is OPTIONAL now!
+      The app uses yt-dlp (no API key needed)
+
+═══════════════════════════════════════════════════════════════
+
+🚀 AFTER LAUNCHING:
+
+1. The GUI window will open
+2. Select a tool (Zapier or N8N)
+3. Choose categories to scrape
+4. Click "Scrape Current Tool" or "Scrape Both Tools"
+5. Watch it scrape thousands of videos!
+
+═══════════════════════════════════════════════════════════════
+
+⚡ NO COMMAND LINE NEEDED!
+
+Just double-click and go!
+
+═══════════════════════════════════════════════════════════════
+
+
+
+
