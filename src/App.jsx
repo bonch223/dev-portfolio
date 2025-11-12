@@ -8,6 +8,8 @@ import ProjectsSection from './components/ProjectsSection';
 import ContactSection from './components/ContactSection';
 import DigitalMarketingSection from './components/DigitalMarketingSection';
 import WorkingTogetherSection from './components/WorkingTogetherSection';
+import InteractiveBuilderCTA from './components/InteractiveBuilderCTA';
+import ProjectDetailPage from './pages/ProjectDetailPage';
 import ServiceSelector from './components/ServiceSelector';
 import SEOSimulator from './components/SEOSimulator';
 import WordPressSimulator from './components/WordPressSimulator';
@@ -191,6 +193,7 @@ function App() {
                 <AboutSection />
                 <ProjectsSection onLightboxChange={setLightboxOpen} onShowServiceSelector={handleShowServiceSelector} />
                 <DigitalMarketingSection onLightboxChange={setLightboxOpen} />
+                <InteractiveBuilderCTA onStartSimulation={handleShowServiceSelector} />
                 <WorkingTogetherSection />
                 <ContactSection />
               </main>
@@ -202,6 +205,7 @@ function App() {
             </div>
           </>
         } />
+        <Route path="/projects/:slug" element={<ProjectDetailPage />} />
         <Route path="/workflow-challenger" element={<WorkflowChallenger />} />
         <Route path="/scraping-dashboard" element={<ScrapingDashboard />} />
       </Routes>

@@ -465,3 +465,5 @@ export const allProjects = [...featuredProjects, ...otherProjects];
 export const projectBySlug = Object.fromEntries(
   allProjects.map((project) => [project.slug, project])
 );
+
+export const getProjectBySlug = (slug) => projectBySlug[slug] ?? null;

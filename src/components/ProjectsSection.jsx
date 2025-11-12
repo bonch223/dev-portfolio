@@ -9,7 +9,6 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImages, setLightboxImages] = useState([]);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-  const [showMobileSimulatorMessage, setShowMobileSimulatorMessage] = useState(false);
 
   const navigate = useNavigate();
 
@@ -37,19 +36,12 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
 
   const currentProject = projects[activeProject] ?? projects[0];
   const projectDetailsPath = currentProject ? `/projects/${currentProject.slug}` : '#';
-  const primaryProjectLink = currentProject?.links?.live ?? currentProject?.url ?? projectDetailsPath;
-  const primaryLinkIsExternal = primaryProjectLink?.startsWith('http');
+  const liveProjectUrl = currentProject?.links?.live ?? currentProject?.url ?? null;
+  const projectSummary = currentProject?.overview ?? currentProject?.summary ?? '';
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
-
-  const scrollToContact = () => {
-    const element = document.getElementById('contact');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   const openLightbox = (images, startIndex = 0) => {
     const prioritizedImages = prioritizeVideosInGallery(images);
@@ -66,20 +58,6 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
 
   const handleProjectNavigate = (slug) => {
     navigate(`/projects/${slug}`);
-  };
-
-  const handleTryItOutClick = () => {
-    // Check if it's mobile
-    if (window.innerWidth <= 768) {
-      setShowMobileSimulatorMessage(true);
-      // Hide message after 3 seconds
-      setTimeout(() => {
-        setShowMobileSimulatorMessage(false);
-      }, 3000);
-    } else {
-      // Desktop - open simulator
-      onShowServiceSelector();
-    }
   };
 
   return (
@@ -141,7 +119,7 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
             </div>
 
             <p className="text-slate-600 dark:text-gray-300 leading-relaxed text-lg">
-              {currentProject.longDescription}
+              {projectSummary}
             </p>
 
             {/* Features */}
@@ -175,38 +153,28 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
 
             {/* Action Buttons */}
             <div className="flex flex-wrap gap-4">
-              {primaryLinkIsExternal ? (
-                <a 
-                  href={primaryProjectLink} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="btn btn-primary"
-                >
-                  <span>View Project</span>
-                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </a>
-              ) : (
-                <Link 
-                  to={primaryProjectLink}
-                  className="btn btn-primary"
-                >
-                  <span>View Project</span>
-                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </Link>
-              )}
               <Link 
                 to={projectDetailsPath}
-                className="btn btn-secondary"
+                className="btn btn-primary"
               >
-                <span>View Details</span>
+                <span>Explore Case Study</span>
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </Link>
+              {liveProjectUrl && (
+                <a 
+                  href={liveProjectUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="btn btn-secondary"
+                >
+                  <span>View Live Site</span>
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </a>
+              )}
             </div>
           </div>
 
@@ -481,41 +449,6 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
       {/* Other Project Modal */}
       {/* This component is now handled by the router, so it's removed. */}
 
-      {/* Mobile Simulator Message - Portal-like positioning */}
-      {showMobileSimulatorMessage && (
-        <div 
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 9999
-          }}
-        >
-          <div className="bg-gradient-to-br from-gray-800/95 to-gray-900/95 backdrop-blur-md rounded-2xl p-6 border border-cyan-400/30 shadow-2xl max-w-sm mx-auto text-center">
-            <div className="w-16 h-16 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold text-white mb-3">
-              Desktop Experience Required
-            </h3>
-            <p className="text-gray-300 text-sm leading-relaxed mb-4">
-              Interactive simulators are optimized for desktop and laptop experiences. 
-              Please visit on a larger screen to try out our service simulators.
-            </p>
-            <button
-              onClick={() => setShowMobileSimulatorMessage(false)}
-              className="bg-gradient-to-r from-cyan-400 to-purple-500 text-white font-semibold py-2 px-6 rounded-full hover:shadow-lg transition-all duration-300"
-            >
-              Got it!
-            </button>
-          </div>
-        </div>
-      )}
     </section>
   );
 };
