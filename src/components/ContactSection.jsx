@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
+import { useTheme } from 'next-themes';
 
 const ContactSection = () => {
+  const { resolvedTheme } = useTheme();
+  const isDarkMode = (resolvedTheme ?? 'light') === 'dark';
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,6 +16,38 @@ const ContactSection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null); // null, 'success', 'error'
   const [errorMessage, setErrorMessage] = useState('');
+
+  const primaryTextClass = isDarkMode ? 'text-white' : 'text-[#3c281c]';
+  const secondaryTextClass = isDarkMode ? 'text-gray-300' : 'text-[#5f4735]';
+  const accentTextClass = isDarkMode ? 'text-cyan-400' : 'text-[#b88760]';
+  const cardSurfaceClass = isDarkMode
+    ? 'card p-6 md:p-8'
+    : 'rounded-3xl border border-[#e4ccb0] bg-[#fffbf5]/95 shadow-[0_18px_40px_rgba(90,58,40,0.14)] p-6 md:p-8';
+  const inputSurfaceClass = isDarkMode
+    ? 'bg-gray-800/50 border border-gray-600 focus:border-cyan-400 text-white placeholder-gray-400'
+    : 'bg-white border border-[#dcc3a7] focus:border-[#b88760] text-[#3c281c] placeholder-[#a18876]';
+  const iconVariants = isDarkMode
+    ? {
+        email: 'bg-gradient-to-r from-cyan-400 to-blue-500 text-white',
+        phone: 'bg-gradient-to-r from-purple-500 to-pink-500 text-white',
+        location: 'bg-gradient-to-r from-green-400 to-cyan-400 text-white',
+      }
+    : {
+        email: 'bg-[#e0edff] border border-[#cddff1] text-[#2f3d4a]',
+        phone: 'bg-[#f7e3f3] border border-[#e7c7df] text-[#4b2f3e]',
+        location: 'bg-[#e4f6ea] border border-[#cde4d4] text-[#2f4034]',
+      };
+  const socialCardClass = isDarkMode
+    ? 'flex items-center space-x-3 p-3 md:p-4 rounded-lg border border-gray-600 transition-all duration-300 hover:border-cyan-400 hover:bg-cyan-400/10'
+    : 'flex items-center space-x-3 p-3 md:p-4 rounded-lg border border-[#e4ccb0] bg-white hover:bg-[#f6eadb] transition-all duration-300 shadow-[0_10px_24px_rgba(90,58,40,0.1)]';
+  const isSubmittingDisabledClass = isSubmitting ? 'opacity-50 cursor-not-allowed' : '';
+
+  const resumeButtonClass = isDarkMode
+    ? 'btn btn-primary inline-flex items-center space-x-2'
+    : 'inline-flex items-center space-x-2 px-6 py-3 rounded-full bg-[#b88760] text-white font-semibold shadow-[0_18px_40px_rgba(90,58,40,0.18)] hover:bg-[#a46f4d] transition-all';
+  const submitButtonBaseClass = isDarkMode
+    ? 'btn btn-primary inline-flex items-center space-x-2 px-6 py-3 text-sm md:text-base'
+    : 'inline-flex items-center space-x-2 px-6 py-3 text-sm md:text-base rounded-full bg-[#b88760] text-white font-semibold shadow-[0_18px_40px_rgba(90,58,40,0.18)] hover:bg-[#a46f4d] transition-all';
 
   const socialLinks = [
     {
@@ -166,13 +202,14 @@ const ContactSection = () => {
 
   return (
     <section id="contact" className="section relative z-10">
-      <div className="section-content">
+      <div className={`absolute inset-0 ${isDarkMode ? '' : 'bg-[#fff7ec]'}`} aria-hidden="true"></div>
+      <div className="section-content relative">
 
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 relative">
           <h2 className="heading-secondary mb-4">
             Get In <span className="text-gradient">Touch</span>
           </h2>
-          <p className="text-lg text-gray-300 max-w-3xl mx-auto">
+          <p className={`text-lg max-w-3xl mx-auto ${secondaryTextClass}`}>
             Ready to bring your ideas to life? Let's collaborate and create something amazing together. 
             I'm always excited to work on new projects and meet fellow creators.
           </p>
@@ -181,9 +218,9 @@ const ContactSection = () => {
         <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-start">
           {/* Left Side - Contact Info */}
           <div className={`space-y-6 md:space-y-8 ${isVisible ? 'animate-slide-left' : 'opacity-0'}`}>
-            <div className="card p-6 md:p-8">
+            <div className={cardSurfaceClass}>
               <h3 className="heading-tertiary mb-4 md:mb-6 text-gradient">Let's Connect</h3>
-              <p className="text-gray-300 leading-relaxed mb-6 md:mb-8 text-sm md:text-base">
+              <p className={`${secondaryTextClass} leading-relaxed mb-6 md:mb-8 text-sm md:text-base`}>
                 Whether you have a project in mind, want to collaborate, or just want to say hello, 
                 I'd love to hear from you. Feel free to reach out through any of the channels below.
               </p>
@@ -191,46 +228,46 @@ const ContactSection = () => {
               {/* Contact Methods */}
               <div className="space-y-4 md:space-y-6">
                 <div className="flex items-center space-x-3 md:space-x-4">
-                  <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center flex-shrink-0 ${iconVariants.email}`}>
+                    <svg className="w-5 h-5 md:w-6 md:h-6 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-white font-semibold text-sm md:text-base">Email</p>
-                    <p className="text-gray-300 text-xs md:text-sm break-all">mjr.elayron@gmail.com</p>
+                    <p className={`${primaryTextClass} font-semibold text-sm md:text-base`}>Email</p>
+                    <p className={`${secondaryTextClass} text-xs md:text-sm break-all`}>mjr.elayron@gmail.com</p>
                   </div>
                 </div>
 
                 <div className="flex items-center space-x-3 md:space-x-4">
-                  <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center flex-shrink-0 ${iconVariants.phone}`}>
+                    <svg className="w-5 h-5 md:w-6 md:h-6 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-white font-semibold text-sm md:text-base">Phone</p>
-                    <p className="text-gray-300 text-xs md:text-sm">+63 994 5063 085</p>
+                    <p className={`${primaryTextClass} font-semibold text-sm md:text-base`}>Phone</p>
+                    <p className={`${secondaryTextClass} text-xs md:text-sm`}>+63 994 5063 085</p>
                   </div>
                 </div>
 
                 <div className="flex items-center space-x-3 md:space-x-4">
-                  <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-green-400 to-cyan-400 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center flex-shrink-0 ${iconVariants.location}`}>
+                    <svg className="w-5 h-5 md:w-6 md:h-6 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-white font-semibold text-sm md:text-base">Location</p>
-                    <p className="text-gray-300 text-xs md:text-sm">Tagum City, DDN, Philippines</p>
+                    <p className={`${primaryTextClass} font-semibold text-sm md:text-base`}>Location</p>
+                    <p className={`${secondaryTextClass} text-xs md:text-sm`}>Tagum City, DDN, Philippines</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Social Links */}
-            <div className="card p-6 md:p-8">
+          <div className={cardSurfaceClass}>
               <h3 className="heading-tertiary mb-6 text-gradient">Follow Me</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                 {socialLinks.map((social, index) => (
@@ -239,19 +276,19 @@ const ContactSection = () => {
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`flex items-center space-x-3 p-3 md:p-4 rounded-lg border border-gray-600 transition-all duration-300 hover:border-cyan-400 hover:bg-cyan-400/10 ${social.color}`}
+                    className={`${socialCardClass} ${social.color}`}
                   >
-                    {social.icon}
-                    <span className="text-white font-medium text-sm md:text-base">{social.name}</span>
+                    <span className={`${isDarkMode ? 'text-white' : 'text-[#503828]'}`}>{social.icon}</span>
+                    <span className={`${primaryTextClass} font-medium text-sm md:text-base`}>{social.name}</span>
                   </a>
                 ))}
               </div>
             </div>
 
             {/* Resume Download */}
-            <div className="card p-6 md:p-8 text-center">
+          <div className={`${cardSurfaceClass} text-center`}>
               <h3 className="heading-tertiary mb-4 text-gradient">Download Resume</h3>
-              <p className="text-gray-300 mb-6 text-sm md:text-base">
+              <p className={`${secondaryTextClass} mb-6 text-sm md:text-base`}>
                 Want to know more about my experience and skills? 
                 Download my resume for a detailed overview.
               </p>
@@ -259,7 +296,7 @@ const ContactSection = () => {
                 <a 
                   href="/src/assets/Resume.pdf" 
                   download
-                  className="btn btn-primary inline-flex items-center space-x-2"
+                className={resumeButtonClass}
                 >
                   <span>Download PDF</span>
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -272,34 +309,34 @@ const ContactSection = () => {
 
           {/* Right Side - Contact Form */}
           <div className={`${isVisible ? 'animate-slide-right' : 'opacity-0'}`}>
-            <div className="card p-6 md:p-8">
+            <div className={cardSurfaceClass}>
               <h3 className="heading-tertiary mb-6 text-gradient">Send Message</h3>
               
               <form id="contact-form" onSubmit={handleSubmit} className="space-y-6">
                 {/* Status Messages */}
                 {submitStatus === 'success' && (
-                  <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-4 mb-6">
+                  <div className={`rounded-lg p-4 mb-6 ${isDarkMode ? 'bg-green-500/20 border border-green-500/30' : 'bg-[#e6f6ea] border border-[#cde4d4]'}`}>
                     <div className="flex items-center space-x-3">
                       <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       <div>
-                        <h4 className="text-green-400 font-semibold">Message Sent Successfully!</h4>
-                        <p className="text-gray-300 text-sm">Thank you for reaching out! Your message has been sent to mjr.elayron@gmail.com. I'll get back to you within 24 hours.</p>
+                        <h4 className={`${isDarkMode ? 'text-green-400' : 'text-[#2f4034]'} font-semibold`}>Message Sent Successfully!</h4>
+                        <p className={`${secondaryTextClass} text-sm`}>Thank you for reaching out! Your message has been sent to mjr.elayron@gmail.com. I'll get back to you within 24 hours.</p>
                       </div>
                     </div>
                   </div>
                 )}
 
                 {submitStatus === 'error' && (
-                  <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-4 mb-6">
+                  <div className={`rounded-lg p-4 mb-6 ${isDarkMode ? 'bg-red-500/20 border border-red-500/30' : 'bg-[#fde4ec] border border-[#f1c5d6]'}`}>
                     <div className="flex items-center space-x-3">
-                      <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className={`w-6 h-6 ${isDarkMode ? 'text-red-400' : 'text-[#a53a4f]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       <div>
-                        <h4 className="text-red-400 font-semibold">Failed to Send Message</h4>
-                        <p className="text-gray-300 text-sm">{errorMessage}</p>
+                        <h4 className={`${isDarkMode ? 'text-red-400' : 'text-[#a53a4f]'} font-semibold`}>Failed to Send Message</h4>
+                        <p className={`${secondaryTextClass} text-sm`}>{errorMessage}</p>
                       </div>
                     </div>
                   </div>
@@ -307,7 +344,7 @@ const ContactSection = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
                   <div>
-                    <label htmlFor="name" className="block text-white font-medium mb-2 text-sm md:text-base">
+                    <label htmlFor="name" className={`block font-medium mb-2 text-sm md:text-base ${primaryTextClass}`}>
                       Name *
                     </label>
                     <input
@@ -317,13 +354,13 @@ const ContactSection = () => {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-800/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400 focus:outline-none transition-colors text-sm md:text-base"
+                      className={`w-full px-3 md:px-4 py-2 md:py-3 rounded-lg focus:outline-none transition-colors text-sm md:text-base ${inputSurfaceClass}`}
                       placeholder="Your name"
                     />
                   </div>
                   
                   <div>
-                    <label htmlFor="email" className="block text-white font-medium mb-2 text-sm md:text-base">
+                    <label htmlFor="email" className={`block font-medium mb-2 text-sm md:text-base ${primaryTextClass}`}>
                       Email *
                     </label>
                     <input
@@ -333,14 +370,14 @@ const ContactSection = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-800/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400 focus:outline-none transition-colors text-sm md:text-base"
+                      className={`w-full px-3 md:px-4 py-2 md:py-3 rounded-lg focus:outline-none transition-colors text-sm md:text-base ${inputSurfaceClass}`}
                       placeholder="your.email@example.com"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="subject" className="block text-white font-medium mb-2 text-sm md:text-base">
+                  <label htmlFor="subject" className={`block font-medium mb-2 text-sm md:text-base ${primaryTextClass}`}>
                     Subject *
                   </label>
                   <input
@@ -350,13 +387,13 @@ const ContactSection = () => {
                     value={formData.subject}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-800/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400 focus:outline-none transition-colors text-sm md:text-base"
+                    className={`w-full px-3 md:px-4 py-2 md:py-3 rounded-lg focus:outline-none transition-colors text-sm md:text-base ${inputSurfaceClass}`}
                     placeholder="What's this about?"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-white font-medium mb-2 text-sm md:text-base">
+                  <label htmlFor="message" className={`block font-medium mb-2 text-sm md:text-base ${primaryTextClass}`}>
                     Message *
                   </label>
                   <textarea
@@ -366,7 +403,7 @@ const ContactSection = () => {
                     onChange={handleInputChange}
                     required
                     rows={5}
-                    className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-800/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400 focus:outline-none transition-colors resize-none text-sm md:text-base"
+                    className={`w-full px-3 md:px-4 py-2 md:py-3 rounded-lg focus:outline-none transition-colors resize-none text-sm md:text-base ${inputSurfaceClass}`}
                     placeholder="Tell me about your project or just say hello!"
                   />
                 </div>
@@ -375,7 +412,7 @@ const ContactSection = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`btn btn-primary inline-flex items-center space-x-2 px-6 py-3 text-sm md:text-base ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`${submitButtonBaseClass} ${isSubmittingDisabledClass}`}
                   >
                     {isSubmitting ? (
                       <>

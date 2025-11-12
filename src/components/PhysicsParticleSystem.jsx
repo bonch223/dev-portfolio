@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import Matter from 'matter-js';
 
-const PhysicsParticleSystem = forwardRef(({ onParticleClick, onCollision }, ref) => {
+const PhysicsParticleSystem = forwardRef(({ onParticleClick, onCollision, isDarkMode = false }, ref) => {
   const containerRef = useRef(null);
   const engineRef = useRef(null);
   const renderRef = useRef(null);
@@ -334,66 +334,86 @@ const PhysicsParticleSystem = forwardRef(({ onParticleClick, onCollision }, ref)
 
   // Function to get random gradient colors for particles
   const getParticleGradient = (particleData) => {
-    const colorSets = [
-      // Original vibrant set
-      ['#00D4FF', '#8B5CF6'], // Blue to Purple
-      ['#8B5CF6', '#EC4899'], // Purple to Pink
-      ['#EC4899', '#F59E0B'], // Pink to Orange
-      ['#F59E0B', '#10B981'], // Orange to Green
-      ['#10B981', '#00D4FF'], // Green to Blue
-      ['#EF4444', '#F97316'], // Red to Orange
-      ['#8B5CF6', '#06B6D4'], // Purple to Cyan
-      ['#EC4899', '#84CC16'], // Pink to Lime
-      ['#F59E0B', '#EF4444'], // Orange to Red
-      ['#10B981', '#8B5CF6'], // Green to Purple
-      
-      // Additional vibrant combinations
-      ['#06B6D4', '#EC4899'], // Cyan to Pink
-      ['#84CC16', '#8B5CF6'], // Lime to Purple
-      ['#F97316', '#10B981'], // Orange to Green
-      ['#EF4444', '#00D4FF'], // Red to Blue
-      ['#8B5CF6', '#F59E0B'], // Purple to Orange
-      ['#EC4899', '#06B6D4'], // Pink to Cyan
-      ['#10B981', '#EF4444'], // Green to Red
-      ['#F59E0B', '#8B5CF6'], // Orange to Purple
-      ['#00D4FF', '#84CC16'], // Blue to Lime
-      ['#06B6D4', '#F97316'], // Cyan to Orange
-      
-      // More unique combinations to reduce color dominance
-      ['#A855F7', '#EC4899'], // Deep Purple to Pink
-      ['#F59E0B', '#06B6D4'], // Orange to Cyan
-      ['#10B981', '#F97316'], // Green to Orange
-      ['#EF4444', '#8B5CF6'], // Red to Purple
-      ['#84CC16', '#EC4899'], // Lime to Pink
-      ['#06B6D4', '#10B981'], // Cyan to Green
-      ['#F97316', '#8B5CF6'], // Orange to Purple
-      ['#EC4899', '#F59E0B'], // Pink to Orange
-      ['#8B5CF6', '#84CC16'], // Purple to Lime
-      ['#00D4FF', '#EF4444'], // Blue to Red
-      
-      // Additional unique gradients
-      ['#DC2626', '#F59E0B'], // Deep Red to Orange
-      ['#059669', '#8B5CF6'], // Emerald to Purple
-      ['#7C3AED', '#EC4899'], // Violet to Pink
-      ['#F59E0B', '#84CC16'], // Orange to Lime
-      ['#06B6D4', '#DC2626'], // Cyan to Deep Red
-      ['#10B981', '#7C3AED'], // Green to Violet
-      ['#EC4899', '#059669'], // Pink to Emerald
-      ['#8B5CF6', '#F59E0B'], // Purple to Orange
-      ['#84CC16', '#DC2626'], // Lime to Deep Red
-      ['#00D4FF', '#7C3AED'], // Blue to Violet
+    const vibrantColorSets = [
+      ['#00D4FF', '#8B5CF6'],
+      ['#8B5CF6', '#EC4899'],
+      ['#EC4899', '#F59E0B'],
+      ['#F59E0B', '#10B981'],
+      ['#10B981', '#00D4FF'],
+      ['#EF4444', '#F97316'],
+      ['#8B5CF6', '#06B6D4'],
+      ['#EC4899', '#84CC16'],
+      ['#F59E0B', '#EF4444'],
+      ['#10B981', '#8B5CF6'],
+      ['#06B6D4', '#EC4899'],
+      ['#84CC16', '#8B5CF6'],
+      ['#F97316', '#10B981'],
+      ['#EF4444', '#00D4FF'],
+      ['#8B5CF6', '#F59E0B'],
+      ['#EC4899', '#06B6D4'],
+      ['#10B981', '#EF4444'],
+      ['#F59E0B', '#8B5CF6'],
+      ['#00D4FF', '#84CC16'],
+      ['#06B6D4', '#F97316'],
+      ['#A855F7', '#EC4899'],
+      ['#F59E0B', '#06B6D4'],
+      ['#10B981', '#F97316'],
+      ['#EF4444', '#8B5CF6'],
+      ['#84CC16', '#EC4899'],
+      ['#06B6D4', '#10B981'],
+      ['#F97316', '#8B5CF6'],
+      ['#EC4899', '#F59E0B'],
+      ['#8B5CF6', '#84CC16'],
+      ['#00D4FF', '#EF4444'],
+      ['#DC2626', '#F59E0B'],
+      ['#059669', '#8B5CF6'],
+      ['#7C3AED', '#EC4899'],
+      ['#F59E0B', '#84CC16'],
+      ['#06B6D4', '#DC2626'],
+      ['#10B981', '#7C3AED'],
+      ['#EC4899', '#059669'],
+      ['#8B5CF6', '#F59E0B'],
+      ['#84CC16', '#DC2626'],
+      ['#00D4FF', '#7C3AED'],
     ];
-    
-    // Use particle ID to consistently assign colors
+
+    const warmColorSets = [
+      ['#b68b63', '#d9a066'],
+      ['#a1704f', '#d4b08a'],
+      ['#9c6b4f', '#c79a73'],
+      ['#8b5e3c', '#b88760'],
+      ['#a87b58', '#e0c199'],
+      ['#b68668', '#f1d6b8'],
+      ['#8c6849', '#c29874'],
+      ['#a6724c', '#daba94'],
+      ['#b48a68', '#f3dec2'],
+      ['#9f7456', '#cfaa84'],
+      ['#b5845f', '#e7c7a4'],
+      ['#8b6041', '#b88a69'],
+      ['#a47449', '#d2b08b'],
+      ['#c4926a', '#f4ddbf'],
+      ['#a97c56', '#dfc19d'],
+      ['#8f684a', '#c29d7c'],
+      ['#b0805d', '#e2c7a5'],
+      ['#9a6f52', '#cdac88'],
+      ['#ba906a', '#f6e3c7'],
+      ['#936548', '#be996f'],
+    ];
+
+    const colorSets = isDarkMode ? vibrantColorSets : warmColorSets;
+
     const colorIndex = Math.floor(particleData.id % colorSets.length);
     const [color1, color2] = colorSets[colorIndex];
-    
+
     return `${color1}, ${color2}`;
   };
 
   // Function to create explosion effect
   const createExplosionEffect = (x, y, winnerParticle) => {
     if (!containerRef.current) return;
+
+    const gradient = getParticleGradient(winnerParticle);
+    const [startColor, endColor] = gradient.split(', ');
 
     // Create main explosion
     const explosion = document.createElement('div');
@@ -403,7 +423,7 @@ const PhysicsParticleSystem = forwardRef(({ onParticleClick, onCollision }, ref)
     explosion.style.width = '40px';
     explosion.style.height = '40px';
     explosion.style.borderRadius = '50%';
-    explosion.style.background = `radial-gradient(circle, ${getParticleGradient(winnerParticle)}, transparent)`;
+    explosion.style.background = `radial-gradient(circle, ${startColor} 0%, ${endColor} 45%, transparent 80%)`;
     explosion.style.transform = 'translate(-50%, -50%) scale(0)';
     explosion.style.animation = 'explosion 0.6s ease-out forwards';
     explosion.style.setProperty('--explosion-scale', '3');
@@ -421,7 +441,7 @@ const PhysicsParticleSystem = forwardRef(({ onParticleClick, onCollision }, ref)
       particle.style.width = '6px';
       particle.style.height = '6px';
       particle.style.borderRadius = '50%';
-      particle.style.background = getParticleGradient(winnerParticle).split(', ')[Math.floor(Math.random() * 2)];
+      particle.style.background = Math.random() > 0.5 ? startColor : endColor;
       particle.style.transform = 'translate(-50%, -50%)';
       particle.style.animation = `explosionParticle 1s ease-out forwards`;
       particle.style.zIndex = '24';
@@ -560,6 +580,12 @@ const PhysicsParticleSystem = forwardRef(({ onParticleClick, onCollision }, ref)
           return null;
         }
 
+        const gradient = getParticleGradient(particleData);
+        const boxShadow = isDarkMode
+          ? `0 0 ${particleData.size * 10}px rgba(0, 212, 255, 0.8)`
+          : `0 0 ${particleData.size * 8}px rgba(138, 90, 59, 0.35)`;
+        const borderColor = isDarkMode ? 'rgba(255, 255, 255, 0.3)' : 'rgba(209, 178, 145, 0.6)';
+
         return (
           <div
             key={particleData.id}
@@ -572,9 +598,9 @@ const PhysicsParticleSystem = forwardRef(({ onParticleClick, onCollision }, ref)
               height: `${particleData.size}rem`,
               borderRadius: '50%',
               transform: `translate(-50%, -50%) rotate(${particleData.rotation || 0}deg)`,
-              background: `linear-gradient(135deg, ${getParticleGradient(particleData)})`,
-              boxShadow: `0 0 ${particleData.size * 10}px rgba(0, 212, 255, 0.8)`,
-              border: '2px solid rgba(255, 255, 255, 0.3)',
+              background: `linear-gradient(135deg, ${gradient})`,
+              boxShadow,
+              border: `2px solid ${borderColor}`,
               pointerEvents: 'auto',
               cursor: 'pointer',
               zIndex: 15,

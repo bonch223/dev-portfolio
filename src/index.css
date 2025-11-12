@@ -17,8 +17,8 @@ html {
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  background: #0A0E27;
-  color: #ffffff;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -31,14 +31,20 @@ body {
 }
 
 /* Selection Styles */
-::selection {
-  background: rgba(0, 212, 255, 0.3);
+:root ::selection,
+.light ::selection {
+  background: rgba(37, 99, 235, 0.25);
+  color: var(--text-primary);
+}
+
+.dark ::selection {
+  background: rgba(0, 212, 255, 0.25);
   color: #ffffff;
 }
 
 /* Focus Styles */
 *:focus {
-  outline: 2px solid rgba(0, 212, 255, 0.6);
+  outline: 2px solid var(--accent-primary);
   outline-offset: 2px;
 }
 
@@ -62,10 +68,22 @@ body {
 
 /* Tailwind-like utility classes for better compatibility */
 .text-gradient {
-  background: linear-gradient(135deg, #00D4FF 0%, #8B5CF6 100%);
+  background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.light .text-gray-200,
+.light .text-gray-300,
+.light .text-gray-400,
+.light .text-slate-300 {
+  color: rgba(43, 26, 17, 0.72) !important;
+}
+
+.light .text-cyan-400,
+.light .text-cyan-500 {
+  color: var(--accent-secondary) !important;
 }
 
 .animate-bounce {

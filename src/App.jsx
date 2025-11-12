@@ -7,6 +7,7 @@ import AboutSection from './components/AboutSection';
 import ProjectsSection from './components/ProjectsSection';
 import ContactSection from './components/ContactSection';
 import DigitalMarketingSection from './components/DigitalMarketingSection';
+import WorkingTogetherSection from './components/WorkingTogetherSection';
 import ServiceSelector from './components/ServiceSelector';
 import SEOSimulator from './components/SEOSimulator';
 import WordPressSimulator from './components/WordPressSimulator';
@@ -16,7 +17,6 @@ import SEOQuoteGenerator from './components/SEOQuoteGenerator';
 import WordPressQuoteGenerator from './components/WordPressQuoteGenerator';
 import FullStackQuoteGenerator from './components/FullStackQuoteGenerator';
 import WorkflowChallenger from './components/WorkflowChallenger';
-import WorkflowChallengerSection from './components/WorkflowChallengerSection';
 import ScrapingDashboard from './components/ScrapingDashboard';
 import AnimatedBackground from './components/AnimatedBackground';
 import './App.css';
@@ -191,7 +191,7 @@ function App() {
                 <AboutSection />
                 <ProjectsSection onLightboxChange={setLightboxOpen} onShowServiceSelector={handleShowServiceSelector} />
                 <DigitalMarketingSection onLightboxChange={setLightboxOpen} />
-                <WorkflowChallengerSection />
+                <WorkingTogetherSection />
                 <ContactSection />
               </main>
               <div className="sticky-profile-wrapper">

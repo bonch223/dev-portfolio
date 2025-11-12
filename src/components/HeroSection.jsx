@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { profileAssets } from '../utils/assets';
 import PhysicsParticleSystem from './PhysicsParticleSystem';
+import { useTheme } from 'next-themes';
 
 const HeroSection = () => {
   const [currentRole, setCurrentRole] = useState(0);
@@ -17,26 +18,70 @@ const HeroSection = () => {
   const [showTechLogos, setShowTechLogos] = useState(false);
   const [currentTechLogo, setCurrentTechLogo] = useState(null);
   const [logoPosition, setLogoPosition] = useState({ x: 0, y: 0 });
+  const { resolvedTheme } = useTheme();
+  const isDarkMode = (resolvedTheme ?? 'light') === 'dark';
   const profileContainerRef = useRef(null);
   const physicsSystemRef = useRef(null);
 
   const roles = [
-    'SEO Practitioner',
+    'Startup Co-Founder',
+    'Tech Director',
+    'SEO Strategist',
     'UI/UX Designer',
     'WordPress Developer',
-    'No Code Expert',
-    'Marketing Specialist'
+    'Automation Architect',
+    'Product Innovator'
   ];
 
   const techLogos = [
-    { name: 'React', color: '#61DAFB', icon: '⚛️' },
-    { name: 'JavaScript', color: '#F7DF1E', icon: '🟨' },
-    { name: 'Node.js', color: '#339933', icon: '🟢' },
-    { name: 'WordPress', color: '#21759B', icon: '🔵' },
-    { name: 'PHP', color: '#777BB4', icon: '🟣' },
-    { name: 'CSS3', color: '#1572B6', icon: '🔷' },
-    { name: 'HTML5', color: '#E34F26', icon: '🔶' },
-    { name: 'Python', color: '#3776AB', icon: '🐍' }
+    {
+      name: 'React',
+      icon: '⚛️',
+      darkGradient: ['#00D4FF', '#8B5CF6'],
+      lightGradient: ['#cbb499', '#ede0d1']
+    },
+    {
+      name: 'JavaScript',
+      icon: '🟨',
+      darkGradient: ['#F7DF1E', '#F97316'],
+      lightGradient: ['#d9b572', '#f3e0b2']
+    },
+    {
+      name: 'Node.js',
+      icon: '🟢',
+      darkGradient: ['#10B981', '#22C55E'],
+      lightGradient: ['#b8c5a3', '#e1efd4']
+    },
+    {
+      name: 'WordPress',
+      icon: '🔵',
+      darkGradient: ['#21759B', '#38BDF8'],
+      lightGradient: ['#bac6d1', '#e3ecf4']
+    },
+    {
+      name: 'PHP',
+      icon: '🟣',
+      darkGradient: ['#8B5CF6', '#6366F1'],
+      lightGradient: ['#c8bfd9', '#e7e1f0']
+    },
+    {
+      name: 'CSS3',
+      icon: '🔷',
+      darkGradient: ['#1D4ED8', '#3B82F6'],
+      lightGradient: ['#bfcde3', '#dfe9f7']
+    },
+    {
+      name: 'HTML5',
+      icon: '🔶',
+      darkGradient: ['#F97316', '#F43F5E'],
+      lightGradient: ['#d9b79d', '#f2d7c4']
+    },
+    {
+      name: 'Python',
+      icon: '🐍',
+      darkGradient: ['#2563EB', '#10B981'],
+      lightGradient: ['#c8c5a6', '#f0ecd1']
+    }
   ];
 
   useEffect(() => {
@@ -391,9 +436,9 @@ const HeroSection = () => {
               </div>
 
               <p className="hero-description">
-                Passionate about creating innovative digital solutions that drive business growth. 
-                I specialize in SEO optimization, WordPress development, UI/UX design, and 
-                no-code solutions that deliver exceptional results for my clients.
+                I build automation-first digital experiences for founders, marketing teams, and academic partners.
+                From SEO growth engines and WordPress ecosystems to AI products like Guro.ai and the Workflow Automation Challenger,
+                I translate complex problems into intuitive products that scale.
               </p>
 
               <div className="hero-buttons">
@@ -451,10 +496,11 @@ const HeroSection = () => {
               <div className={`orbit-path orbit-path-3 ${hoveredPath === 2 ? 'path-hovered' : ''} ${selectedPath === 2 ? 'path-selected' : ''}`}></div>
 
               {/* Physics Particle System */}
-              <PhysicsParticleSystem 
+                <PhysicsParticleSystem 
                 ref={physicsSystemRef}
                 onParticleClick={handleProfileClick}
-                onCollision={handleCollision}
+                  onCollision={handleCollision}
+                  isDarkMode={isDarkMode}
               />
 
               {/* Profile image container */}
@@ -495,7 +541,9 @@ const HeroSection = () => {
         {/* Simulation Activation Message */}
         {showSimulationMessage && (
           <div className="fixed inset-0 flex items-center justify-center z-[9999] pointer-events-none">
-            <div className="bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-8 py-4 rounded-2xl shadow-2xl animate-pulse">
+            <div
+              className={`${isDarkMode ? 'bg-gradient-to-r from-cyan-400 to-purple-500 text-white shadow-2xl' : 'bg-[#fffaf3] text-[#4a3223] border border-[#e3c9a8] shadow-lg'} px-8 py-4 rounded-2xl`}
+            >
               <h3 className="text-2xl font-bold text-center">
                 🚀 Simulations Activated!
               </h3>
@@ -518,18 +566,29 @@ const HeroSection = () => {
                 animationDuration: '3s'
               }}
             >
-              <div 
-                className="bg-white/20 backdrop-blur-md rounded-2xl px-4 py-3 shadow-lg border border-white/30"
-                style={{ 
-                  background: `linear-gradient(135deg, ${currentTechLogo.color}20, ${currentTechLogo.color}40)`,
-                  borderColor: `${currentTechLogo.color}60`
-                }}
-              >
-                <div className="flex items-center space-x-2">
-                  <span className="text-2xl">{currentTechLogo.icon}</span>
-                  <span className="text-white font-semibold text-sm">{currentTechLogo.name}</span>
-                </div>
-              </div>
+              {(() => {
+                const [startColor, endColor] = isDarkMode
+                  ? currentTechLogo.darkGradient
+                  : currentTechLogo.lightGradient;
+
+                return (
+                  <div
+                    className={`backdrop-blur-md rounded-2xl px-4 py-3 ${
+                      isDarkMode
+                        ? 'shadow-lg border border-white/30 text-white'
+                        : 'shadow-[0_12px_30px_rgba(90,58,40,0.12)] border border-[rgba(209,178,145,0.55)] text-[#4a3223]'
+                    }`}
+                    style={{
+                      background: `linear-gradient(135deg, ${startColor}dd, ${endColor}bb)`
+                    }}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <span className="text-2xl">{currentTechLogo.icon}</span>
+                      <span className="font-semibold text-sm">{currentTechLogo.name}</span>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         )}

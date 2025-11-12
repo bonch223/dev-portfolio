@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import ThemeToggle from './ThemeToggle';
 
 const Navigation = ({ activeSection, lightboxOpen, onWorkflowChallengerClick }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -61,26 +62,32 @@ const Navigation = ({ activeSection, lightboxOpen, onWorkflowChallengerClick }) 
             </span>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="nav-links">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className={`nav-link ${activeSection === item.id ? 'nav-link-active' : ''}`}
-              >
-                {item.label}
-                {activeSection === item.id && <div className="nav-link-indicator" />}
-              </button>
-            ))}
-          </div>
+          <div className="nav-actions">
+            {/* Desktop Navigation */}
+            <div className="nav-links">
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className={`nav-link ${activeSection === item.id ? 'nav-link-active' : ''}`}
+                >
+                  {item.label}
+                  {activeSection === item.id && <div className="nav-link-indicator" />}
+                </button>
+              ))}
+            </div>
 
-          {/* Mobile Menu Button */}
-          <button className="mobile-menu-btn">
-            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
+            <div className="nav-utilities">
+              <ThemeToggle />
+
+              {/* Mobile Menu Button */}
+              <button className="mobile-menu-btn" aria-label="Open navigation menu">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </nav>
