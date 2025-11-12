@@ -38,6 +38,8 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
   const projectDetailsPath = currentProject ? `/projects/${currentProject.slug}` : '#';
   const liveProjectUrl = currentProject?.links?.live ?? currentProject?.url ?? null;
   const projectSummary = currentProject?.overview ?? currentProject?.summary ?? '';
+  const clientNeed = currentProject?.problem ?? currentProject?.summary ?? '';
+  const deliveredOutcome = currentProject?.solution ?? currentProject?.impact ?? '';
 
   useEffect(() => {
     setIsVisible(true);
@@ -121,6 +123,41 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
             <p className="text-slate-600 dark:text-gray-300 leading-relaxed text-lg">
               {projectSummary}
             </p>
+
+            {(clientNeed || deliveredOutcome) && (
+              <div className="glass-content-pane rounded-2xl p-5 md:p-6 space-y-6">
+                <div className="space-y-3">
+                  <span className="text-xs uppercase tracking-[0.2em] text-cyan-400 dark:text-cyan-300">
+                    Project Brief
+                  </span>
+                  <h4 className="text-xl font-semibold text-slate-900 dark:text-white">
+                    What the client needed vs. what we shipped
+                  </h4>
+                </div>
+                <div className="grid gap-6 md:grid-cols-2">
+                  {clientNeed && (
+                    <div className="space-y-2">
+                      <h5 className="text-sm font-semibold text-slate-900 dark:text-white tracking-wide uppercase">
+                        Client Goals
+                      </h5>
+                      <p className="text-sm leading-relaxed text-slate-600 dark:text-gray-300">
+                        {clientNeed}
+                      </p>
+                    </div>
+                  )}
+                  {deliveredOutcome && (
+                    <div className="space-y-2">
+                      <h5 className="text-sm font-semibold text-slate-900 dark:text-white tracking-wide uppercase">
+                        Delivered Solution
+                      </h5>
+                      <p className="text-sm leading-relaxed text-slate-600 dark:text-gray-300">
+                        {deliveredOutcome}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Features */}
             <div className="space-y-4">

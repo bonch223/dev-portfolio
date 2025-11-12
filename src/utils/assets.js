@@ -27,6 +27,9 @@ import fantasticBaby1 from '/src/assets/webp/fantasticbabyshakala/1.webp'
 import fantasticBaby2 from '/src/assets/webp/fantasticbabyshakala/2.webp'
 import fantasticBaby3 from '/src/assets/webp/fantasticbabyshakala/3.webp'
 
+// Automation Challenger Assets
+import automationChallenger from '/src/assets/Automation Challenger/Automation Challenger.png'
+
 // Website Creation Assets (WebP optimized)
 import decorMeadow from '/src/assets/webp/Websites Created and Maintained/decormeadow.webp'
 import femmeFits from '/src/assets/webp/Websites Created and Maintained/femmefits.webp'
@@ -88,13 +91,15 @@ export const projectAssets = {
 }
 
 export const websiteAssets = {
+  workflowChallenger: automationChallenger,
   decorMeadow,
   femmeFits,
   gentsDen,
   plushPendants,
   starletStyle,
   cebuFirst,
-  cebuLandMasters
+  cebuLandMasters,
+  automationChallenger
 }
 
 export const companyAssets = {

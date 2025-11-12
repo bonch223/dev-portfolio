@@ -48,11 +48,11 @@ export const featuredProjects = [
     color: '#6366F1',
     gradient: 'from-indigo-400 to-purple-500',
     hero: {
-      banner: websiteAssets.decorMeadow,
-      gallery: [websiteAssets.decorMeadow],
+      banner: websiteAssets.workflowChallenger,
+      gallery: [websiteAssets.workflowChallenger],
     },
-    image: websiteAssets.decorMeadow,
-    gallery: [websiteAssets.decorMeadow],
+    image: websiteAssets.workflowChallenger,
+    gallery: [websiteAssets.workflowChallenger],
     links: buildLinks({
       live: '/workflow-challenger',
       demo: null,

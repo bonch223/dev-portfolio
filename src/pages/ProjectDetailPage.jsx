@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useTheme } from 'next-themes';
 import Navigation from '../components/Navigation';
 import LightboxGallery from '../components/LightboxGallery';
+import ProjectHighlightsMarquee from '../components/ProjectHighlightsMarquee';
 import { getProjectBySlug, allProjects } from '../data/projects';
 
 const ProjectDetailPage = () => {
@@ -24,6 +25,25 @@ const ProjectDetailPage = () => {
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [project, navigate]);
+
+  useEffect(() => {
+    const elements = document.querySelectorAll('[data-reveal]');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    elements.forEach((element) => observer.observe(element));
+
+    return () => observer.disconnect();
+  }, [slug, isDarkMode]);
 
   if (!project) {
     return null;
@@ -59,6 +79,12 @@ const ProjectDetailPage = () => {
   const demoLink = links.demo ?? null;
   const caseStudyLink = links.caseStudy ?? null;
   const githubLink = links.github ?? null;
+  const impactPoints = impact
+    ? impact
+        .split('.')
+        .map((point) => point.trim())
+        .filter(Boolean)
+    : [];
 
   const relatedProjects = useMemo(() => {
     return allProjects
@@ -81,6 +107,9 @@ const ProjectDetailPage = () => {
   const mutedSurfaceClass = isDarkMode
     ? 'bg-[#0d1225]/90 border border-cyan-400/20'
     : 'bg-[#fff3e3]/90 border border-[#e8caa7]';
+  const metricPillClass = isDarkMode
+    ? 'bg-gradient-to-br from-cyan-500/15 via-cyan-400/10 to-purple-500/10 border border-cyan-400/25 text-cyan-100'
+    : 'bg-[#fff2e1] border border-[#e3c9a8] text-[#573b28]';
 
   const openGallery = (images, index = 0) => {
     if (!images?.length) return;
@@ -114,10 +143,15 @@ const ProjectDetailPage = () => {
         onWorkflowChallengerClick={() => navigate('/workflow-challenger')}
       />
 
+      <a href="#project-brief" className="skip-link">
+        Skip to project overview
+      </a>
+
       <main className="pt-24 pb-24">
         <div className="container mx-auto px-4 max-w-6xl">
           <div
             className={`relative overflow-hidden rounded-[40px] p-8 md:p-16 mb-16 transition-colors duration-500 ${surfaceClass}`}
+            data-reveal
           >
             {heroBanner && (
               <div className="absolute inset-0 pointer-events-none opacity-20">
@@ -162,9 +196,23 @@ const ProjectDetailPage = () => {
                 </div>
 
                 {projectSummary && (
-                  <p className={`text-lg leading-relaxed ${secondaryTextClass}`}>
+                  <p className={`text-lg leading-relaxed ${secondaryTextClass}`} data-reveal>
                     {projectSummary}
                   </p>
+                )}
+
+                {metrics.length > 0 && (
+                  <div className="flex flex-wrap gap-3 pt-2" data-reveal>
+                    {metrics.map((metric) => (
+                      <div
+                        key={metric.label}
+                        className={`min-w-[130px] rounded-full px-4 py-2 text-xs font-semibold tracking-wide uppercase flex items-center justify-between gap-3 ${metricPillClass}`}
+                      >
+                        <span className="opacity-80">{metric.label}</span>
+                        <span className="text-sm text-white dark:text-white">{metric.value}</span>
+                      </div>
+                    ))}
+                  </div>
                 )}
 
                 {supplementalLinks.length > 0 && (
@@ -204,7 +252,7 @@ const ProjectDetailPage = () => {
                   </div>
                 )}
 
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-3" data-reveal>
                   <button
                     type="button"
                     onClick={() => navigate(-1)}
@@ -280,8 +328,8 @@ const ProjectDetailPage = () => {
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 mb-16">
-            <div className={`rounded-3xl p-8 space-y-6 ${surfaceClass}`}>
+          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 mb-16" data-reveal>
+            <section id="project-brief" className={`rounded-3xl p-8 space-y-6 ${surfaceClass}`}>
               <h2 className={`text-2xl font-bold ${primaryTextClass}`}>Project Objectives</h2>
               <div className="space-y-4">
                 {responsibilities.length > 0 && (
@@ -303,15 +351,43 @@ const ProjectDetailPage = () => {
                 {features.length > 0 && (
                   <div>
                     <h3 className={`text-lg font-semibold mb-3 ${accentTextClass}`}>
-                      Highlights
+                      Core Functions & Modules
                     </h3>
                     <ul className="grid sm:grid-cols-2 gap-3">
                       {features.map((feature, idx) => (
                         <li
                           key={idx}
-                          className={`rounded-2xl px-4 py-3 border ${mutedSurfaceClass} ${secondaryTextClass}`}
+                          className={`rounded-2xl px-4 py-4 border ${mutedSurfaceClass}`}
                         >
-                          {feature}
+                          <span className="text-xs uppercase tracking-widest text-cyan-400 dark:text-cyan-200">
+                            Function {idx + 1}
+                          </span>
+                          <p className={`mt-2 text-sm leading-relaxed ${secondaryTextClass}`}>
+                            {feature}
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {impactPoints.length > 0 && (
+                  <div>
+                    <h3 className={`text-lg font-semibold mb-3 ${accentTextClass}`}>
+                      What Makes This Build Unique
+                    </h3>
+                    <ul className="space-y-3">
+                      {impactPoints.map((point, idx) => (
+                        <li
+                          key={`impact-${idx}`}
+                          className={`flex items-start space-x-3 ${secondaryTextClass}`}
+                        >
+                          <span
+                            className={`mt-1 w-2.5 h-2.5 rounded-full bg-gradient-to-r ${
+                              gradient ?? 'from-cyan-400 to-purple-500'
+                            }`}
+                          />
+                          <span className="text-sm leading-relaxed">{point}</span>
                         </li>
                       ))}
                     </ul>
@@ -336,10 +412,10 @@ const ProjectDetailPage = () => {
                   </div>
                 )}
               </div>
-            </div>
+            </section>
 
             {metrics.length > 0 && (
-              <div className={`rounded-3xl p-8 space-y-6 ${surfaceClass}`}>
+              <div className={`rounded-3xl p-8 space-y-6 ${surfaceClass}`} data-reveal>
                 <h2 className={`text-2xl font-bold ${primaryTextClass}`}>Key Metrics</h2>
                 <div className="grid sm:grid-cols-2 gap-4">
                   {metrics.map((metric) => (
@@ -361,7 +437,7 @@ const ProjectDetailPage = () => {
           </div>
 
           {storySections.length > 0 && (
-            <section className="mb-16">
+            <section className="mb-16" data-reveal>
               <div className="grid lg:grid-cols-3 gap-6">
                 {storySections.map((section) => (
                   <div
@@ -381,7 +457,7 @@ const ProjectDetailPage = () => {
           )}
 
           {heroGallery.length > 1 && (
-            <section className="mb-16">
+            <section className="mb-16" data-reveal>
               <div className="flex items-center justify-between mb-6">
                 <h2 className={`text-2xl font-bold ${primaryTextClass}`}>Project Gallery</h2>
                 <button
@@ -418,6 +494,10 @@ const ProjectDetailPage = () => {
               </div>
             </section>
           )}
+
+          <div data-reveal>
+            <ProjectHighlightsMarquee currentSlug={slug} />
+          </div>
 
           {relatedProjects.length > 0 && (
             <section className="mb-12">
