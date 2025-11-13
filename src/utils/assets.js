@@ -30,6 +30,26 @@ import fantasticBaby3 from '/src/assets/webp/fantasticbabyshakala/3.webp'
 // Automation Challenger Assets
 import automationChallenger from '/src/assets/Automation Challenger/Automation Challenger.png'
 
+// FitSync Assets
+import fitSync1 from '/src/assets/FitSync/1.png'
+import fitSync2 from '/src/assets/FitSync/2.png'
+import fitSync3 from '/src/assets/FitSync/3.png'
+import fitSync4 from '/src/assets/FitSync/4.png'
+import fitSync5 from '/src/assets/FitSync/5.png'
+
+// IX Solutions Assets
+import ixSolutions1 from '/src/assets/IX Solutions/1.png'
+import ixSolutions2 from '/src/assets/IX Solutions/2.png'
+import ixSolutions3 from '/src/assets/IX Solutions/3.png'
+import ixSolutions4 from '/src/assets/IX Solutions/4.png'
+import ixSolutions5 from '/src/assets/IX Solutions/5.png'
+
+// WhosIn Assets
+import whosIn1 from '/src/assets/WhosIn/1.png'
+import whosIn2 from '/src/assets/WhosIn/2.png'
+import whosIn3 from '/src/assets/WhosIn/3.png'
+import whosInVideo from '/src/assets/WhosIn/Video.mp4'
+
 // Website Creation Assets (WebP optimized)
 import decorMeadow from '/src/assets/webp/Websites Created and Maintained/decormeadow.webp'
 import femmeFits from '/src/assets/webp/Websites Created and Maintained/femmefits.webp'
@@ -65,6 +85,9 @@ import seoAfter from '/src/assets/webp/SEO/seo-after.webp'
 // Profile Assets
 import profilePhoto from '/src/assets/Pro-photo.png'
 
+// Placeholder Asset
+import placeholderImage from '/src/assets/placeholder.png'
+
 // Export asset objects for easy access
 export const projectAssets = {
   guro: {
@@ -87,6 +110,19 @@ export const projectAssets = {
   fantasticBaby: {
     images: [fantasticBaby1, fantasticBaby2, fantasticBaby3],
     main: fantasticBaby1
+  },
+  fitSync: {
+    images: [fitSync1, fitSync2, fitSync3, fitSync4, fitSync5],
+    main: fitSync1
+  },
+  ixSolutions: {
+    images: [ixSolutions1, ixSolutions2, ixSolutions3, ixSolutions4, ixSolutions5],
+    main: ixSolutions1
+  },
+  whosIn: {
+    images: [whosIn1, whosIn2, whosIn3],
+    video: whosInVideo,
+    main: whosIn1
   }
 }
 
@@ -118,4 +154,8 @@ export const seoAssets = [seoBefore, seoAfter]
 
 export const profileAssets = {
   photo: profilePhoto
+}
+
+export const placeholderAssets = {
+  image: placeholderImage
 }

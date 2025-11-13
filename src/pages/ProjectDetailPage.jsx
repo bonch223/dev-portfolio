@@ -74,6 +74,7 @@ const ProjectDetailPage = () => {
 
   const heroBanner = hero?.banner ?? image ?? gallery?.[0] ?? null;
   const heroGallery = hero?.gallery ?? gallery ?? [];
+  const projectVideo = hero?.video ?? project.video ?? null;
   const projectSummary = overview ?? summary ?? '';
   const liveLink = links.live ?? project.url ?? null;
   const demoLink = links.demo ?? null;
@@ -303,14 +304,39 @@ const ProjectDetailPage = () => {
                 </div>
               </div>
 
-              {heroGallery.length > 0 && (
+              {(heroGallery.length > 0 || projectVideo) && (
                 <div className="relative group">
                   <div className={`overflow-hidden rounded-3xl border-2 ${isDarkMode ? 'border-cyan-400/30' : 'border-[#e3c5a4] shadow-[0_24px_50px_rgba(90,58,40,0.16)]'} transition-transform duration-500 group-hover:scale-[1.02]`}>
-                    <img
-                      src={heroGallery[0]}
-                      alt={`${title} preview`}
-                      className="w-full h-full object-cover"
-                    />
+                    {(() => {
+                      const firstItem = heroGallery[0];
+                      const isVideo = projectVideo || (firstItem && (firstItem.endsWith('.mp4') || firstItem.endsWith('.webm') || firstItem.endsWith('.mov')));
+                      const videoSrc = projectVideo || (isVideo ? firstItem : null);
+                      const posterImage = isVideo ? (heroGallery.find(item => !item.endsWith('.mp4') && !item.endsWith('.webm') && !item.endsWith('.mov')) || heroBanner || image) : null;
+                      
+                      if (videoSrc) {
+                        return (
+                          <video
+                            src={videoSrc}
+                            poster={posterImage}
+                            controls
+                            className="w-full h-full object-cover"
+                            preload="metadata"
+                          >
+                            <source src={videoSrc} type="video/mp4" />
+                            Your browser does not support the video tag.
+                          </video>
+                        );
+                      } else if (firstItem) {
+                        return (
+                          <img
+                            src={firstItem}
+                            alt={`${title} preview`}
+                            className="w-full h-full object-cover"
+                          />
+                        );
+                      }
+                      return null;
+                    })()}
                   </div>
                   {heroGallery.length > 1 && (
                     <button

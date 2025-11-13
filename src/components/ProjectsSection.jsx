@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LightboxGallery from './LightboxGallery';
 import { featuredProjects as featuredProjectList, otherProjects as otherProjectList } from '../data/projects';
+import { placeholderAssets } from '../utils/assets';
 
 const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
   const [activeProject, setActiveProject] = useState(0);
@@ -75,19 +76,103 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
           </p>
         </div>
 
-        {/* Project Navigation */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
+        {/* Project Navigation - Card Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-12">
           {projects.map((project, index) => (
             <button
               key={project.id}
               onClick={() => setActiveProject(index)}
-              className={`px-6 py-3 rounded-full border-2 transition-all duration-300 ${
+              className={`group relative overflow-hidden rounded-xl transition-all duration-300 ${
                 activeProject === index
-                  ? 'border-cyan-400 bg-cyan-400/10 text-cyan-400'
-                  : 'border-gray-600 text-gray-300 hover:border-gray-500'
+                  ? 'ring-2 ring-cyan-400 ring-offset-2 ring-offset-slate-900 scale-105'
+                  : 'hover:scale-105 opacity-80 hover:opacity-100'
               }`}
             >
-              {project.title}
+              {/* Card Background with Gradient */}
+              <div 
+                className={`absolute inset-0 bg-gradient-to-br ${project.gradient} ${
+                  activeProject === index ? 'opacity-100' : 'opacity-60 group-hover:opacity-80'
+                } transition-opacity duration-300`}
+              />
+              
+              {/* Project Image/Video or Placeholder */}
+              <div 
+                className="relative aspect-video overflow-hidden"
+                onMouseEnter={(e) => {
+                  const video = e.currentTarget.querySelector('video');
+                  if (video) video.play();
+                }}
+                onMouseLeave={(e) => {
+                  const video = e.currentTarget.querySelector('video');
+                  if (video) {
+                    video.pause();
+                    video.currentTime = 0;
+                  }
+                }}
+              >
+                {project.video ? (
+                  <>
+                    <video 
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                      poster={project.image || placeholderAssets.image}
+                      muted
+                      loop
+                      playsInline
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <source src={project.video} type="video/mp4" />
+                    </video>
+                    {/* Play Button Overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors duration-300 pointer-events-none">
+                      <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center opacity-80 group-hover:opacity-0 transition-opacity">
+                        <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <img 
+                    src={project.image || placeholderAssets.image} 
+                    alt={project.title}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                )}
+                {/* Overlay Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
+              </div>
+              
+              {/* Project Info */}
+              <div className="absolute bottom-0 left-0 right-0 p-3">
+                <h3 className="text-white font-semibold text-sm mb-1 line-clamp-1">
+                  {project.title}
+                </h3>
+                <p className="text-white/80 text-xs line-clamp-1">
+                  {project.subtitle}
+                </p>
+                
+                {/* Status Badge */}
+                <div className="mt-2 flex items-center gap-2">
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                    project.status === 'Live' 
+                      ? 'bg-green-500/30 text-green-300 border border-green-500/50'
+                      : project.status === 'In Development'
+                      ? 'bg-yellow-500/30 text-yellow-300 border border-yellow-500/50'
+                      : project.status === 'Paused'
+                      ? 'bg-gray-500/30 text-gray-300 border border-gray-500/50'
+                      : 'bg-blue-500/30 text-blue-300 border border-blue-500/50'
+                  }`}>
+                    {project.status || 'Completed'}
+                  </span>
+                </div>
+              </div>
+              
+              {/* Active Indicator */}
+              {activeProject === index && (
+                <div className="absolute top-2 right-2">
+                  <div className="w-3 h-3 bg-cyan-400 rounded-full ring-2 ring-white" />
+                </div>
+              )}
             </button>
           ))}
         </div>
@@ -103,9 +188,11 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
                     ? 'bg-green-500/20 text-green-400 border border-green-500/30'
                     : currentProject.status === 'In Development'
                     ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
+                    : currentProject.status === 'Paused'
+                    ? 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
                     : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
                 }`}>
-                  {currentProject.status}
+                  {currentProject.status || 'Completed'}
                 </span>
                 <span className="text-gray-400 text-sm">
                   {currentProject.category}
@@ -160,17 +247,19 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
             )}
 
             {/* Features */}
-            <div className="space-y-4">
-              <h4 className="font-semibold text-lg text-slate-900 dark:text-white">Key Features</h4>
-              <div className="grid grid-cols-1 gap-2">
-                {currentProject.features.map((feature, index) => (
-                  <div key={index} className="flex items-center space-x-3">
-                    <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${currentProject.gradient}`} />
-                    <span className="text-slate-700 dark:text-gray-300">{feature}</span>
-                  </div>
-                ))}
+            {currentProject.features && currentProject.features.length > 0 && (
+              <div className="space-y-4">
+                <h4 className="font-semibold text-lg text-slate-900 dark:text-white">Key Features</h4>
+                <div className="grid grid-cols-1 gap-2">
+                  {currentProject.features.map((feature, index) => (
+                    <div key={index} className="flex items-center space-x-3">
+                      <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${currentProject.gradient}`} />
+                      <span className="text-slate-700 dark:text-gray-300">{feature}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Technologies */}
             <div className="space-y-4">
@@ -251,7 +340,7 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
                 </div>
               ) : (
                 <img 
-                  src={currentProject.image} 
+                  src={currentProject.image || placeholderAssets.image} 
                   alt={currentProject.title}
                   className="w-full h-64 object-cover rounded-lg hover:scale-105 transition-transform duration-300"
                 />
