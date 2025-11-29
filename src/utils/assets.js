@@ -88,8 +88,14 @@ import profilePhoto from '/src/assets/Pro-photo.png'
 // Placeholder Asset
 import placeholderImage from '/src/assets/placeholder.png'
 
+import armetTerminal from '/src/assets/armet_terminal.png'
+
 // Export asset objects for easy access
 export const projectAssets = {
+  armet: {
+    main: armetTerminal,
+    images: [armetTerminal]
+  },
   guro: {
     images: [guroImg1, guroImg2, guroImg3],
     video: guroVideo,

@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LightboxGallery from './LightboxGallery';
-import { featuredProjects as featuredProjectList, otherProjects as otherProjectList } from '../data/projects';
+import { featuredProjects, otherProjects } from '../data/projects';
 import { placeholderAssets } from '../utils/assets';
+import TechAutocomplete from './TechAutocomplete';
 
-const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
-  const [activeProject, setActiveProject] = useState(0);
+const ProjectsSection = ({ onLightboxChange }) => {
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeTech, setActiveTech] = useState('All');
   const [isVisible, setIsVisible] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImages, setLightboxImages] = useState([]);
@@ -13,42 +15,44 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
 
   const navigate = useNavigate();
 
-  // Utility function to prioritize videos in gallery
-  const prioritizeVideosInGallery = (gallery) => {
-    if (!gallery) return gallery;
-    return gallery.sort((a, b) => {
-      const aIsVideo = a.endsWith('.mp4') || a.endsWith('.webm') || a.endsWith('.mov');
-      const bIsVideo = b.endsWith('.mp4') || b.endsWith('.webm') || b.endsWith('.mov');
-      
-      if (aIsVideo && !bIsVideo) return -1; // Video first
-      if (!aIsVideo && bIsVideo) return 1;  // Video first
-      return 0; // Keep original order for same type
+  // Merge all projects
+  const allProjects = useMemo(() => [...featuredProjects, ...otherProjects], []);
+
+  // Extract unique categories and technologies
+  const categories = useMemo(() => {
+    const cats = new Set(allProjects.map(p => p.category));
+    return ['All', ...Array.from(cats)];
+  }, [allProjects]);
+
+  const technologies = useMemo(() => {
+    const techs = new Set(allProjects.flatMap(p => p.technologies));
+    return ['All', ...Array.from(techs).sort()];
+  }, [allProjects]);
+
+  // Filter projects
+  const filteredProjects = useMemo(() => {
+    return allProjects.filter(project => {
+      const categoryMatch = activeCategory === 'All' || project.category === activeCategory;
+      const techMatch = activeTech === 'All' || project.technologies.includes(activeTech);
+      return categoryMatch && techMatch;
     });
-  };
-
-  // Featured Projects (5 main projects with full development and links)
-  const featuredProjects = featuredProjectList;
-
-  // Other Projects (projects without full development or links)
-  const otherProjects = otherProjectList;
-
-  // Use featured projects as main projects for navigation
-  const projects = featuredProjects;
-
-  const currentProject = projects[activeProject] ?? projects[0];
-  const projectDetailsPath = currentProject ? `/projects/${currentProject.slug}` : '#';
-  const liveProjectUrl = currentProject?.links?.live ?? currentProject?.url ?? null;
-  const projectSummary = currentProject?.overview ?? currentProject?.summary ?? '';
-  const clientNeed = currentProject?.problem ?? currentProject?.summary ?? '';
-  const deliveredOutcome = currentProject?.solution ?? currentProject?.impact ?? '';
+  }, [activeCategory, activeTech, allProjects]);
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
   const openLightbox = (images, startIndex = 0) => {
-    const prioritizedImages = prioritizeVideosInGallery(images);
-    setLightboxImages(prioritizedImages);
+    // Sort videos first
+    const sortedImages = [...images].sort((a, b) => {
+      const aIsVideo = a.endsWith('.mp4') || a.endsWith('.webm');
+      const bIsVideo = b.endsWith('.mp4') || b.endsWith('.webm');
+      if (aIsVideo && !bIsVideo) return -1;
+      if (!aIsVideo && bIsVideo) return 1;
+      return 0;
+    });
+
+    setLightboxImages(sortedImages);
     setLightboxIndex(startIndex);
     setLightboxOpen(true);
     onLightboxChange(true);
@@ -66,515 +70,168 @@ const ProjectsSection = ({ onLightboxChange, onShowServiceSelector }) => {
   return (
     <section id="projects" className="section projects-section relative z-10">
       <div className="section-content">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <h2 className="heading-secondary mb-4">
-            Featured <span className="text-gradient">Projects</span>
+            My <span className="text-gradient">Projects</span>
           </h2>
           <p className="text-lg text-slate-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Explore my portfolio of innovative projects that showcase my expertise in 
-            full-stack development, AI integration, and user experience design.
+            A collection of my work in full-stack development, AI integration, and digital experiences.
           </p>
         </div>
 
-        {/* Project Navigation - Card Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-12">
-          {projects.map((project, index) => (
-            <button
-              key={project.id}
-              onClick={() => setActiveProject(index)}
-              className={`group relative overflow-hidden rounded-xl transition-all duration-300 ${
-                activeProject === index
-                  ? 'ring-2 ring-cyan-400 ring-offset-2 ring-offset-slate-900 scale-105'
-                  : 'hover:scale-105 opacity-80 hover:opacity-100'
-              }`}
-            >
-              {/* Card Background with Gradient */}
-              <div 
-                className={`absolute inset-0 bg-gradient-to-br ${project.gradient} ${
-                  activeProject === index ? 'opacity-100' : 'opacity-60 group-hover:opacity-80'
-                } transition-opacity duration-300`}
-              />
-              
-              {/* Project Image/Video or Placeholder */}
-              <div 
-                className="relative aspect-video overflow-hidden"
-                onMouseEnter={(e) => {
-                  const video = e.currentTarget.querySelector('video');
-                  if (video) video.play();
-                }}
-                onMouseLeave={(e) => {
-                  const video = e.currentTarget.querySelector('video');
-                  if (video) {
-                    video.pause();
-                    video.currentTime = 0;
-                  }
-                }}
+        {/* Filters */}
+        <div className="mb-12 space-y-6">
+          {/* Category Filter */}
+          <div className="flex flex-wrap justify-center gap-2">
+            {categories.map(category => (
+              <button
+                key={category}
+                onClick={() => setActiveCategory(category)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${activeCategory === category
+                    ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/25'
+                    : 'bg-white/50 dark:bg-slate-800/50 text-slate-600 dark:text-gray-300 hover:bg-white dark:hover:bg-slate-800'
+                  }`}
               >
-                {project.video ? (
-                  <>
-                    <video 
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      poster={project.image || placeholderAssets.image}
-                      muted
-                      loop
-                      playsInline
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <source src={project.video} type="video/mp4" />
-                    </video>
-                    {/* Play Button Overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors duration-300 pointer-events-none">
-                      <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center opacity-80 group-hover:opacity-0 transition-opacity">
-                        <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M8 5v14l11-7z"/>
-                        </svg>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <img 
-                    src={project.image || placeholderAssets.image} 
-                    alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                  />
-                )}
-                {/* Overlay Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
-              </div>
-              
-              {/* Project Info */}
-              <div className="absolute bottom-0 left-0 right-0 p-3">
-                <h3 className="text-white font-semibold text-sm mb-1 line-clamp-1">
-                  {project.title}
-                </h3>
-                <p className="text-white/80 text-xs line-clamp-1">
-                  {project.subtitle}
-                </p>
-                
-                {/* Status Badge */}
-                <div className="mt-2 flex items-center gap-2">
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                    project.status === 'Live' 
-                      ? 'bg-green-500/30 text-green-300 border border-green-500/50'
-                      : project.status === 'In Development'
-                      ? 'bg-yellow-500/30 text-yellow-300 border border-yellow-500/50'
-                      : project.status === 'Paused'
-                      ? 'bg-gray-500/30 text-gray-300 border border-gray-500/50'
-                      : 'bg-blue-500/30 text-blue-300 border border-blue-500/50'
-                  }`}>
-                    {project.status || 'Completed'}
-                  </span>
-                </div>
-              </div>
-              
-              {/* Active Indicator */}
-              {activeProject === index && (
-                <div className="absolute top-2 right-2">
-                  <div className="w-3 h-3 bg-cyan-400 rounded-full ring-2 ring-white" />
-                </div>
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* Active Project Display */}
-        <div className={`grid lg:grid-cols-2 gap-12 items-center ${isVisible ? 'animate-slide-up' : 'opacity-0'}`}>
-          {/* Left Side - Project Info */}
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <div className="flex items-center space-x-4">
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  currentProject.status === 'Live' 
-                    ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                    : currentProject.status === 'In Development'
-                    ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
-                    : currentProject.status === 'Paused'
-                    ? 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
-                    : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                }`}>
-                  {currentProject.status || 'Completed'}
-                </span>
-                <span className="text-gray-400 text-sm">
-                  {currentProject.category}
-                </span>
-              </div>
-              
-              <h3 className="heading-tertiary text-gradient">
-                {currentProject.title}
-              </h3>
-              <p className="text-xl text-cyan-400 font-medium">
-                {currentProject.subtitle}
-              </p>
-            </div>
-
-            <p className="text-slate-600 dark:text-gray-300 leading-relaxed text-lg">
-              {projectSummary}
-            </p>
-
-            {(clientNeed || deliveredOutcome) && (
-              <div className="glass-content-pane rounded-2xl p-5 md:p-6 space-y-6">
-                <div className="space-y-3">
-                  <span className="text-xs uppercase tracking-[0.2em] text-cyan-400 dark:text-cyan-300">
-                    Project Brief
-                  </span>
-                  <h4 className="text-xl font-semibold text-slate-900 dark:text-white">
-                    What the client needed vs. what we shipped
-                  </h4>
-                </div>
-                <div className="grid gap-6 md:grid-cols-2">
-                  {clientNeed && (
-                    <div className="space-y-2">
-                      <h5 className="text-sm font-semibold text-slate-900 dark:text-white tracking-wide uppercase">
-                        Client Goals
-                      </h5>
-                      <p className="text-sm leading-relaxed text-slate-600 dark:text-gray-300">
-                        {clientNeed}
-                      </p>
-                    </div>
-                  )}
-                  {deliveredOutcome && (
-                    <div className="space-y-2">
-                      <h5 className="text-sm font-semibold text-slate-900 dark:text-white tracking-wide uppercase">
-                        Delivered Solution
-                      </h5>
-                      <p className="text-sm leading-relaxed text-slate-600 dark:text-gray-300">
-                        {deliveredOutcome}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Features */}
-            {currentProject.features && currentProject.features.length > 0 && (
-              <div className="space-y-4">
-                <h4 className="font-semibold text-lg text-slate-900 dark:text-white">Key Features</h4>
-                <div className="grid grid-cols-1 gap-2">
-                  {currentProject.features.map((feature, index) => (
-                    <div key={index} className="flex items-center space-x-3">
-                      <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${currentProject.gradient}`} />
-                      <span className="text-slate-700 dark:text-gray-300">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Technologies */}
-            <div className="space-y-4">
-              <h4 className="font-semibold text-lg text-slate-900 dark:text-white">Technologies Used</h4>
-              <div className="flex flex-wrap gap-2">
-                {currentProject.technologies.map((tech, index) => (
-                  <span 
-                    key={index}
-                    className="code-text"
-                    style={{ borderColor: currentProject.color + '40' }}
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-wrap gap-4">
-              <Link 
-                to={projectDetailsPath}
-                className="btn btn-primary"
-              >
-                <span>Explore Case Study</span>
-                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </Link>
-              {liveProjectUrl && (
-                <a 
-                  href={liveProjectUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="btn btn-secondary"
-                >
-                  <span>View Live Site</span>
-                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </a>
-              )}
-            </div>
-          </div>
-
-          {/* Right Side - Project Visual */}
-          <div className="relative">
-            {/* Glow effect */}
-            <div className={`absolute inset-0 bg-gradient-to-r ${currentProject.gradient} rounded-2xl blur-3xl opacity-20 scale-110`} />
-            
-            {/* Project image/video container */}
-            <div 
-              className="relative card p-4 overflow-hidden group cursor-pointer"
-              onClick={() => {
-                if (currentProject.gallery) {
-                  openLightbox(currentProject.gallery, 0);
-                }
-              }}
-            >
-              {currentProject.video ? (
-                <div className="relative">
-                <video 
-                  className="w-full h-64 object-cover rounded-lg"
-                  poster={currentProject.image}
-                  controls
-                  muted
-                    onClick={(e) => e.stopPropagation()}
-                >
-                  <source src={currentProject.video} type="video/mp4" />
-                </video>
-                  {/* Video overlay for gallery access */}
-                  <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-300 rounded-lg flex items-center justify-center">
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/20 backdrop-blur-sm rounded-full p-3">
-                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <img 
-                  src={currentProject.image || placeholderAssets.image} 
-                  alt={currentProject.title}
-                  className="w-full h-64 object-cover rounded-lg hover:scale-105 transition-transform duration-300"
-                />
-              )}
-              
-              {/* Gallery button */}
-              {currentProject.gallery && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    openLightbox(currentProject.gallery, 0);
-                  }}
-                  className="absolute top-6 right-6 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300 backdrop-blur-sm opacity-0 group-hover:opacity-100"
-                >
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                </button>
-              )}
-              
-              {/* Overlay */}
-              <div className="absolute inset-4 bg-gradient-to-t from-black/50 to-transparent rounded-lg pointer-events-none" />
-              
-              {/* Gallery indicator */}
-              {currentProject.gallery && currentProject.gallery.length > 1 && (
-                <div className="absolute bottom-6 left-6 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 flex items-center space-x-2">
-                  <span className="text-white text-sm font-medium">
-                    {currentProject.gallery.length} items
-                  </span>
-                  {currentProject.gallery.some(item => 
-                    item.endsWith('.mp4') || item.endsWith('.webm') || item.endsWith('.mov')
-                  ) && (
-                    <div className="flex items-center space-x-1">
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                      </svg>
-                      <span className="text-white text-xs">+ Video</span>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Floating elements */}
-            <div className={`absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-r ${currentProject.gradient} rounded-full animate-float opacity-60`} />
-            <div className={`absolute -bottom-4 -left-4 w-12 h-12 bg-gradient-to-r ${currentProject.gradient} rounded-full animate-float opacity-60`} style={{ animationDelay: '1s' }} />
-          </div>
-        </div>
-
-        {/* Other Projects Section */}
-        <div className="mt-12">
-          <div className="text-center mb-8">
-            <h3 className="heading-tertiary mb-2 text-gradient">
-              Other <span className="text-gradient">Projects</span>
-            </h3>
-            <p className="text-gray-300 max-w-2xl mx-auto">
-              Additional projects showcasing diverse skills across different industries.
-            </p>
-          </div>
-
-          {/* Desktop Other Projects Grid */}
-          <div className="hidden md:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-12">
-            {otherProjects.map((project, index) => (
-              <div 
-                key={project.id}
-                className="glass-content-pane group hover:scale-105 transition-all duration-300 relative overflow-hidden cursor-pointer"
-                onClick={() => handleProjectNavigate(project.slug)}
-              >
-                {/* Project Image */}
-                <div className="relative overflow-hidden rounded-lg">
-                  <img 
-                    src={project.image} 
-                    alt={project.title}
-                    className="w-full h-32 object-cover transition-transform duration-300 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  
-                  {/* Category Badge */}
-                  <div className="absolute top-2 left-2">
-                    <span 
-                      className="px-2 py-1 rounded text-xs font-medium text-white"
-                      style={{ 
-                        background: `${project.color}40`,
-                        backdropFilter: 'blur(10px)'
-                      }}
-                    >
-                      {project.category.split(' ')[0]}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Project Info */}
-                <div className="p-3">
-                  <h4 className="font-semibold text-sm mb-1 truncate text-slate-900 dark:text-white group-hover:text-cyan-400 transition-colors">
-                    {project.title}
-                  </h4>
-                  <p className="text-sky-600 dark:text-cyan-400 text-xs font-medium mb-2 truncate">
-                    {project.subtitle}
-                  </p>
-                  <p className="text-slate-600 dark:text-gray-300 text-xs leading-relaxed mb-3 line-clamp-2">
-                    {project.description}
-                  </p>
-
-                  {/* Technologies */}
-                  <div className="flex flex-wrap gap-1">
-                    {project.technologies.slice(0, 2).map((tech, techIndex) => (
-                      <span 
-                        key={techIndex}
-                        className="px-2 py-1 rounded text-xs text-slate-600 dark:text-gray-300"
-                        style={{ 
-                          background: `${project.color}20`,
-                          border: `1px solid ${project.color}30`
-                        }}
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                    {project.technologies.length > 2 && (
-                      <span className="text-gray-400 text-xs">
-                        +{project.technologies.length - 2}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Accent Line */}
-                <div 
-                  className="absolute bottom-0 left-0 right-0 h-0.5 transition-all duration-300"
-                  style={{ background: `${project.color}` }}
-                />
-              </div>
+                {category}
+              </button>
             ))}
           </div>
 
-          {/* Mobile Swipeable Other Projects */}
-          <div className="md:hidden mb-12">
-            <div className="overflow-x-auto scrollbar-hide pb-4" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
-              <div className="flex space-x-4 min-w-max px-4">
-                {otherProjects.map((project, index) => (
-                  <div 
-                    key={project.id}
-                    className="flex-shrink-0 w-64 glass-content-pane group hover:scale-105 transition-all duration-300 relative overflow-hidden cursor-pointer"
-                    onClick={() => handleProjectNavigate(project.slug)}
-                  >
-                    {/* Project Image */}
-                    <div className="relative overflow-hidden rounded-lg">
-                      <img 
-                        src={project.image} 
-                        alt={project.title}
-                        className="w-full h-24 object-cover transition-transform duration-300 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      
-                      {/* Category Badge */}
-                      <div className="absolute top-2 left-2">
-                        <span 
-                          className="px-2 py-1 rounded text-xs font-medium text-white"
-                          style={{ 
-                            background: `${project.color}40`,
-                            backdropFilter: 'blur(10px)'
-                          }}
-                        >
-                          {project.category.split(' ')[0]}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Project Info */}
-                    <div className="p-3">
-                      <h4 className="font-semibold text-sm mb-1 truncate text-slate-900 dark:text-white group-hover:text-cyan-400 transition-colors">
-                        {project.title}
-                      </h4>
-                      <p className="text-sky-600 dark:text-cyan-400 text-xs font-medium mb-2 truncate">
-                        {project.subtitle}
-                      </p>
-                      <p className="text-slate-600 dark:text-gray-300 text-xs leading-relaxed mb-3 line-clamp-2">
-                        {project.description}
-                      </p>
-
-                      {/* Technologies */}
-                      <div className="flex flex-wrap gap-1">
-                        {project.technologies.slice(0, 2).map((tech, techIndex) => (
-                          <span 
-                            key={techIndex}
-                            className="px-2 py-1 rounded text-xs text-slate-600 dark:text-gray-300"
-                            style={{ 
-                              background: `${project.color}20`,
-                              border: `1px solid ${project.color}30`
-                            }}
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                        {project.technologies.length > 2 && (
-                          <span className="text-gray-400 text-xs">
-                            +{project.technologies.length - 2}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Accent Line */}
-                    <div 
-                      className="absolute bottom-0 left-0 right-0 h-0.5 transition-all duration-300"
-                      style={{ background: `${project.color}` }}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            {/* Swipe indicator */}
-            <div className="text-center mt-4">
-              <div className="inline-flex items-center space-x-2 text-cyan-400 text-sm">
-                <span>←</span>
-                <span>Swipe to explore more projects</span>
-                <span>→</span>
-              </div>
-            </div>
+          {/* Tech Filter */}
+          <div className="flex justify-center">
+            <TechAutocomplete
+              technologies={technologies}
+              selected={activeTech}
+              onChange={setActiveTech}
+            />
           </div>
         </div>
+
+        {/* Projects Grid */}
+        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ${isVisible ? 'animate-slide-up' : 'opacity-0'}`}>
+          {filteredProjects.map((project) => (
+            <div
+              key={project.id}
+              className="group relative bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 hover:-translate-y-1 flex flex-col h-full"
+              onClick={() => handleProjectNavigate(project.slug)}
+            >
+              {/* Image Container */}
+              <div className="relative aspect-video overflow-hidden cursor-pointer">
+                <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-20 group-hover:opacity-30 transition-opacity duration-500`} />
+
+                {project.video ? (
+                  <video
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    poster={project.image || placeholderAssets.image}
+                    muted
+                    loop
+                    playsInline
+                    onMouseEnter={(e) => e.target.play()}
+                    onMouseLeave={(e) => {
+                      e.target.pause();
+                      e.target.currentTime = 0;
+                    }}
+                  >
+                    <source src={project.video} type="video/mp4" />
+                  </video>
+                ) : (
+                  <img
+                    src={project.image || placeholderAssets.image}
+                    alt={project.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                )}
+
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300" />
+
+                {/* Category Badge */}
+                <div className="absolute top-4 left-4">
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/90 dark:bg-slate-900/90 text-slate-900 dark:text-white backdrop-blur-md shadow-sm">
+                    {project.category}
+                  </span>
+                </div>
+
+                {/* Status Badge */}
+                <div className="absolute top-4 right-4">
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium backdrop-blur-md ${project.status === 'Live'
+                      ? 'bg-green-500/20 text-green-300 border border-green-500/30'
+                      : 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
+                    }`}>
+                    {project.status}
+                  </span>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-6 flex flex-col flex-grow">
+                <div className="mb-4">
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-1 group-hover:text-cyan-500 transition-colors">
+                    {project.title}
+                  </h3>
+                  <p className="text-sm font-medium text-cyan-600 dark:text-cyan-400">
+                    {project.subtitle}
+                  </p>
+                </div>
+
+                <p className="text-slate-600 dark:text-gray-400 text-sm leading-relaxed mb-6 line-clamp-3 flex-grow">
+                  {project.summary || project.description}
+                </p>
+
+                {/* Tech Stack */}
+                <div className="flex flex-wrap gap-2 mt-auto">
+                  {project.technologies.slice(0, 3).map((tech, i) => (
+                    <span
+                      key={i}
+                      className="px-2 py-1 text-xs rounded-md bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-gray-300 border border-slate-200 dark:border-slate-600"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                  {project.technologies.length > 3 && (
+                    <span className="px-2 py-1 text-xs rounded-md bg-slate-100 dark:bg-slate-700/50 text-slate-500 dark:text-gray-400 border border-slate-200 dark:border-slate-600">
+                      +{project.technologies.length - 3}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Empty State */}
+        {filteredProjects.length === 0 && (
+          <div className="text-center py-20">
+            <div className="inline-block p-4 rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
+              <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
+              No projects found
+            </h3>
+            <p className="text-slate-500 dark:text-gray-400">
+              Try adjusting your filters to see more results.
+            </p>
+            <button
+              onClick={() => {
+                setActiveCategory('All');
+                setActiveTech('All');
+              }}
+              className="mt-6 text-cyan-500 hover:text-cyan-400 font-medium"
+            >
+              Clear all filters
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Lightbox Gallery */}
       <LightboxGallery
         images={lightboxImages}
         isOpen={lightboxOpen}
         onClose={closeLightbox}
         initialIndex={lightboxIndex}
       />
-
-      {/* Other Project Modal */}
-      {/* This component is now handled by the router, so it's removed. */}
-
     </section>
   );
 };
