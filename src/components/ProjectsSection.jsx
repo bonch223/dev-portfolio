@@ -5,6 +5,8 @@ import { featuredProjects, otherProjects } from '../data/projects';
 import { placeholderAssets } from '../utils/assets';
 import TechAutocomplete from './TechAutocomplete';
 
+import ProjectModal from './ProjectModal';
+
 const ProjectsSection = ({ onLightboxChange }) => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeTech, setActiveTech] = useState('All');
@@ -12,6 +14,7 @@ const ProjectsSection = ({ onLightboxChange }) => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImages, setLightboxImages] = useState([]);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [selectedProject, setSelectedProject] = useState(null);
 
   const navigate = useNavigate();
 
@@ -63,8 +66,8 @@ const ProjectsSection = ({ onLightboxChange }) => {
     onLightboxChange(false);
   };
 
-  const handleProjectNavigate = (slug) => {
-    navigate(`/projects/${slug}`);
+  const handleProjectClick = (project) => {
+    setSelectedProject(project);
   };
 
   return (
@@ -88,8 +91,8 @@ const ProjectsSection = ({ onLightboxChange }) => {
                 key={category}
                 onClick={() => setActiveCategory(category)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${activeCategory === category
-                    ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/25'
-                    : 'bg-white/50 dark:bg-slate-800/50 text-slate-600 dark:text-gray-300 hover:bg-white dark:hover:bg-slate-800'
+                  ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/25'
+                  : 'bg-white/50 dark:bg-slate-800/50 text-slate-600 dark:text-gray-300 hover:bg-white dark:hover:bg-slate-800'
                   }`}
               >
                 {category}
@@ -112,11 +115,11 @@ const ProjectsSection = ({ onLightboxChange }) => {
           {filteredProjects.map((project) => (
             <div
               key={project.id}
-              className="group relative bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 hover:-translate-y-1 flex flex-col h-full"
-              onClick={() => handleProjectNavigate(project.slug)}
+              className="group relative bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 hover:-translate-y-1 flex flex-col h-full cursor-pointer"
+              onClick={() => handleProjectClick(project)}
             >
               {/* Image Container */}
-              <div className="relative aspect-video overflow-hidden cursor-pointer">
+              <div className="relative aspect-video overflow-hidden">
                 <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-20 group-hover:opacity-30 transition-opacity duration-500`} />
 
                 {project.video ? (
@@ -155,8 +158,8 @@ const ProjectsSection = ({ onLightboxChange }) => {
                 {/* Status Badge */}
                 <div className="absolute top-4 right-4">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium backdrop-blur-md ${project.status === 'Live'
-                      ? 'bg-green-500/20 text-green-300 border border-green-500/30'
-                      : 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
+                    ? 'bg-green-500/20 text-green-300 border border-green-500/30'
+                    : 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
                     }`}>
                     {project.status}
                   </span>
@@ -232,8 +235,14 @@ const ProjectsSection = ({ onLightboxChange }) => {
         onClose={closeLightbox}
         initialIndex={lightboxIndex}
       />
+
+      <ProjectModal
+        project={selectedProject}
+        onClose={() => setSelectedProject(null)}
+      />
     </section>
   );
 };
 
 export default ProjectsSection;
+

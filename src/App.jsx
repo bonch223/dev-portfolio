@@ -3,6 +3,7 @@ import { Analytics, track } from '@vercel/analytics/react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import HeroSection from './components/HeroSection';
+import ImpactTicker from './components/ImpactTicker';
 import AboutSection from './components/AboutSection';
 import ProjectsSection from './components/ProjectsSection';
 import ContactSection from './components/ContactSection';
@@ -42,7 +43,7 @@ function App() {
 
   const handleShowServiceSelector = () => {
     setShowServiceSelector(true);
-    
+
     // Track service selector opened
     track('service_selector_opened');
   };
@@ -54,18 +55,18 @@ function App() {
   const handleSelectService = (service) => {
     setSelectedService(service);
     setShowServiceSelector(false);
-    
+
     // Track simulator opened
     track('simulator_opened', { simulator: service.id });
-    
+
     // Show the appropriate simulator based on service
-        if (service.id === 'seo') {
-          setShowSEOSimulator(true);
-        } else if (service.id === 'wordpress') {
-          setShowWordPressSimulator(true);
-        } else if (service.id === 'fullstack') {
-          setShowFullStackSimulator(true);
-        }
+    if (service.id === 'seo') {
+      setShowSEOSimulator(true);
+    } else if (service.id === 'wordpress') {
+      setShowWordPressSimulator(true);
+    } else if (service.id === 'fullstack') {
+      setShowFullStackSimulator(true);
+    }
     // Add more simulators here as we build them
   };
 
@@ -78,7 +79,7 @@ function App() {
     } else if (showFullStackSimulator) {
       track('simulator_abandoned', { simulator: 'fullstack' });
     }
-    
+
     setShowSEOSimulator(false);
     setShowWordPressSimulator(false);
     setShowFullStackSimulator(false);
@@ -88,15 +89,15 @@ function App() {
   const handleProceedToQuote = (serviceData) => {
     // Handle proceeding to quote with service data
     setCurrentServiceData(serviceData);
-    
+
     // Track quote generator opened
     track('quote_generator_opened', { service: serviceData.service.toLowerCase().replace(' ', '_') });
-    
+
     // Close current simulator
     setShowSEOSimulator(false);
     setShowWordPressSimulator(false);
     setShowFullStackSimulator(false);
-    
+
     // Show appropriate quote generator based on service
     if (serviceData.service === 'SEO Optimization') {
       setShowSEOQuoteGenerator(true);
@@ -106,7 +107,7 @@ function App() {
       setShowFullStackQuoteGenerator(true);
     }
     // Add more quote generators here for other services
-    
+
     console.log('Proceeding to quote with:', serviceData);
   };
 
@@ -149,7 +150,7 @@ function App() {
     // 2. Send email with quote
     // 3. Generate PDF
     // 4. Redirect to payment
-    
+
     // Note: The quote generators handle their own display and closing
     // They will show the quote summary on the final step
     // and only close when the user explicitly closes them
@@ -182,14 +183,15 @@ function App() {
       <Routes>
         <Route path="/" element={
           <>
-            <Navigation 
-              activeSection={activeSection} 
-              lightboxOpen={lightboxOpen} 
+            <Navigation
+              activeSection={activeSection}
+              lightboxOpen={lightboxOpen}
               onWorkflowChallengerClick={handleShowWorkflowChallenger}
             />
             <div className="main-layout">
               <main className="content-area">
                 <HeroSection />
+                <ImpactTicker />
                 <AboutSection />
                 <ProjectsSection onLightboxChange={setLightboxOpen} onShowServiceSelector={handleShowServiceSelector} />
                 <DigitalMarketingSection onLightboxChange={setLightboxOpen} />
