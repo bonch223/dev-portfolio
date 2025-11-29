@@ -82,9 +82,9 @@ const ProjectDetailPage = () => {
   const githubLink = links.github ?? null;
   const impactPoints = impact
     ? impact
-        .split('.')
-        .map((point) => point.trim())
-        .filter(Boolean)
+      .split('.')
+      .map((point) => point.trim())
+      .filter(Boolean)
     : [];
 
   const relatedProjects = useMemo(() => {
@@ -210,7 +210,7 @@ const ProjectDetailPage = () => {
                         className={`min-w-[130px] rounded-full px-4 py-2 text-xs font-semibold tracking-wide uppercase flex items-center justify-between gap-3 ${metricPillClass}`}
                       >
                         <span className="opacity-80">{metric.label}</span>
-                        <span className="text-sm text-white dark:text-white">{metric.value}</span>
+                        <span className="text-sm font-bold">{metric.value}</span>
                       </div>
                     ))}
                   </div>
@@ -218,38 +218,67 @@ const ProjectDetailPage = () => {
 
                 {supplementalLinks.length > 0 && (
                   <div className="flex flex-wrap gap-3 pt-2">
-                    {supplementalLinks.map((link) => (
-                      <a
-                        key={link.key}
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`inline-flex items-center space-x-2 px-5 py-3 rounded-full font-semibold transition-all ${
-                          link.key === 'live'
-                            ? isDarkMode
-                              ? 'bg-gradient-to-r from-cyan-400 to-purple-500 text-white shadow-[0_18px_40px_rgba(0,212,255,0.22)] hover:shadow-[0_22px_50px_rgba(0,212,255,0.28)]'
-                              : 'bg-[#b88760] text-white shadow-[0_20px_45px_rgba(90,58,40,0.22)] hover:bg-[#a46f4d]'
-                            : isDarkMode
-                            ? 'bg-gray-800/70 text-gray-100 border border-gray-600 hover:border-cyan-400/50'
-                            : 'bg-white text-[#3c281c] border border-[#d9bfa0] hover:bg-[#f4e4d2]'
-                        }`}
-                      >
-                        <span>{link.label}</span>
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
+                    {supplementalLinks.map((link) => {
+                      if (link.key === 'github') {
+                        return (
+                          <button
+                            key={link.key}
+                            onClick={() => alert("This project's source code is currently in a private repository. Please contact me for access details.")}
+                            className={`inline-flex items-center space-x-2 px-5 py-3 rounded-full font-semibold transition-all cursor-not-allowed opacity-80 ${isDarkMode
+                                ? 'bg-gray-800/50 text-gray-400 border border-gray-700'
+                                : 'bg-gray-100 text-gray-500 border border-gray-200'
+                              }`}
+                          >
+                            <span>View Source Code</span>
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                              />
+                            </svg>
+                          </button>
+                        );
+                      }
+
+                      return (
+                        <a
+                          key={link.key}
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`inline-flex items-center space-x-2 px-5 py-3 rounded-full font-semibold transition-all ${link.key === 'live'
+                              ? isDarkMode
+                                ? 'bg-gradient-to-r from-cyan-400 to-purple-500 text-white shadow-[0_18px_40px_rgba(0,212,255,0.22)] hover:shadow-[0_22px_50px_rgba(0,212,255,0.28)]'
+                                : 'bg-[#b88760] text-white shadow-[0_20px_45px_rgba(90,58,40,0.22)] hover:bg-[#a46f4d]'
+                              : isDarkMode
+                                ? 'bg-gray-800/70 text-gray-100 border border-gray-600 hover:border-cyan-400/50'
+                                : 'bg-white text-[#3c281c] border border-[#d9bfa0] hover:bg-[#f4e4d2]'
+                            }`}
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4m0-4l4-4m0 0h-5m5 0v5"
-                          />
-                        </svg>
-                      </a>
-                    ))}
+                          <span>{link.label}</span>
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4m0-4l4-4m0 0h-5m5 0v5"
+                            />
+                          </svg>
+                        </a>
+                      );
+                    })}
                   </div>
                 )}
 
@@ -257,11 +286,10 @@ const ProjectDetailPage = () => {
                   <button
                     type="button"
                     onClick={() => navigate(-1)}
-                    className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold transition-all ${
-                      isDarkMode
+                    className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold transition-all ${isDarkMode
                         ? 'text-gray-300 hover:text-white'
                         : 'text-[#7a5a42] hover:text-[#533d2a]'
-                    }`}
+                      }`}
                   >
                     <svg
                       className="w-4 h-4"
@@ -280,11 +308,10 @@ const ProjectDetailPage = () => {
                   </button>
                   <Link
                     to="/#projects"
-                    className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold transition-all ${
-                      isDarkMode
+                    className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold transition-all ${isDarkMode
                         ? 'text-cyan-300 hover:text-cyan-100'
                         : 'text-[#b88760] hover:text-[#8c623e]'
-                    }`}
+                      }`}
                   >
                     <span>Browse all projects</span>
                     <svg
@@ -312,7 +339,7 @@ const ProjectDetailPage = () => {
                       const isVideo = projectVideo || (firstItem && (firstItem.endsWith('.mp4') || firstItem.endsWith('.webm') || firstItem.endsWith('.mov')));
                       const videoSrc = projectVideo || (isVideo ? firstItem : null);
                       const posterImage = isVideo ? (heroGallery.find(item => !item.endsWith('.mp4') && !item.endsWith('.webm') && !item.endsWith('.mov')) || heroBanner || image) : null;
-                      
+
                       if (videoSrc) {
                         return (
                           <video
@@ -409,9 +436,8 @@ const ProjectDetailPage = () => {
                           className={`flex items-start space-x-3 ${secondaryTextClass}`}
                         >
                           <span
-                            className={`mt-1 w-2.5 h-2.5 rounded-full bg-gradient-to-r ${
-                              gradient ?? 'from-cyan-400 to-purple-500'
-                            }`}
+                            className={`mt-1 w-2.5 h-2.5 rounded-full bg-gradient-to-r ${gradient ?? 'from-cyan-400 to-purple-500'
+                              }`}
                           />
                           <span className="text-sm leading-relaxed">{point}</span>
                         </li>
