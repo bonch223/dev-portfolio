@@ -18,12 +18,14 @@
     "youtube:auto": "node scripts/auto-generate-api.js",
     "youtube:server": "node scripts/api-key-server.js",
     "youtube:start": "bash scripts/start-automation.sh",
-    "youtube:start:win": "scripts/start-automation.bat"
+    "youtube:start:win": "scripts/start-automation.bat",
+    "dev:api": "node --env-file=.env scripts/api-server.js"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@google/generative-ai": "^0.24.1",
     "@headlessui/react": "^2.2.9",
     "@mui/icons-material": "^7.3.2",
     "@mui/lab": "^7.0.0-beta.17",

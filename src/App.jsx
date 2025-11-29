@@ -21,6 +21,10 @@ import WordPressQuoteGenerator from './components/WordPressQuoteGenerator';
 import FullStackQuoteGenerator from './components/FullStackQuoteGenerator';
 import WorkflowChallenger from './components/WorkflowChallenger';
 import ScrapingDashboard from './components/ScrapingDashboard';
+import AISimulator from './components/AISimulator';
+import AIQuoteGenerator from './components/AIQuoteGenerator';
+import ChatWidget from './components/ChatWidget';
+import AIChatPage from './components/AIChatPage';
 import AnimatedBackground from './components/AnimatedBackground';
 import './App.css';
 
@@ -36,6 +40,8 @@ function App() {
   const [showSEOQuoteGenerator, setShowSEOQuoteGenerator] = useState(false);
   const [showWordPressQuoteGenerator, setShowWordPressQuoteGenerator] = useState(false);
   const [showFullStackQuoteGenerator, setShowFullStackQuoteGenerator] = useState(false);
+  const [showAISimulator, setShowAISimulator] = useState(false);
+  const [showAIQuoteGenerator, setShowAIQuoteGenerator] = useState(false);
   const [showWorkflowChallenger, setShowWorkflowChallenger] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [processService, setProcessService] = useState(null);
@@ -66,6 +72,8 @@ function App() {
       setShowWordPressSimulator(true);
     } else if (service.id === 'fullstack') {
       setShowFullStackSimulator(true);
+    } else if (service.id === 'ai-automation') {
+      setShowAISimulator(true);
     }
     // Add more simulators here as we build them
   };
@@ -78,11 +86,14 @@ function App() {
       track('simulator_abandoned', { simulator: 'wordpress' });
     } else if (showFullStackSimulator) {
       track('simulator_abandoned', { simulator: 'fullstack' });
+    } else if (showAISimulator) {
+      track('simulator_abandoned', { simulator: 'ai' });
     }
 
     setShowSEOSimulator(false);
     setShowWordPressSimulator(false);
     setShowFullStackSimulator(false);
+    setShowAISimulator(false);
     setShowServiceSelector(true);
   };
 
@@ -105,6 +116,8 @@ function App() {
       setShowWordPressQuoteGenerator(true);
     } else if (serviceData.service === 'FullStack Development') {
       setShowFullStackQuoteGenerator(true);
+    } else if (serviceData.service === 'AI & Automation') {
+      setShowAIQuoteGenerator(true);
     }
     // Add more quote generators here for other services
 
@@ -135,6 +148,11 @@ function App() {
 
   const handleCloseFullStackQuoteGenerator = () => {
     setShowFullStackQuoteGenerator(false);
+    setCurrentServiceData(null);
+  };
+
+  const handleCloseAIQuoteGenerator = () => {
+    setShowAIQuoteGenerator(false);
     setCurrentServiceData(null);
   };
 
@@ -210,6 +228,7 @@ function App() {
         <Route path="/projects/:slug" element={<ProjectDetailPage />} />
         <Route path="/workflow-challenger" element={<WorkflowChallenger />} />
         <Route path="/scraping-dashboard" element={<ScrapingDashboard />} />
+        <Route path="/chat" element={<AIChatPage />} />
       </Routes>
 
       {/* Service Selector Modal */}
@@ -243,6 +262,15 @@ function App() {
       {/* Full Stack Simulator Modal */}
       {showFullStackSimulator && (
         <FullStackSimulator
+          onBack={handleBackFromSimulator}
+          onProceedToQuote={handleProceedToQuote}
+          onShowProcessPage={handleShowProcessPage}
+        />
+      )}
+
+      {/* AI Simulator Modal */}
+      {showAISimulator && (
+        <AISimulator
           onBack={handleBackFromSimulator}
           onProceedToQuote={handleProceedToQuote}
           onShowProcessPage={handleShowProcessPage}
@@ -283,6 +311,18 @@ function App() {
           simulatorData={currentServiceData}
         />
       )}
+
+      {/* AI Quote Generator Modal */}
+      {showAIQuoteGenerator && (
+        <AIQuoteGenerator
+          onBack={handleCloseAIQuoteGenerator}
+          onGenerateQuote={handleGenerateQuote}
+          simulatorData={currentServiceData?.simulatorData}
+        />
+      )}
+
+      {/* Real AI Assistant Widget */}
+      <ChatWidget />
 
       {/* Vercel Analytics */}
       <Analytics />
