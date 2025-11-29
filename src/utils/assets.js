@@ -89,6 +89,12 @@ import profilePhoto from '/src/assets/Pro-photo.png'
 import placeholderImage from '/src/assets/placeholder.png'
 
 import armetTerminal from '/src/assets/armet_terminal.png'
+import autoScoutImg from '/src/assets/Autoscout.jpg'
+import docuMindImg from '/src/assets/Documind.jpg'
+import voiceOpsImg from '/src/assets/VoiceOps.jpg'
+import projectCartelImg from '/src/assets/Project CARTEL.jpg'
+import macroCoachImg from '/src/assets/MacroCoach.jpg'
+import tasktifyImg from '/src/assets/tasktify.jpg'
 
 // Export asset objects for easy access
 export const projectAssets = {
@@ -129,6 +135,30 @@ export const projectAssets = {
     images: [whosIn1, whosIn2, whosIn3],
     video: whosInVideo,
     main: whosIn1
+  },
+  autoScout: {
+    main: autoScoutImg,
+    images: [autoScoutImg]
+  },
+  docuMind: {
+    main: docuMindImg,
+    images: [docuMindImg]
+  },
+  voiceOps: {
+    main: voiceOpsImg,
+    images: [voiceOpsImg]
+  },
+  projectCartel: {
+    main: projectCartelImg,
+    images: [projectCartelImg]
+  },
+  macroCoach: {
+    main: macroCoachImg,
+    images: [macroCoachImg]
+  },
+  tasktify: {
+    main: tasktifyImg,
+    images: [tasktifyImg]
   }
 }
 
