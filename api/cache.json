@@ -1,0 +1,39 @@
+[
+    {
+        "keywords": [
+            "who are you",
+            "what is your name"
+        ],
+        "response": "I'm MelBot! Think of me as Melvin's digital sidekick—part sales rep, part tech geek, and full-time assistant. I'm here to help you navigate his work, get a quote, or just chat about AI and automation."
+    },
+    {
+        "keywords": [
+            "who is melvin",
+            "about melvin"
+        ],
+        "response": "Melvin is the mastermind behind all this! He's a Full Stack Developer and Automation Specialist who loves turning complex problems into smooth, automated workflows. He's all about efficiency and building cool stuff that works."
+    },
+    {
+        "keywords": [
+            "contact",
+            "email",
+            "reach out"
+        ],
+        "response": "You can reach Melvin directly at mayyale17@gmail.com. He's pretty quick to respond, especially if you have an interesting project in mind!"
+    },
+    {
+        "keywords": [
+            "services",
+            "what do you do"
+        ],
+        "response": "Melvin specializes in Web Development (React, Next.js), AI Integration (like me!), and Workflow Automation. Basically, if it involves code and saving time, he's your guy."
+    },
+    {
+        "keywords": [
+            "price",
+            "cost",
+            "quote"
+        ],
+        "response": "Pricing depends on the project, but I can help you get an estimate right now! Try asking me to 'generate a quote' or check out the Services section to use the interactive calculator."
+    }
+]

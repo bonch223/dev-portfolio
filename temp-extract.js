@@ -1,13 +1,11 @@
-import { projectAssets, websiteAssets, socialMediaAssets, placeholderAssets } from '../utils/assets';
 
-const buildLinks = ({ live, github, demo, caseStudy }) => ({
-  live: live ?? null,
-  github: github ?? null,
-  demo: demo ?? null,
-  caseStudy: caseStudy ?? null,
-});
-
-export const featuredProjects = [
+    const websiteAssets = new Proxy({}, { get: () => "Asset" });
+    const projectAssets = new Proxy({}, { get: () => "Asset" });
+    const socialMediaAssets = new Proxy({}, { get: () => "Asset" });
+    const placeholderAssets = new Proxy({}, { get: () => "Asset" });
+    const buildLinks = (obj) => obj;
+    
+    const featuredProjects = [
   {
     id: 'workflow-challenger',
     featured: true,
@@ -48,11 +46,11 @@ export const featuredProjects = [
     color: '#6366F1',
     gradient: 'from-indigo-400 to-purple-500',
     hero: {
-      banner: websiteAssets.workflowChallenger,
-      gallery: [websiteAssets.workflowChallenger],
+      banner: "[Asset]",
+      gallery: ["[Asset]"],
     },
-    image: websiteAssets.workflowChallenger,
-    gallery: [websiteAssets.workflowChallenger],
+    image: "[Asset]",
+    gallery: ["[Asset]"],
     links: buildLinks({
       live: '/workflow-challenger',
       demo: null,
@@ -101,13 +99,13 @@ export const featuredProjects = [
     color: '#00D4FF',
     gradient: 'from-cyan-400 to-blue-500',
     hero: {
-      banner: projectAssets.guro.main,
-      gallery: [projectAssets.guro.video, ...projectAssets.guro.images],
-      video: projectAssets.guro.video,
+      banner: "[Asset]",
+      gallery: ["[Asset]", ..."[Asset]"],
+      video: "[Asset]",
     },
-    image: projectAssets.guro.main,
-    gallery: [projectAssets.guro.video, ...projectAssets.guro.images],
-    video: projectAssets.guro.video,
+    image: "[Asset]",
+    gallery: ["[Asset]", ..."[Asset]"],
+    video: "[Asset]",
     links: buildLinks({
       live: 'https://guro-ai.vercel.app/',
       demo: null,
@@ -156,11 +154,11 @@ export const featuredProjects = [
     color: '#00FF88',
     gradient: 'from-green-400 to-cyan-400',
     hero: {
-      banner: projectAssets.skillFoundri.main,
-      gallery: projectAssets.skillFoundri.images,
+      banner: "[Asset]",
+      gallery: "[Asset]",
     },
-    image: projectAssets.skillFoundri.main,
-    gallery: projectAssets.skillFoundri.images,
+    image: "[Asset]",
+    gallery: "[Asset]",
     links: buildLinks({
       live: 'https://www.skillfoundri.com/',
     }),
@@ -207,12 +205,12 @@ export const featuredProjects = [
     color: '#FF6B35',
     gradient: 'from-orange-400 to-red-500',
     hero: {
-      banner: projectAssets.rage.main,
-      gallery: projectAssets.rage.images,
+      banner: "[Asset]",
+      gallery: "[Asset]",
     },
-    image: projectAssets.rage.main,
-    gallery: projectAssets.rage.images,
-    video: projectAssets.rage.video,
+    image: "[Asset]",
+    gallery: "[Asset]",
+    video: "[Asset]",
     links: buildLinks({
       live: 'https://rage-fitness-gym.vercel.app/',
     }),
@@ -259,11 +257,11 @@ export const featuredProjects = [
     color: '#8B5CF6',
     gradient: 'from-purple-500 to-pink-500',
     hero: {
-      banner: projectAssets.urbanCare.main,
-      gallery: projectAssets.urbanCare.images,
+      banner: "[Asset]",
+      gallery: "[Asset]",
     },
-    image: projectAssets.urbanCare.main,
-    gallery: projectAssets.urbanCare.images,
+    image: "[Asset]",
+    gallery: "[Asset]",
     links: buildLinks({
       live: 'https://urbancare-services.vercel.app/',
     }),
@@ -294,7 +292,7 @@ export const featuredProjects = [
       'Implemented a WooCommerce stack with rapid filtering, social proof modules, and content-driven product storytelling.',
     impact:
       'Achieved a 32% uplift in mobile conversions and reduced bounce rates through performance tuning.',
-    technologies: ['Shopify', 'Liquid', 'JavaScript', 'CSS3', 'SEO', 'Payment Integration'],
+    technologies: ['WordPress', 'WooCommerce', 'PHP', 'CSS3', 'JavaScript', 'SEO', 'Payment Integration'],
     features: [
       'Modern responsive design',
       'E-commerce functionality',
@@ -313,12 +311,12 @@ export const featuredProjects = [
     color: '#EC4899',
     gradient: 'from-pink-400 to-purple-500',
     hero: {
-      banner: projectAssets.fantasticBaby.main,
-      gallery: projectAssets.fantasticBaby.images,
+      banner: "[Asset]",
+      gallery: "[Asset]",
     },
-    image: projectAssets.fantasticBaby.main,
-    gallery: projectAssets.fantasticBaby.images,
-    video: projectAssets.fantasticBaby.video,
+    image: "[Asset]",
+    gallery: "[Asset]",
+    video: "[Asset]",
     links: buildLinks({
       live: 'https://fantasticbabyshakalaka.com/',
     }),
@@ -366,11 +364,11 @@ export const featuredProjects = [
     color: '#EF4444',
     gradient: 'from-red-400 to-pink-500',
     hero: {
-      banner: projectAssets.fitSync.main,
-      gallery: projectAssets.fitSync.images,
+      banner: "[Asset]",
+      gallery: "[Asset]",
     },
-    image: projectAssets.fitSync.main,
-    gallery: projectAssets.fitSync.images,
+    image: "[Asset]",
+    gallery: "[Asset]",
     links: buildLinks({
       live: null,
       demo: null,
@@ -421,12 +419,12 @@ export const featuredProjects = [
     color: '#3B82F6',
     gradient: 'from-blue-400 to-indigo-500',
     hero: {
-      banner: projectAssets.whosIn.main,
-      gallery: [projectAssets.whosIn.video, ...projectAssets.whosIn.images],
+      banner: "[Asset]",
+      gallery: ["[Asset]", ..."[Asset]"],
     },
-    image: projectAssets.whosIn.main,
-    gallery: [projectAssets.whosIn.video, ...projectAssets.whosIn.images],
-    video: projectAssets.whosIn.video,
+    image: "[Asset]",
+    gallery: ["[Asset]", ..."[Asset]"],
+    video: "[Asset]",
     links: buildLinks({
       live: null,
       demo: null,
@@ -471,11 +469,11 @@ export const featuredProjects = [
     color: '#10B981',
     gradient: 'from-emerald-500 to-green-600',
     hero: {
-      banner: projectAssets.armet.main,
-      gallery: projectAssets.armet.images,
+      banner: "[Asset]",
+      gallery: "[Asset]",
     },
-    image: projectAssets.armet.main,
-    gallery: projectAssets.armet.images,
+    image: "[Asset]",
+    gallery: "[Asset]",
     links: buildLinks({
       github: 'https://github.com/username/armet-cli',
     }),
@@ -518,11 +516,11 @@ export const featuredProjects = [
     color: '#3B82F6',
     gradient: 'from-blue-500 to-indigo-600',
     hero: {
-      banner: projectAssets.autoScout.main,
-      gallery: projectAssets.autoScout.images,
+      banner: "[Asset]",
+      gallery: "[Asset]",
     },
-    image: projectAssets.autoScout.main,
-    gallery: projectAssets.autoScout.images,
+    image: "[Asset]",
+    gallery: "[Asset]",
     links: buildLinks({
       github: 'https://github.com/username/autoscout',
     }),
@@ -565,11 +563,11 @@ export const featuredProjects = [
     color: '#8B5CF6',
     gradient: 'from-violet-500 to-purple-600',
     hero: {
-      banner: projectAssets.docuMind.main,
-      gallery: projectAssets.docuMind.images,
+      banner: "[Asset]",
+      gallery: "[Asset]",
     },
-    image: projectAssets.docuMind.main,
-    gallery: projectAssets.docuMind.images,
+    image: "[Asset]",
+    gallery: "[Asset]",
     links: buildLinks({
       github: 'https://github.com/username/documind',
     }),
@@ -612,19 +610,18 @@ export const featuredProjects = [
     color: '#F43F5E',
     gradient: 'from-rose-500 to-red-600',
     hero: {
-      banner: projectAssets.voiceOps.main,
-      gallery: projectAssets.voiceOps.images,
+      banner: "[Asset]",
+      gallery: "[Asset]",
     },
-    image: projectAssets.voiceOps.main,
-    gallery: projectAssets.voiceOps.images,
+    image: "[Asset]",
+    gallery: "[Asset]",
     links: buildLinks({
       github: 'https://github.com/username/voiceops',
     }),
     url: null,
   },
 ];
-
-export const otherProjects = [
+    const otherProjects = [
   {
     id: 'decor-meadow',
     featured: false,
@@ -646,8 +643,8 @@ export const otherProjects = [
     problem: 'The client needed a modern, visually appealing e-commerce platform to showcase their curated home decor collections and inspire customers.',
     solution: 'Built a sophisticated WooCommerce store with custom mood boards, curated collections, and an intuitive browsing experience that combines aesthetics with functionality.',
     impact: 'Successfully launched an elegant e-commerce platform that showcases products effectively and provides a seamless shopping experience.',
-    image: websiteAssets.decorMeadow,
-    gallery: [websiteAssets.decorMeadow],
+    image: "[Asset]",
+    gallery: ["[Asset]"],
     technologies: ['WordPress', 'WooCommerce', 'PHP', 'CSS3', 'JavaScript'],
     features: [
       'Curated mood boards',
@@ -687,8 +684,8 @@ export const otherProjects = [
     problem: 'The brand needed a modern e-commerce platform to showcase their athleisure collections with lifestyle content and lookbooks.',
     solution: 'Developed a visually appealing WooCommerce platform with integrated lookbooks, lifestyle content sections, and a mobile-first shopping experience.',
     impact: 'Created an engaging platform that effectively showcases products through lifestyle content and lookbooks, enhancing brand storytelling.',
-    image: websiteAssets.femmeFits,
-    gallery: [websiteAssets.femmeFits],
+    image: "[Asset]",
+    gallery: ["[Asset]"],
     technologies: ['WordPress', 'WooCommerce', 'PHP', 'CSS3', 'JavaScript'],
     features: [
       'Lookbook galleries',
@@ -728,8 +725,8 @@ export const otherProjects = [
     problem: 'The client needed a sophisticated e-commerce platform to showcase their premium men\'s grooming and lifestyle products.',
     solution: 'Built an elegant WooCommerce platform with refined design, detailed product pages, and a streamlined checkout process.',
     impact: 'Delivered a premium shopping experience that reflects the brand\'s sophisticated positioning and enhances customer trust.',
-    image: websiteAssets.gentsDen,
-    gallery: [websiteAssets.gentsDen],
+    image: "[Asset]",
+    gallery: ["[Asset]"],
     technologies: ['WordPress', 'WooCommerce', 'PHP', 'CSS3', 'JavaScript'],
     features: [
       'Premium product display',
@@ -769,8 +766,8 @@ export const otherProjects = [
     problem: 'The jewelry brand needed an elegant online storefront with curated collections and specialized gifting features.',
     solution: 'Created a sophisticated WooCommerce platform with curated collections, gifting flows, and elegant product presentation.',
     impact: 'Built an elegant platform that showcases jewelry beautifully and simplifies the gifting experience for customers.',
-    image: websiteAssets.plushPendants,
-    gallery: [websiteAssets.plushPendants],
+    image: "[Asset]",
+    gallery: ["[Asset]"],
     technologies: ['WordPress', 'WooCommerce', 'PHP', 'CSS3'],
     features: [
       'Curated collections',
@@ -810,8 +807,8 @@ export const otherProjects = [
     problem: 'The brand needed a fun, engaging e-commerce platform to showcase kids toys and fashion with editorial content.',
     solution: 'Developed a playful WooCommerce platform with editorial content sections, vibrant design, and an intuitive shopping experience.',
     impact: 'Created an engaging platform that appeals to parents while making shopping for kids products fun and easy.',
-    image: websiteAssets.starletStyle,
-    gallery: [websiteAssets.starletStyle],
+    image: "[Asset]",
+    gallery: ["[Asset]"],
     technologies: ['WordPress', 'WooCommerce', 'PHP', 'CSS3', 'JavaScript'],
     features: [
       'Editorial content',
@@ -851,8 +848,8 @@ export const otherProjects = [
     problem: 'The real estate portal needed to improve its search engine visibility and organic traffic to compete effectively in the Cebu market.',
     solution: 'Conducted comprehensive technical SEO audit, identified optimization opportunities, and created a prioritized roadmap for implementation.',
     impact: 'Provided actionable insights and strategic recommendations that helped improve the portal\'s search engine rankings and organic visibility.',
-    image: websiteAssets.cebuFirst,
-    gallery: [websiteAssets.cebuFirst],
+    image: "[Asset]",
+    gallery: ["[Asset]"],
     technologies: ['SEO Analysis', 'Technical Audit', 'Strategy'],
     features: [
       'Technical SEO audit',
@@ -892,8 +889,8 @@ export const otherProjects = [
     problem: 'The real estate developer needed to improve local search visibility and location-based rankings to attract more local leads.',
     solution: 'Developed a comprehensive local SEO strategy focusing on location optimization, Google My Business, and local content marketing.',
     impact: 'Improved local search visibility and helped the developer rank higher for location-based searches, increasing qualified local leads.',
-    image: websiteAssets.cebuLandMasters,
-    gallery: [websiteAssets.cebuLandMasters],
+    image: "[Asset]",
+    gallery: ["[Asset]"],
     technologies: ['Local SEO Analysis', 'Real Estate SEO', 'Strategic Recommendations'],
     features: [
       'Local SEO optimization',
@@ -1056,8 +1053,8 @@ export const otherProjects = [
     problem: 'Investigative journalists and researchers needed tools to analyze government procurement data and identify potential corruption risks through network analysis.',
     solution: 'Built an open-source platform that scrapes PhilGEPS data, performs risk scoring, and provides interactive visualizations for network analysis and contractor relationships.',
     impact: 'Created a powerful tool for transparency and accountability, enabling researchers to identify patterns and risks in government procurement.',
-    image: projectAssets.projectCartel.main,
-    gallery: projectAssets.projectCartel.images,
+    image: "[Asset]",
+    gallery: "[Asset]",
     technologies: ['Python', 'FastAPI', 'Next.js', 'PostgreSQL', 'Neo4j', 'Docker'],
     features: [
       'PhilGEPS data scraping',
@@ -1098,8 +1095,8 @@ export const otherProjects = [
     problem: 'Nutrition coaches and clients needed a streamlined platform to manage macro tracking, meal logging, and progress monitoring.',
     solution: 'Built a React Native app with Firebase backend that enables coaches to manage clients and set macro targets, while clients can easily log meals and track progress in real-time.',
     impact: 'Created an efficient platform that simplifies nutrition coaching workflows and helps clients stay accountable to their macro goals.',
-    image: projectAssets.macroCoach.main,
-    gallery: projectAssets.macroCoach.images,
+    image: "[Asset]",
+    gallery: "[Asset]",
     technologies: ['React Native', 'Expo', 'Firebase', 'Firestore', 'TypeScript', 'NativeWind'],
     features: [
       'BMR/TDEE calculations',
@@ -1140,8 +1137,8 @@ export const otherProjects = [
     problem: 'Filipino communities needed a marketplace platform that respects cultural values while providing modern technology solutions for task management and economic empowerment.',
     solution: 'Built a comprehensive marketplace platform that integrates Filipino cultural values (Bayanihan, pakikipagkapwa) with modern features like blockchain trust stamps, AI task creation, and Philippine payment systems.',
     impact: 'Designed to create a technology ecosystem that strengthens Filipino communities while providing dignified economic opportunities and preserving cultural values.',
-    image: projectAssets.tasktify.main,
-    gallery: projectAssets.tasktify.images,
+    image: "[Asset]",
+    gallery: "[Asset]",
     technologies: ['NestJS', 'React Native', 'TypeScript', 'PostgreSQL', 'Blockchain'],
     features: [
       'Cultural values integration',
@@ -1182,8 +1179,8 @@ export const otherProjects = [
     problem: 'The client wanted a modern, interactive website redesign that showcases their services and client portfolio with contemporary design elements.',
     solution: 'Created a modern website with animated components, particle effects, magnetic buttons, and voice AI integration to create an engaging user experience.',
     impact: 'Delivered a contemporary website design that effectively showcases the company\'s services and client portfolio with modern interactive elements.',
-    image: projectAssets.ixSolutions.main,
-    gallery: projectAssets.ixSolutions.images,
+    image: "[Asset]",
+    gallery: "[Asset]",
     technologies: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
     features: [
       'Animated components',
@@ -1204,11 +1201,6 @@ export const otherProjects = [
     }),
   },
 ];
-
-export const allProjects = [...featuredProjects, ...otherProjects];
-
-export const projectBySlug = Object.fromEntries(
-  allProjects.map((project) => [project.slug, project])
-);
-
-export const getProjectBySlug = (slug) => projectBySlug[slug] ?? null;
+    
+    console.log(JSON.stringify({ featuredProjects, otherProjects }, null, 2));
+  

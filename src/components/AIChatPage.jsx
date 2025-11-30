@@ -82,7 +82,7 @@ const AIChatPage = () => {
         track('ai_chat_sent', { type: 'full_page' });
 
         try {
-            const response = await fetch('/api/chat', {
+            const response = await fetch('https://mjre-portfolio.vercel.app/api/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -150,8 +150,8 @@ const AIChatPage = () => {
                             {/* Bubble */}
                             <div
                                 className={`p-4 rounded-2xl text-sm md:text-base leading-relaxed shadow-md ${msg.role === 'user'
-                                        ? 'bg-cyan-600 text-white rounded-tr-none'
-                                        : 'bg-gray-800 text-gray-200 border border-gray-700 rounded-tl-none'
+                                    ? 'bg-cyan-600 text-white rounded-tr-none'
+                                    : 'bg-gray-800 text-gray-200 border border-gray-700 rounded-tl-none'
                                     }`}
                             >
                                 {msg.content}
@@ -216,8 +216,8 @@ const AIChatPage = () => {
                                 type="button"
                                 onClick={handleVoiceInput}
                                 className={`p-2 rounded-full transition-all ${isListening
-                                        ? 'bg-red-500 text-white animate-pulse'
-                                        : 'text-gray-400 hover:text-white hover:bg-gray-700'
+                                    ? 'bg-red-500 text-white animate-pulse'
+                                    : 'text-gray-400 hover:text-white hover:bg-gray-700'
                                     }`}
                                 title="Voice Input"
                             >

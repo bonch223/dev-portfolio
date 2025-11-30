@@ -6,21 +6,13 @@ const ChatWidget = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
-  // Load from localStorage with 48-hour expiry check
+  // Load from localStorage or default
   const [messages, setMessages] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('melbot_chat_history');
-      const savedTime = localStorage.getItem('melbot_chat_timestamp');
-
-      if (saved && savedTime) {
-        const now = new Date().getTime();
-        const twoDays = 48 * 60 * 60 * 1000;
-
-        // If history is younger than 2 days, keep it
-        if (now - parseInt(savedTime) < twoDays) {
-          return JSON.parse(saved);
-        }
-      }
+      return saved ? JSON.parse(saved) : [
+        { role: 'assistant', content: "Hi! I'm MelBot. Ask me anything about the developer's skills or projects." }
+      ];
     }
     return [{ role: 'assistant', content: "Hi! I'm MelBot. Ask me anything about the developer's skills or projects." }];
   });
@@ -41,11 +33,10 @@ const ChatWidget = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Persist messages to localStorage with timestamp
+  // Persist messages to localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('melbot_chat_history', JSON.stringify(messages));
-      localStorage.setItem('melbot_chat_timestamp', new Date().getTime().toString());
     }
     scrollToBottom();
   }, [messages, isOpen]);
@@ -55,7 +46,6 @@ const ChatWidget = () => {
     setMessages(defaultMsg);
     if (typeof window !== 'undefined') {
       localStorage.setItem('melbot_chat_history', JSON.stringify(defaultMsg));
-      localStorage.setItem('melbot_chat_timestamp', new Date().getTime().toString());
     }
   };
 
@@ -106,17 +96,10 @@ const ChatWidget = () => {
     if (!messageToSend.trim() || isLoading) return;
 
     setInput('');
-    const newHistory = [...messages, { role: 'user', content: messageToSend }];
-    setMessages(newHistory);
+    setMessages(prev => [...prev, { role: 'user', content: messageToSend }]);
     setIsLoading(true);
 
     try {
-      // Send last 10 messages for context
-      const contextHistory = newHistory.slice(-10).map(msg => ({
-        role: msg.role === 'assistant' ? 'model' : 'user',
-        text: msg.content
-      }));
-
       const response = await fetch('https://mjre-portfolio.vercel.app/api/chat', {
         method: 'POST',
         headers: {
@@ -124,7 +107,6 @@ const ChatWidget = () => {
         },
         body: JSON.stringify({
           message: messageToSend,
-          history: contextHistory, // Sending history to fix amnesia
           context: aiContext
         }),
       });
@@ -144,14 +126,6 @@ const ChatWidget = () => {
     }
   };
 
-  const handleLinkClick = (link) => {
-    if (link.startsWith('http')) {
-      window.open(link, '_blank', 'noopener,noreferrer');
-    } else {
-      navigate(link);
-    }
-  };
-
   // Helper to render message content with carousel support
   const renderMessageContent = (content) => {
     const lines = content.split('\n');
@@ -161,7 +135,7 @@ const ChatWidget = () => {
     lines.forEach((line, index) => {
       // Check for Project Line Marker (>>>)
       if (line.trim().startsWith('>>>')) {
-        const match = line.match(/>>> :::([^|]+)\|(.+?)::: - (.+)/);
+        const match = line.match(/>>> :::([^|]+)\|([^:]+)::: - (.+)/);
         if (match) {
           projectBuffer.push({ title: match[1], link: match[2], desc: match[3] });
         }
@@ -173,7 +147,7 @@ const ChatWidget = () => {
               {projectBuffer.map((proj, i) => (
                 <div
                   key={i}
-                  onClick={() => handleLinkClick(proj.link)}
+                  onClick={() => navigate(proj.link)}
                   className="flex-shrink-0 w-64 bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-xl p-3 shadow-sm hover:shadow-md transition-all cursor-pointer group"
                 >
                   <div className="flex items-center justify-between mb-1">
@@ -194,27 +168,14 @@ const ChatWidget = () => {
         if (line.trim()) {
           renderedContent.push(
             <div key={`text-${index}`} className="mb-1">
-              {line.split(/(:::[^|]+\|.+?:::)/g).map((part, i) => {
-                const match = part.match(/:::([^|]+)\|(.+?):::/);
+              {line.split(/(:::[^|]+\|[^:]+:::)/g).map((part, i) => {
+                const match = part.match(/:::([^|]+)\|([^:]+):::/);
                 if (match) {
                   const [_, title, link] = match;
-
-                  // NEW: Handle static tags
-                  if (link === 'tag') {
-                    return (
-                      <span
-                        key={i}
-                        className="inline-flex items-center px-2.5 py-0.5 mx-1 my-0.5 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200 text-xs font-medium rounded-full border border-gray-200 dark:border-white/10"
-                      >
-                        {title}
-                      </span>
-                    );
-                  }
-
                   return (
                     <button
                       key={i}
-                      onClick={() => handleLinkClick(link)}
+                      onClick={() => navigate(link)}
                       className="inline-flex items-center px-2 py-0.5 mx-1 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 text-xs font-semibold rounded-md hover:bg-cyan-200 dark:hover:bg-cyan-900/50 transition-colors"
                     >
                       {title}
@@ -236,7 +197,7 @@ const ChatWidget = () => {
           {projectBuffer.map((proj, i) => (
             <div
               key={i}
-              onClick={() => handleLinkClick(proj.link)}
+              onClick={() => navigate(proj.link)}
               className="flex-shrink-0 w-64 bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-xl p-3 shadow-sm hover:shadow-md transition-all cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-1">

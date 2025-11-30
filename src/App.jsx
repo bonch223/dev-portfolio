@@ -25,6 +25,7 @@ import AISimulator from './components/AISimulator';
 import AIQuoteGenerator from './components/AIQuoteGenerator';
 import ChatWidget from './components/ChatWidget';
 import AIChatPage from './components/AIChatPage';
+import EnglishPracticePage from './pages/EnglishPracticePage';
 import AnimatedBackground from './components/AnimatedBackground';
 import './App.css';
 
@@ -229,6 +230,7 @@ function App() {
         <Route path="/workflow-challenger" element={<WorkflowChallenger />} />
         <Route path="/scraping-dashboard" element={<ScrapingDashboard />} />
         <Route path="/chat" element={<AIChatPage />} />
+        <Route path="/practice" element={<EnglishPracticePage />} />
       </Routes>
 
       {/* Service Selector Modal */}

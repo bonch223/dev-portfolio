@@ -12,12 +12,10 @@ BIO:
 - Experienced in automation, scraping, and workflow optimization.
 
 SKILLS:
-- Frontend: React, Tailwind CSS, Framer Motion, Next.js, WordPress (6+ Years)
+- Frontend: React, Tailwind CSS, Framer Motion, Next.js, WordPress
 - Backend: Node.js, Express, Python, Vercel Serverless, WooCommerce
 - AI/ML: OpenAI API, Gemini API, LangChain, RAG Systems
 - Tools: Git, Docker, AWS, Firebase
-- Design & Creative: Photoshop, Canva, Adobe Suite, CapCut (Video Editing)
-- Soft Skills: Leadership, Mentorship, Project Management, Communication, Problem Solving, Adaptability
 
 CONTACT:
 - Email: mjr.elayron@gmail.com
@@ -89,98 +87,103 @@ const PROJECT_DATA = [
         title: "Workflow Automation Challenger",
         technologies: ["React", "Vite", "Tailwind CSS"],
         summary: "A gamified platform for automation challenges.",
-        overview: "Workflow Automation Challenger bridges the gap between tutorials and real business automation. Users select a preferred tool, explore categorized tutorials, tackle open-ended challenges, and build a portfolio that proves their skills.",
-        problem: "Automation learners struggle to move beyond guided tutorials into real-world scenarios that prove their expertise.",
-        solution: "Designed a challenge-based learning platform with curated tutorials, tooling filters, and portfolio-friendly deliverables to accelerate learning-by-doing.",
-        impact: "Piloted with 50+ community members generating verified automation portfolios and sharing feedback for future paid cohorts.",
         links: { caseStudy: "/projects/workflow-automation-challenger" }
     },
     {
         title: "Guro.AI",
         technologies: ["React", "Node.js", "AI Integration", "OpenAI API"],
         summary: "AI lesson plan generator for teachers.",
-        overview: "Guro.AI leverages modern AI tooling to craft customized lesson plans aligned with the Philippine curriculum. Educators input objectives and constraints, and the system produces structured lessons with activities, assessments, and differentiation paths.",
-        problem: "Public school teachers spend 6–8 hours weekly preparing lesson plans, limiting time for instruction and student support.",
-        solution: "Built a guided lesson generator that captures core academic standards, teaching styles, and student needs before assembling actionable plans.",
-        impact: "Early access teachers report saving 3+ hours per planning cycle and improved learner engagement through tailored activities.",
         links: { caseStudy: "/projects/guro-ai" }
     },
     {
         title: "SkillFoundri",
         technologies: ["WordPress", "PHP", "MySQL"],
         summary: "Project-based learning platform with mentorship.",
-        overview: "SkillFoundri combines project management, coursework, and mentorship into a single learning platform. As COO and co-founder, I guided the product vision and ensured the build supported both cohort-based learning and self-paced journeys.",
-        problem: "Aspiring tech professionals lack structured, industry-aligned practice that goes beyond tutorials.",
-        solution: "Delivered a project-based curriculum platform with mentorship, progress tracking, and community spaces to simulate real sprints.",
-        impact: "Helped over 300 learners build portfolio-ready artifacts and land freelance work across ASEAN markets.",
-        links: { caseStudy: "https://mjre-portfolio.vercel.app/projects/skillfoundri" }
+        links: { caseStudy: "/projects/skillfoundri" }
     },
     {
         title: "Rage Fitness Gym",
         technologies: ["React", "Node.js", "MongoDB", "Stripe API"],
         summary: "Gym management system with POS and scheduling.",
-        overview: "Rage Fitness Gym App centralizes membership management, class scheduling, payments, and performance analytics. The platform improved staff efficiency and member satisfaction through automation and self-service portals.",
-        problem: "Local gyms relied on spreadsheets and manual tracking, leading to billing errors and churn.",
-        solution: "Built a centralized platform with POS workflows, membership renewals, and class bookings accessible via desktop and tablet.",
-        impact: "Reduced admin overhead by 40% and delivered real-time occupancy analytics for peak-hour planning.",
-        links: { caseStudy: "https://mjre-portfolio.vercel.app/projects/rage-fitness-gym" }
+        links: { caseStudy: "/projects/rage-fitness-gym" }
     },
     {
         title: "UrbanCare Services",
         technologies: ["React", "Node.js", "MongoDB"],
         summary: "Marketplace for home service professionals.",
-        overview: "UrbanCare Services streamlines booking, vetting, and tracking of service providers. It delivers peace of mind to homeowners while giving providers recurring work with transparent ratings and payments.",
-        problem: "Homeowners struggled to find vetted professionals with reliable ratings and communication loops.",
-        solution: "Created a curated provider marketplace with rich profiles, secure booking, and progress updates across web and mobile.",
-        impact: "Closed 200+ bookings in the first quarter with a 4.9-star satisfaction rating.",
-        links: { caseStudy: "https://mjre-portfolio.vercel.app/projects/urbancare-services" }
+        links: { caseStudy: "/projects/urbancare-services" }
     },
     {
         title: "Fantastic Baby Shakalaka",
         technologies: ["Shopify", "Liquid", "JavaScript"],
         summary: "Fashion e-commerce with lookbooks.",
-        overview: "Fantastic Baby Shakalaka brings a kinetic shopping experience to a streetwear-inspired brand. The build emphasizes editorial storytelling, shoppable lookbooks, and conversion-optimized checkout flows.",
-        problem: "The brand needed to stand out online with a fast mobile storefront and dynamic merchandising options.",
-        solution: "Implemented a Shopify stack with rapid filtering, social proof modules, and content-driven product storytelling.",
-        impact: "Achieved a 32% uplift in mobile conversions and reduced bounce rates through performance tuning.",
-        links: { caseStudy: "https://mjre-portfolio.vercel.app/projects/fantastic-baby-shakalaka" }
+        links: { caseStudy: "/projects/fantastic-baby-shakalaka" }
     },
     {
         title: "FitSync",
         technologies: ["Next.js", "Express.js", "TypeScript"],
         summary: "Fitness coaching platform (In Development).",
-        overview: "FitSync is a modern web application that enables coaches to manage clients, create workout plans, track progress, and communicate. Clients can track nutrition, follow workout plans, monitor progress, and message their coach.",
-        problem: "Fitness coaches and clients need a centralized platform to manage training programs, track nutrition, and monitor progress effectively.",
-        solution: "Built a comprehensive platform with coach-client matching, macro calculation engine, workout plan builder, nutrition tracking, and real-time progress monitoring.",
-        impact: "Platform enables coaches to scale their practice while providing clients with structured guidance and accountability.",
-        links: { caseStudy: "https://mjre-portfolio.vercel.app/projects/fitsync" }
+        links: { caseStudy: "/projects/fitsync" }
     },
     {
         title: "WhosIn",
         technologies: ["React", "TypeScript", "Face Recognition"],
         summary: "Smart attendance system using face recognition.",
-        overview: "WhosIn is a comprehensive attendance system designed for educational institutions. It features local face recognition processing for speed and privacy, offline-first functionality with automatic sync, real-time dashboards via WebSocket, multi-tenant SaaS architecture, Excel integration for student management, and PWA support for mobile devices.",
-        problem: "Educational institutions struggle with manual attendance tracking, which is time-consuming and prone to errors.",
-        solution: "Built an automated attendance system using facial recognition technology with offline capabilities, real-time sync, and comprehensive dashboards for teachers and administrators.",
-        impact: "Reduces attendance tracking time significantly while providing accurate, real-time data for educators and administrators.",
-        links: { caseStudy: "https://mjre-portfolio.vercel.app/projects/whosin" }
+        links: { caseStudy: "/projects/whosin" }
     },
     {
         title: "Armet Limited",
         technologies: ["Python", "AWS SES", "Redis"],
         summary: "High-volume email infrastructure CLI.",
-        overview: "Armet Limited required a robust, self-hosted email solution to bypass standard ESP limitations. I engineered a Python-based CLI tool that manages SMTP rotation, leaky-bucket rate limiting, and Redis-backed queuing to ensure 99.8% delivery rates for high-volume outreach.",
-        problem: "Standard email service providers were too expensive and restrictive for the client's high-volume, cold-outreach needs.",
-        solution: "Built a custom, multi-threaded CLI tool that rotates through AWS SES and SendGrid accounts while mimicking human sending patterns.",
-        impact: "Reduced email costs by 85% and achieved a 99.8% delivery rate on a 1.2M email campaign.",
-        links: { caseStudy: "https://mjre-portfolio.vercel.app/projects/armet-limited-emailer" }
+        links: { caseStudy: "/projects/armet-limited" }
     },
     {
         title: "AutoScout",
-        problem: "Filipinos lack a trusted, culturally-aligned platform for finding local service providers or earning extra income through tasks.",
-        solution: "Built a blockchain-backed marketplace with AI task matching, 'Bayanihan' community features, and secure local payment integration.",
-        impact: "Empowering local communities by providing a secure and culturally relevant platform for economic opportunity and mutual aid.",
-        links: { caseStudy: "/projects/tasktify" }
+        technologies: ["Python", "Playwright", "OpenAI API"],
+        summary: "Intelligent lead scraper bot.",
+        links: { caseStudy: "/projects/autoscout" }
+    },
+    {
+        title: "DocuMind",
+        technologies: ["Python", "LangChain", "RAG", "ChromaDB"],
+        summary: "Local RAG system for secure document chatting.",
+        links: { caseStudy: "/projects/documind" }
+    },
+    {
+        title: "VoiceOps",
+        technologies: ["Python", "Twilio", "Deepgram", "ElevenLabs"],
+        summary: "Low-latency AI voice customer support agent.",
+        links: { caseStudy: "/projects/voiceops" }
+    },
+    {
+        title: "Decor Meadow",
+        technologies: ["WordPress", "WooCommerce"],
+        summary: "Home decor e-commerce store.",
+        links: { caseStudy: "/projects/decor-meadow" }
+    },
+    {
+        title: "Femme Fits",
+        technologies: ["WordPress", "WooCommerce"],
+        summary: "Women's fashion e-commerce.",
+        links: { caseStudy: "/projects/femme-fits" }
+    },
+    {
+        title: "Gents Den",
+        technologies: ["WordPress", "WooCommerce"],
+        summary: "Men's grooming e-commerce.",
+        links: { caseStudy: "/projects/gents-den" }
+    },
+    {
+        title: "Plush Pendants",
+        technologies: ["WordPress", "WooCommerce"],
+        summary: "Jewelry e-commerce with gifting flows.",
+        links: { caseStudy: "/projects/plush-pendants" }
+    },
+    {
+        title: "Starlet Style",
+        technologies: ["WordPress", "WooCommerce"],
+        summary: "Kids toys and fashion e-commerce.",
+        links: { caseStudy: "/projects/starlet-style" }
     }
 ];
 
@@ -290,29 +293,20 @@ When the user asks about:
       :::Project Title|/link/to/case-study:::
 
 3. Never use markdown links (no \`[link](...)\`).
-4. If the user asks for "details" or "more info" about a specific project you just mentioned, DO NOT show the link chip again. Instead, use the **Overview, Problem, Solution, and Impact** data to provide a comprehensive answer. Explain the *how* and *why*.
-5. Never say you lack details — you DO have them in the datasets.
-6. **CONTACT LINKS:** When asked for contact info (GitHub, LinkedIn, etc.), you MUST use the chip format:
-   :::Platform Name|URL:::
-   Do NOT use markdown links.
-7. **LISTING PROJECTS:** If asked to "list projects" or "what projects?", you MUST list them using the chip format, even if you just mentioned them. Do not assume the user saw them.
-8. **LISTING SKILLS:** When listing skills, ALWAYS use the chip format with 'tag' as the link to create a beautiful display:
-   :::Skill Name|tag:::
-   Group them by category (e.g., **Frontend:** :::React|tag::: :::Tailwind|tag:::).
+4. Never say you lack details — you DO have them in the datasets.
 
 Example you MUST follow:
-“Yes! Melvin used Python in the :::AutoScout|/projects/autoscout-scraper::: project to build an intelligent lead scraper.”
+“Yes! Melvin used Python in the :::AutoScout|/projects/autoscout::: project to build an intelligent lead scraper.”
 
 If listing multiple projects, use this exact format (one per line):
->>> :::Project Name|/projects/slug::: - Short description.
->>> :::Another Project|/projects/slug::: - Short description.
+>>> :::Project Name|/link::: - Short description.
+>>> :::Another Project|/link::: - Short description.
 
 ========================
 💬 **GENERAL BEHAVIOR**
 ========================
 - Answer clearly, warmly, and with confidence.
 - If asked about Melvin’s background, summarize using the **EXPERIENCE_DATA**.
-- **YEARS OF EXPERIENCE:** If asked about years of experience for a specific skill (e.g., WordPress), ALWAYS check the **SKILLS** section in the Context first. If a number is listed there (e.g., "6+ Years"), use it explicitly.
 - If asked for recommendations (e.g., “Which project shows backend skills?”), choose the best fit and explain why.
 - Mention specific projects naturally when relevant.
 - No long paragraphs unless necessary — keep responses friendly and digestible.

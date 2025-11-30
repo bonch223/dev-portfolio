@@ -294,7 +294,7 @@ export const featuredProjects = [
       'Implemented a WooCommerce stack with rapid filtering, social proof modules, and content-driven product storytelling.',
     impact:
       'Achieved a 32% uplift in mobile conversions and reduced bounce rates through performance tuning.',
-    technologies: ['Shopify', 'Liquid', 'JavaScript', 'CSS3', 'SEO', 'Payment Integration'],
+    technologies: ['WordPress', 'WooCommerce', 'PHP', 'CSS3', 'JavaScript', 'SEO', 'Payment Integration'],
     features: [
       'Modern responsive design',
       'E-commerce functionality',
