@@ -1,10 +1,100 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { aiContext } from '../data/ai-context';
 import { useNavigate } from 'react-router-dom';
+import emailjs from '@emailjs/browser';
+
+// EmailStatus Component to handle sending feedback
+const EmailStatus = ({ data, sendEmail }) => {
+  const [status, setStatus] = useState('sending'); // sending, success, error
+
+  useEffect(() => {
+    let mounted = true;
+    const send = async () => {
+      const success = await sendEmail(data);
+      if (mounted) {
+        setStatus(success ? 'success' : 'error');
+      }
+    };
+    send();
+    return () => { mounted = false; };
+  }, [data, sendEmail]);
+
+  if (status === 'sending') {
+    return (
+      <div className="p-3 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg border border-cyan-100 dark:border-cyan-800 flex items-center gap-2 my-2">
+        <div className="w-4 h-4 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+        <span className="text-sm text-cyan-700 dark:text-cyan-300">Sending details to Melvin...</span>
+      </div>
+    );
+  }
+
+  if (status === 'success') {
+    return (
+      <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-800 flex items-center gap-2 my-2">
+        <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+        </svg>
+        <span className="text-sm text-green-700 dark:text-green-300">Sent! Melvin will be in touch.</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-100 dark:border-red-800 flex items-center gap-2 my-2">
+      <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+      </svg>
+      <span className="text-sm text-red-700 dark:text-red-300">Failed to send. Please try again.</span>
+    </div>
+  );
+};
 
 const ChatWidget = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+
+  // EmailJS Configuration (TODO: Replace with actual keys)
+  const EMAILJS_SERVICE_ID = 'service_id_placeholder';
+  const EMAILJS_TEMPLATE_ID = 'template_id_placeholder';
+  const EMAILJS_PUBLIC_KEY = 'public_key_placeholder';
+
+  const sendEmail = async (data) => {
+    try {
+      const templateParams = {
+        to_name: 'Melvin',
+        from_name: data.name,
+        from_email: data.email,
+        message: `
+          Pain Points: ${data.painPoints}
+          Goals: ${data.goals}
+          Summary: ${data.summary}
+          
+          Transcript Excerpt:
+          ${data.transcript}
+        `,
+        reply_to: data.email,
+      };
+
+      // Simulate success if keys are placeholders (for testing UI)
+      if (EMAILJS_SERVICE_ID === 'service_id_placeholder') {
+        console.warn('EmailJS keys are placeholders. Simulating success.');
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        return true;
+      }
+
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_PUBLIC_KEY
+      );
+
+      return true;
+    } catch (error) {
+      console.error('EmailJS Error:', error);
+      return false;
+    }
+  };
 
   // Load from localStorage with 48-hour expiry check
   const [messages, setMessages] = useState(() => {
@@ -160,6 +250,26 @@ const ChatWidget = () => {
     let projectBuffer = [];
 
     lines.forEach((line, index) => {
+      // Check for Email Token
+      if (line.includes(':::SEND_EMAIL|')) {
+        const match = line.match(/:::SEND_EMAIL\|(.+?):::/);
+        if (match) {
+          try {
+            const emailData = JSON.parse(match[1]);
+            renderedContent.push(
+              <EmailStatus key={`email-${index}`} data={emailData} sendEmail={sendEmail} />
+            );
+          } catch (e) {
+            console.error("Failed to parse email token", e);
+          }
+          // Don't return here, let it continue to process other parts if any, 
+          // but usually the token is standalone or part of a sentence.
+          // We should probably strip the token from the display text if we render the component.
+          // For now, let's just render the component and NOT render the token text.
+          // The split below handles the text parts.
+        }
+      }
+
       // Check for Project Line Marker (>>>)
       if (line.trim().startsWith('>>>')) {
         const match = line.match(/>>> :::([^|]+)\|(.+?)::: - (.+)/);
@@ -196,49 +306,54 @@ const ChatWidget = () => {
           const isBullet = line.trim().startsWith('* ') || line.trim().startsWith('- ');
           const cleanLine = isBullet ? line.trim().substring(2) : line;
 
-          renderedContent.push(
-            <div key={`text-${index}`} className={`mb-1 ${isBullet ? 'pl-4 relative' : ''}`}>
-              {isBullet && (
-                <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-cyan-500 rounded-full"></span>
-              )}
-              {cleanLine.split(/(:::[^|]+\|.+?:::)/g).map((part, i) => {
-                const match = part.match(/:::([^|]+)\|(.+?):::/);
-                if (match) {
-                  const [_, title, link] = match;
+          // Remove the SEND_EMAIL token from the displayed text
+          const textWithoutToken = cleanLine.replace(/:::SEND_EMAIL\|.+?:::/g, '');
 
-                  // Handle static tags
-                  if (link === 'tag') {
+          if (textWithoutToken.trim()) {
+            renderedContent.push(
+              <div key={`text-${index}`} className={`mb-1 ${isBullet ? 'pl-4 relative' : ''}`}>
+                {isBullet && (
+                  <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-cyan-500 rounded-full"></span>
+                )}
+                {textWithoutToken.split(/(:::[^|]+\|.+?:::)/g).map((part, i) => {
+                  const match = part.match(/:::([^|]+)\|(.+?):::/);
+                  if (match) {
+                    const [_, title, link] = match;
+
+                    // Handle static tags
+                    if (link === 'tag') {
+                      return (
+                        <span
+                          key={i}
+                          className="inline-flex items-center px-2.5 py-0.5 mx-1 my-0.5 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200 text-xs font-medium rounded-full border border-gray-200 dark:border-white/10"
+                        >
+                          {title}
+                        </span>
+                      );
+                    }
+
                     return (
-                      <span
+                      <button
                         key={i}
-                        className="inline-flex items-center px-2.5 py-0.5 mx-1 my-0.5 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200 text-xs font-medium rounded-full border border-gray-200 dark:border-white/10"
+                        onClick={() => handleLinkClick(link)}
+                        className="inline-flex items-center px-2 py-0.5 mx-1 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 text-xs font-semibold rounded-md hover:bg-cyan-200 dark:hover:bg-cyan-900/50 transition-colors"
                       >
                         {title}
-                      </span>
+                      </button>
                     );
                   }
 
-                  return (
-                    <button
-                      key={i}
-                      onClick={() => handleLinkClick(link)}
-                      className="inline-flex items-center px-2 py-0.5 mx-1 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 text-xs font-semibold rounded-md hover:bg-cyan-200 dark:hover:bg-cyan-900/50 transition-colors"
-                    >
-                      {title}
-                    </button>
-                  );
-                }
-
-                // Parse Bold Text
-                return part.split(/(\*\*.*?\*\*)/g).map((subPart, j) => {
-                  if (subPart.startsWith('**') && subPart.endsWith('**')) {
-                    return <strong key={`${i}-${j}`} className="font-bold text-gray-900 dark:text-white">{subPart.slice(2, -2)}</strong>;
-                  }
-                  return subPart;
-                });
-              })}
-            </div>
-          );
+                  // Parse Bold Text
+                  return part.split(/(\*\*.*?\*\*)/g).map((subPart, j) => {
+                    if (subPart.startsWith('**') && subPart.endsWith('**')) {
+                      return <strong key={`${i}-${j}`} className="font-bold text-gray-900 dark:text-white">{subPart.slice(2, -2)}</strong>;
+                    }
+                    return subPart;
+                  });
+                })}
+              </div>
+            );
+          }
         }
       }
     });
@@ -273,7 +388,7 @@ const ChatWidget = () => {
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end font-sans">
       {/* Chat Window */}
       {isOpen && (
-        <div className="mb-4 w-[360px] h-[550px] flex flex-col overflow-hidden animate-fade-in-up rounded-2xl border border-gray-200 dark:border-white/20 shadow-2xl backdrop-blur-xl bg-white/90 dark:bg-black/40 supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-black/40">
+        <div className="fixed inset-0 z-[60] w-full h-full sm:static sm:z-auto sm:w-[360px] sm:h-[550px] sm:mb-4 flex flex-col overflow-hidden animate-fade-in-up sm:rounded-2xl border-0 sm:border border-gray-200 dark:border-white/20 shadow-2xl backdrop-blur-xl bg-white/95 dark:bg-black/90 sm:bg-white/90 sm:dark:bg-black/40 supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-black/40">
 
           {/* Header */}
           <div className="p-4 flex justify-between items-center border-b border-gray-200 dark:border-white/10 bg-white/50 dark:bg-white/5 backdrop-blur-md">
