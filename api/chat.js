@@ -113,7 +113,7 @@ const PROJECT_DATA = [
         problem: "Aspiring tech professionals lack structured, industry-aligned practice that goes beyond tutorials.",
         solution: "Delivered a project-based curriculum platform with mentorship, progress tracking, and community spaces to simulate real sprints.",
         impact: "Helped over 300 learners build portfolio-ready artifacts and land freelance work across ASEAN markets.",
-        links: { caseStudy: "https://mjre-portfolio.vercel.app/projects/skillfoundri" }
+        links: { caseStudy: "/projects/skillfoundri" }
     },
     {
         title: "Rage Fitness Gym",
@@ -123,7 +123,7 @@ const PROJECT_DATA = [
         problem: "Local gyms relied on spreadsheets and manual tracking, leading to billing errors and churn.",
         solution: "Built a centralized platform with POS workflows, membership renewals, and class bookings accessible via desktop and tablet.",
         impact: "Reduced admin overhead by 40% and delivered real-time occupancy analytics for peak-hour planning.",
-        links: { caseStudy: "https://mjre-portfolio.vercel.app/projects/rage-fitness-gym" }
+        links: { caseStudy: "/projects/rage-fitness-gym" }
     },
     {
         title: "UrbanCare Services",
@@ -133,7 +133,7 @@ const PROJECT_DATA = [
         problem: "Homeowners struggled to find vetted professionals with reliable ratings and communication loops.",
         solution: "Created a curated provider marketplace with rich profiles, secure booking, and progress updates across web and mobile.",
         impact: "Closed 200+ bookings in the first quarter with a 4.9-star satisfaction rating.",
-        links: { caseStudy: "https://mjre-portfolio.vercel.app/projects/urbancare-services" }
+        links: { caseStudy: "/projects/urbancare-services" }
     },
     {
         title: "Fantastic Baby Shakalaka",
@@ -143,7 +143,7 @@ const PROJECT_DATA = [
         problem: "The brand needed to stand out online with a fast mobile storefront and dynamic merchandising options.",
         solution: "Implemented a Shopify stack with rapid filtering, social proof modules, and content-driven product storytelling.",
         impact: "Achieved a 32% uplift in mobile conversions and reduced bounce rates through performance tuning.",
-        links: { caseStudy: "https://mjre-portfolio.vercel.app/projects/fantastic-baby-shakalaka" }
+        links: { caseStudy: "/projects/fantastic-baby-shakalaka" }
     },
     {
         title: "FitSync",
@@ -153,7 +153,7 @@ const PROJECT_DATA = [
         problem: "Fitness coaches and clients need a centralized platform to manage training programs, track nutrition, and monitor progress effectively.",
         solution: "Built a comprehensive platform with coach-client matching, macro calculation engine, workout plan builder, nutrition tracking, and real-time progress monitoring.",
         impact: "Platform enables coaches to scale their practice while providing clients with structured guidance and accountability.",
-        links: { caseStudy: "https://mjre-portfolio.vercel.app/projects/fitsync" }
+        links: { caseStudy: "/projects/fitsync" }
     },
     {
         title: "WhosIn",
@@ -163,7 +163,7 @@ const PROJECT_DATA = [
         problem: "Educational institutions struggle with manual attendance tracking, which is time-consuming and prone to errors.",
         solution: "Built an automated attendance system using facial recognition technology with offline capabilities, real-time sync, and comprehensive dashboards for teachers and administrators.",
         impact: "Reduces attendance tracking time significantly while providing accurate, real-time data for educators and administrators.",
-        links: { caseStudy: "https://mjre-portfolio.vercel.app/projects/whosin" }
+        links: { caseStudy: "/projects/whosin" }
     },
     {
         title: "Armet Limited",
@@ -173,14 +173,34 @@ const PROJECT_DATA = [
         problem: "Standard email service providers were too expensive and restrictive for the client's high-volume, cold-outreach needs.",
         solution: "Built a custom, multi-threaded CLI tool that rotates through AWS SES and SendGrid accounts while mimicking human sending patterns.",
         impact: "Reduced email costs by 85% and achieved a 99.8% delivery rate on a 1.2M email campaign.",
-        links: { caseStudy: "https://mjre-portfolio.vercel.app/projects/armet-limited-emailer" }
+        links: { caseStudy: "/projects/armet-limited-emailer" }
     },
     {
         title: "AutoScout",
         problem: "Filipinos lack a trusted, culturally-aligned platform for finding local service providers or earning extra income through tasks.",
         solution: "Built a blockchain-backed marketplace with AI task matching, 'Bayanihan' community features, and secure local payment integration.",
         impact: "Empowering local communities by providing a secure and culturally relevant platform for economic opportunity and mutual aid.",
-        links: { caseStudy: "/projects/tasktify" }
+        links: { caseStudy: "/projects/autoscout-scraper" }
+    },
+    {
+        title: "DocuMind",
+        technologies: ["Python", "LangChain", "Ollama", "ChromaDB"],
+        summary: "Local RAG Knowledge Base.",
+        overview: "DocuMind is a Retrieval-Augmented Generation (RAG) system built for privacy-conscious industries. It ingests PDFs, creates vector embeddings locally using ChromaDB, and uses a quantized Llama 3 model to answer queries with precise citations.",
+        problem: "Legal teams needed to search across thousands of case files but could not use cloud-based AI due to privacy regulations.",
+        solution: "Deployed a fully local RAG stack that runs on-premise hardware, ensuring zero data leakage while providing instant answers.",
+        impact: "Reduced research time by 70% and ensured 100% data sovereignty.",
+        links: { caseStudy: "/projects/documind-rag" }
+    },
+    {
+        title: "VoiceOps",
+        technologies: ["Python", "Twilio", "Deepgram", "ElevenLabs"],
+        summary: "AI Customer Support Agent.",
+        overview: "VoiceOps is a cutting-edge voice agent built for high-throughput support centers. Integrating Deepgram for transcription, GPT-4o for logic, and ElevenLabs for synthesis, it achieves sub-800ms latency, handling tier-1 support calls autonomously.",
+        problem: "Customer support wait times were averaging 15 minutes, leading to high churn and frustration.",
+        solution: "Deployed an always-on AI voice agent to handle common queries, appointment setting, and triage.",
+        impact: "Reduced wait times to <10 seconds and handled 60% of inbound volume without human intervention.",
+        links: { caseStudy: "/projects/voiceops-agent" }
     }
 ];
 

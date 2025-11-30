@@ -11,6 +11,7 @@ export default defineConfig({
   },
   assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif', '**/*.svg', '**/*.mp4', '**/*.webm', '**/*.mov'],
   build: {
+    outDir: 'dist',
     rollupOptions: {
       output: {
         assetFileNames: 'assets/[name].[hash].[ext]'
@@ -25,8 +26,5 @@ export default defineConfig({
         secure: true,
       }
     }
-  },
-  build: {
-    outDir: 'dist',
   }
 })
