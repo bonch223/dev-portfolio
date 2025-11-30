@@ -132,7 +132,8 @@ const ChatWidget = () => {
       const data = await response.json();
 
       if (data.error) {
-        throw new Error(data.error);
+        console.error('Server Error Details:', data);
+        throw new Error(data.error + (data.details ? ` - ${data.details}` : ''));
       }
 
       setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
@@ -192,14 +193,20 @@ const ChatWidget = () => {
 
         // Render normal text (handling inline chips if any remain)
         if (line.trim()) {
+          const isBullet = line.trim().startsWith('* ') || line.trim().startsWith('- ');
+          const cleanLine = isBullet ? line.trim().substring(2) : line;
+
           renderedContent.push(
-            <div key={`text-${index}`} className="mb-1">
-              {line.split(/(:::[^|]+\|.+?:::)/g).map((part, i) => {
+            <div key={`text-${index}`} className={`mb-1 ${isBullet ? 'pl-4 relative' : ''}`}>
+              {isBullet && (
+                <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-cyan-500 rounded-full"></span>
+              )}
+              {cleanLine.split(/(:::[^|]+\|.+?:::)/g).map((part, i) => {
                 const match = part.match(/:::([^|]+)\|(.+?):::/);
                 if (match) {
                   const [_, title, link] = match;
 
-                  // NEW: Handle static tags
+                  // Handle static tags
                   if (link === 'tag') {
                     return (
                       <span
@@ -221,7 +228,14 @@ const ChatWidget = () => {
                     </button>
                   );
                 }
-                return part;
+
+                // Parse Bold Text
+                return part.split(/(\*\*.*?\*\*)/g).map((subPart, j) => {
+                  if (subPart.startsWith('**') && subPart.endsWith('**')) {
+                    return <strong key={`${i}-${j}`} className="font-bold text-gray-900 dark:text-white">{subPart.slice(2, -2)}</strong>;
+                  }
+                  return subPart;
+                });
               })}
             </div>
           );
@@ -288,7 +302,10 @@ const ChatWidget = () => {
                 </svg>
               </button>
               <button
-                onClick={() => navigate('/chat')}
+                onClick={() => {
+                  setIsOpen(false);
+                  navigate('/chat');
+                }}
                 className="p-2 text-gray-500 dark:text-white/60 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-all duration-200"
                 title="Open Full Page"
               >
