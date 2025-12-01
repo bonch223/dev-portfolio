@@ -7,13 +7,81 @@ import emailjs from '@emailjs/browser';
 const Scheduler = ({ onConfirm, onCancel }) => {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
-  const handleSubmit = (e) => { e.preventDefault(); if (date && time) onConfirm({ date, time }); };
+  const [error, setError] = useState('');
+
+  const validateTime = (dateStr, timeStr) => {
+    if (!dateStr || !timeStr) return null;
+    const d = new Date(`${dateStr}T${timeStr}`);
+    const day = d.getDay(); // 0=Sun, 6=Sat
+    const hour = parseInt(timeStr.split(':')[0], 10);
+    const minute = parseInt(timeStr.split(':')[1], 10);
+    const totalMinutes = hour * 60 + minute;
+
+    // Available Ranges (in minutes)
+    // 4am-6am: 240-360
+    // 9am-3pm: 540-900
+    // 8pm-12mn: 1200-1440
+    const ranges = [
+      { start: 240, end: 360 },
+      { start: 540, end: 900 },
+      { start: 1200, end: 1440 }
+    ];
+
+    // Filter ranges based on day rules
+    let validRanges = [...ranges];
+    if (day === 5) validRanges = validRanges.filter(r => r.start < 1200); // Fri: No evening
+    if (day === 6) {
+      validRanges = [
+        { start: 720, end: 900 }, // 12pm-3pm (Assuming "Busy on Sat morning" means until 12pm)
+        { start: 1200, end: 1440 } // 8pm-12mn
+      ];
+    }
+    if (day === 0) validRanges = [{ start: 1200, end: 1440 }]; // Sun: Only evening
+
+    const isAvailable = validRanges.some(r => totalMinutes >= r.start && totalMinutes < r.end);
+
+    if (isAvailable) return null;
+
+    // Find nearest slot
+    let nearestDiff = Infinity;
+    let suggestion = "";
+
+    validRanges.forEach(r => {
+      // Check start of range
+      const diffStart = Math.abs(totalMinutes - r.start);
+      if (diffStart < nearestDiff) {
+        nearestDiff = diffStart;
+        const h = Math.floor(r.start / 60);
+        const m = r.start % 60;
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        const displayH = h > 12 ? h - 12 : h === 0 ? 12 : h;
+        suggestion = `${displayH}:${m.toString().padStart(2, '0')} ${ampm}`;
+      }
+    });
+
+    return `I have a prior appointment at that time. How about ${suggestion}?`;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const err = validateTime(date, time);
+    if (err) { setError(err); return; }
+    onConfirm({ date, time });
+  };
+
   return (
     <div className="p-4 bg-white dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 shadow-lg my-2">
       <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-3">Schedule a Call</h4>
       <form onSubmit={handleSubmit} className="space-y-3">
-        <div><label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Date</label><input type="date" required value={date} onChange={(e) => setDate(e.target.value)} className="w-full px-3 py-2 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg text-sm focus:outline-none focus:border-cyan-500" /></div>
-        <div><label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Time</label><input type="time" required value={time} onChange={(e) => setTime(e.target.value)} className="w-full px-3 py-2 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg text-sm focus:outline-none focus:border-cyan-500" /></div>
+        <div>
+          <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Date</label>
+          <input type="date" required value={date} onChange={(e) => { setDate(e.target.value); setError(''); }} className="w-full px-3 py-2 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg text-sm focus:outline-none focus:border-cyan-500" />
+        </div>
+        <div>
+          <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Time</label>
+          <input type="time" required value={time} onChange={(e) => { setTime(e.target.value); setError(''); }} className="w-full px-3 py-2 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg text-sm focus:outline-none focus:border-cyan-500" />
+        </div>
+        {error && <p className="text-xs text-red-500">{error}</p>}
         <div className="flex gap-2 pt-2">
           <button type="button" onClick={onCancel} className="flex-1 px-3 py-2 text-xs font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/10 rounded-lg hover:bg-gray-200 dark:hover:bg-white/20 transition-colors">Cancel</button>
           <button type="submit" className="flex-1 px-3 py-2 text-xs font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg hover:shadow-md transition-all">Confirm</button>
@@ -26,9 +94,16 @@ const Scheduler = ({ onConfirm, onCancel }) => {
 // EmailStatus Component
 const EmailStatus = ({ data, sendEmail }) => {
   const [status, setStatus] = useState('sending');
+  const hasSent = useRef(false);
+
   useEffect(() => {
     let mounted = true;
-    const send = async () => { const success = await sendEmail(data); if (mounted) setStatus(success ? 'success' : 'error'); };
+    const send = async () => {
+      if (hasSent.current) return;
+      hasSent.current = true;
+      const success = await sendEmail(data);
+      if (mounted) setStatus(success ? 'success' : 'error');
+    };
     send();
     return () => { mounted = false; };
   }, [data, sendEmail]);
@@ -157,7 +232,9 @@ const ChatWidget = () => {
       });
       if (!response.ok) throw new Error('Failed to get response');
       const data = await response.json();
-      setMessages(prev => [...prev, { role: 'assistant', content: data.response, animate: true }]);
+      // Disable animation if the message contains special tokens (Scheduler, Email, etc.)
+      const shouldAnimate = !data.response.includes(':::');
+      setMessages(prev => [...prev, { role: 'assistant', content: data.response, animate: shouldAnimate }]);
     } catch (error) {
       console.error('Chat Error:', error);
       setMessages(prev => [...prev, { role: 'assistant', content: "I'm having trouble connecting right now. Please try again later.", animate: true }]);
@@ -169,7 +246,13 @@ const ChatWidget = () => {
   const handleScheduleConfirm = async (scheduleData) => {
     const emailData = { type: 'Call Schedule Request', name: 'User (via Chat)', email: 'Not provided', date: scheduleData.date, time: scheduleData.time, summary: 'User requested a call via Melbot.' };
     const success = await sendEmail(emailData);
-    setMessages(prev => [...prev, { role: 'assistant', content: success ? `Great! I've sent a request to schedule a call for ${scheduleData.date} at ${scheduleData.time}. Melvin will confirm with you shortly.` : "I'm sorry, I couldn't send the schedule request right now. Please try again later or contact Melvin directly.", animate: true }]);
+    setMessages(prev => [...prev, {
+      role: 'assistant',
+      content: success
+        ? `Great! I've sent a request to schedule a call for ${scheduleData.date} at ${scheduleData.time}. Melvin will review it and confirm with you shortly.\n\nIs there anything else you'd like to know about his work in the meantime?`
+        : "I'm sorry, I couldn't send the schedule request right now. Please try again later or contact Melvin directly.",
+      animate: false
+    }]);
   };
 
   const handleLinkClick = (link) => { if (link.startsWith('http')) window.open(link, '_blank', 'noopener,noreferrer'); else navigate(link); };
