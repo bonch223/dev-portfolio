@@ -1,90 +1,33 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { aiContext } from '../data/ai-context';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
+import { aiContext } from '../data/ai-context';
 
 // Scheduler Component
 const Scheduler = ({ onConfirm, onCancel }) => {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
-  const [error, setError] = useState('');
-
-  const validateTime = (dateStr, timeStr) => {
-    if (!dateStr || !timeStr) return null;
-    const d = new Date(`${dateStr}T${timeStr}`);
-    const day = d.getDay(); // 0=Sun, 6=Sat
-    const hour = parseInt(timeStr.split(':')[0], 10);
-    const minute = parseInt(timeStr.split(':')[1], 10);
-    const totalMinutes = hour * 60 + minute;
-
-    // Available Ranges (in minutes)
-    // 4am-6am: 240-360
-    // 9am-3pm: 540-900
-    // 8pm-12mn: 1200-1440
-    const ranges = [
-      { start: 240, end: 360 },
-      { start: 540, end: 900 },
-      { start: 1200, end: 1440 }
-    ];
-
-    // Filter ranges based on day rules
-    let validRanges = [...ranges];
-    if (day === 5) validRanges = validRanges.filter(r => r.start < 1200); // Fri: No evening
-    if (day === 6) {
-      validRanges = [
-        { start: 720, end: 900 }, // 12pm-3pm (Assuming "Busy on Sat morning" means until 12pm)
-        { start: 1200, end: 1440 } // 8pm-12mn
-      ];
-    }
-    if (day === 0) validRanges = [{ start: 1200, end: 1440 }]; // Sun: Only evening
-
-    const isAvailable = validRanges.some(r => totalMinutes >= r.start && totalMinutes < r.end);
-
-    if (isAvailable) return null;
-
-    // Find nearest slot
-    let nearestDiff = Infinity;
-    let suggestion = "";
-
-    validRanges.forEach(r => {
-      // Check start of range
-      const diffStart = Math.abs(totalMinutes - r.start);
-      if (diffStart < nearestDiff) {
-        nearestDiff = diffStart;
-        const h = Math.floor(r.start / 60);
-        const m = r.start % 60;
-        const ampm = h >= 12 ? 'PM' : 'AM';
-        const displayH = h > 12 ? h - 12 : h === 0 ? 12 : h;
-        suggestion = `${displayH}:${m.toString().padStart(2, '0')} ${ampm}`;
-      }
-    });
-
-    return `I have a prior appointment at that time. How about ${suggestion}?`;
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const err = validateTime(date, time);
-    if (err) { setError(err); return; }
-    onConfirm({ date, time });
+    if (date && time) onConfirm({ date, time });
   };
 
   return (
-    <div className="p-4 bg-white dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 shadow-lg my-2">
-      <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-3">Schedule a Call</h4>
+    <div className="bg-white dark:bg-white/10 p-4 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm my-2">
+      <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-3">📅 Schedule a Call</h4>
       <form onSubmit={handleSubmit} className="space-y-3">
         <div>
           <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Date</label>
-          <input type="date" required value={date} onChange={(e) => { setDate(e.target.value); setError(''); }} className="w-full px-3 py-2 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg text-sm focus:outline-none focus:border-cyan-500" />
+          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-cyan-500" required />
         </div>
         <div>
           <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Time</label>
-          <input type="time" required value={time} onChange={(e) => { setTime(e.target.value); setError(''); }} className="w-full px-3 py-2 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg text-sm focus:outline-none focus:border-cyan-500" />
+          <input type="time" value={time} onChange={(e) => setTime(e.target.value)} className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-cyan-500" required />
         </div>
-        {error && <p className="text-xs text-red-500">{error}</p>}
         <div className="flex gap-2 pt-2">
-          <button type="button" onClick={onCancel} className="flex-1 px-3 py-2 text-xs font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/10 rounded-lg hover:bg-gray-200 dark:hover:bg-white/20 transition-colors">Cancel</button>
-          <button type="submit" className="flex-1 px-3 py-2 text-xs font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg hover:shadow-md transition-all">Confirm</button>
+          <button type="button" onClick={onCancel} className="flex-1 px-3 py-2 bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors">Cancel</button>
+          <button type="submit" className="flex-1 px-3 py-2 bg-cyan-500 text-white rounded-lg text-xs font-semibold hover:bg-cyan-600 transition-colors shadow-sm">Confirm</button>
         </div>
       </form>
     </div>
@@ -94,31 +37,28 @@ const Scheduler = ({ onConfirm, onCancel }) => {
 // QuoteCard Component
 const QuoteCard = ({ data }) => {
   return (
-    <div className="p-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-white/5 dark:to-white/10 rounded-xl border border-gray-200 dark:border-white/10 shadow-lg my-2">
-      <div className="flex items-center justify-between mb-3">
-        <h4 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <span className="text-xl">🏷️</span> {data.package_title || 'Estimated Quote'}
-        </h4>
-        <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 text-[10px] font-bold uppercase tracking-wider rounded-md border border-yellow-200 dark:border-yellow-800">Estimate Only</span>
-      </div>
-
-      <div className="mb-4 text-center p-3 bg-white dark:bg-black/20 rounded-lg border border-gray-100 dark:border-white/5">
-        <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Price Range</p>
-        <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600 dark:from-cyan-400 dark:to-blue-400">
-          ${data.min.toLocaleString()} - ${data.max.toLocaleString()} {data.currency}
-        </p>
-        {data.timeline && <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">⏳ Est. Timeline: {data.timeline}</p>}
-      </div>
-
-      {data.package_summary && (
-        <div className="mb-4 p-2 bg-cyan-50 dark:bg-cyan-900/10 rounded-lg border border-cyan-100 dark:border-cyan-800/30">
-          <p className="text-xs text-cyan-800 dark:text-cyan-200">{data.package_summary}</p>
+    <div className="bg-white dark:bg-white/5 p-4 rounded-xl border border-gray-200 dark:border-white/10 shadow-lg my-3 max-w-sm mx-auto transform transition-all hover:scale-[1.02]">
+      <div className="flex justify-between items-start mb-3 border-b border-gray-100 dark:border-white/5 pb-2">
+        <div>
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 to-blue-500">
+            {data.package_title}
+          </h3>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{data.package_summary}</p>
         </div>
-      )}
+        <div className="text-right">
+          <span className="block text-xl font-bold text-cyan-600 dark:text-cyan-400">
+            {data.currency === 'USD' ? '$' : '₱'}{data.min.toLocaleString()} - {data.currency === 'USD' ? '$' : '₱'}{data.max.toLocaleString()}
+          </span>
+          <span className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Estimated</span>
+        </div>
+      </div>
 
-      <div className="space-y-2 mb-4">
-        <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">Package Includes:</p>
-        <ul className="space-y-1">
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-2">
+          <svg className="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">Timeline: <span className="text-cyan-600 dark:text-cyan-400">{data.timeline}</span></span>
+        </div>
+        <ul className="space-y-1.5">
           {data.breakdown.map((item, i) => (
             <li key={i} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2">
               <span className="text-cyan-500 mt-0.5">✓</span> {item}
@@ -289,7 +229,7 @@ const ChatWidget = () => {
     setIsLoading(true);
 
     try {
-      const contextHistory = messages.slice(-10).map(m => ({ role: m.role, text: m.content }));
+      const contextHistory = messages.slice(-30).map(m => ({ role: m.role, text: m.content }));
       const apiUrl = 'https://mjre-portfolio.vercel.app/api/chat';
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -298,7 +238,6 @@ const ChatWidget = () => {
       });
       if (!response.ok) throw new Error('Failed to get response');
       const data = await response.json();
-      // Disable animation if the message contains special tokens (Scheduler, Email, etc.)
       const shouldAnimate = !data.response.includes(':::');
       setMessages(prev => [...prev, { role: 'assistant', content: data.response, animate: shouldAnimate }]);
     } catch (error) {
@@ -315,22 +254,29 @@ const ChatWidget = () => {
     setMessages(prev => [...prev, {
       role: 'assistant',
       content: success
-        ? `Great! I've sent a request to schedule a call for ${scheduleData.date} at ${scheduleData.time}. Melvin will review it and confirm with you shortly.\n\nIs there anything else you'd like to know about his work in the meantime?`
-        : "I'm sorry, I couldn't send the schedule request right now. Please try again later or contact Melvin directly.",
+        ? "Great! I've sent a request to schedule a call. Melvin will review it and confirm with you shortly."
+        : "I'm sorry, I couldn't send the schedule request right now.",
       animate: false
     }]);
   };
 
   const handleLinkClick = (link) => { if (link.startsWith('http')) window.open(link, '_blank', 'noopener,noreferrer'); else navigate(link); };
 
-  const renderMessageContent = (content) => {
+  const renderMessageContent = (rawContent) => {
+    // Hide thought block
+    const content = rawContent.replace(/:::THOUGHT\|[\s\S]*?:::/g, '').trim();
+    if (!content) return null;
+
     if (content.includes(':::SHOW_SCHEDULER:::')) {
       const parts = content.split(':::SHOW_SCHEDULER:::');
       return <>{parts[0] && renderMessageContent(parts[0])}<Scheduler onConfirm={handleScheduleConfirm} onCancel={() => setMessages(prev => [...prev, { role: 'assistant', content: "No problem! Let me know if you change your mind.", animate: true }])} />{parts[1] && renderMessageContent(parts[1])}</>;
     }
 
     if (content.includes(':::SHOW_QUOTE|')) {
-      const parts = content.split(/:::SHOW_QUOTE\|(.+?):::/);
+      const parts = content.split(/:::SHOW_QUOTE\|([\s\S]+?):::/);
+      // Safety check: if split didn't work (length 1), return content to avoid recursion loop
+      if (parts.length === 1) return content;
+
       return (
         <>
           {parts[0] && renderMessageContent(parts[0])}
@@ -396,7 +342,7 @@ const ChatWidget = () => {
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end font-sans">
       {isOpen && (
-        <div className="fixed inset-0 z-[60] w-full h-full sm:static sm:z-auto sm:w-[360px] sm:h-[550px] sm:mb-4 flex flex-col overflow-hidden animate-fade-in-up sm:rounded-2xl border-0 sm:border border-gray-200 dark:border-white/20 shadow-2xl backdrop-blur-xl bg-white/95 dark:bg-black/90 sm:bg-white/90 sm:dark:bg-black/40 supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-black/40">
+        <div className="fixed inset-0 z-[60] w-full h-full lg:static lg:z-auto lg:w-[360px] lg:h-[550px] lg:mb-4 flex flex-col overflow-hidden animate-fade-in-up lg:rounded-2xl border-0 lg:border border-gray-200 dark:border-white/20 shadow-2xl backdrop-blur-xl bg-white/95 dark:bg-black/90 lg:bg-white/90 lg:dark:bg-black/40 supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-black/40">
           <div className="p-4 flex justify-between items-center border-b border-gray-200 dark:border-white/10 bg-white/50 dark:bg-white/5 backdrop-blur-md">
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-400 to-blue-600 p-[2px] shadow-lg"><div className="w-full h-full rounded-full bg-white dark:bg-black/50 flex items-center justify-center backdrop-blur-sm"><span className="text-xl">🤖</span></div></div>
