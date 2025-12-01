@@ -91,6 +91,51 @@ const Scheduler = ({ onConfirm, onCancel }) => {
   );
 };
 
+// QuoteCard Component
+const QuoteCard = ({ data }) => {
+  return (
+    <div className="p-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-white/5 dark:to-white/10 rounded-xl border border-gray-200 dark:border-white/10 shadow-lg my-2">
+      <div className="flex items-center justify-between mb-3">
+        <h4 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+          <span className="text-xl">🏷️</span> Estimated Quote
+        </h4>
+        <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 text-[10px] font-bold uppercase tracking-wider rounded-md border border-yellow-200 dark:border-yellow-800">Estimate Only</span>
+      </div>
+
+      <div className="mb-4 text-center p-3 bg-white dark:bg-black/20 rounded-lg border border-gray-100 dark:border-white/5">
+        <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Price Range</p>
+        <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600 dark:from-cyan-400 dark:to-blue-400">
+          ${data.min.toLocaleString()} - ${data.max.toLocaleString()} {data.currency}
+        </p>
+      </div>
+
+      <div className="space-y-2 mb-4">
+        <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">Breakdown:</p>
+        <ul className="space-y-1">
+          {data.breakdown.map((item, i) => (
+            <li key={i} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2">
+              <span className="text-cyan-500 mt-0.5">•</span> {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="mb-4">
+        <p className="text-xs text-gray-500 dark:text-gray-400 italic border-l-2 border-cyan-500 pl-2">
+          "{data.justification}"
+        </p>
+      </div>
+
+      <div className="p-2 bg-yellow-50 dark:bg-yellow-900/10 rounded-lg border border-yellow-100 dark:border-yellow-800/30 flex gap-2">
+        <span className="text-lg">⚠️</span>
+        <p className="text-[10px] text-yellow-800 dark:text-yellow-200 leading-tight">
+          <strong>Disclaimer:</strong> I am an AI still learning. This price is just an estimate and may vary significantly from the final quote provided by the developer.
+        </p>
+      </div>
+    </div>
+  );
+};
+
 // EmailStatus Component
 const EmailStatus = ({ data, sendEmail }) => {
   const [status, setStatus] = useState('sending');
@@ -262,6 +307,26 @@ const ChatWidget = () => {
       const parts = content.split(':::SHOW_SCHEDULER:::');
       return <>{parts[0] && renderMessageContent(parts[0])}<Scheduler onConfirm={handleScheduleConfirm} onCancel={() => setMessages(prev => [...prev, { role: 'assistant', content: "No problem! Let me know if you change your mind.", animate: true }])} />{parts[1] && renderMessageContent(parts[1])}</>;
     }
+
+    if (content.includes(':::SHOW_QUOTE|')) {
+      const parts = content.split(/:::SHOW_QUOTE\|(.+?):::/);
+      return (
+        <>
+          {parts[0] && renderMessageContent(parts[0])}
+          {parts[1] && (() => {
+            try {
+              const quoteData = JSON.parse(parts[1]);
+              return <QuoteCard data={quoteData} />;
+            } catch (e) {
+              console.error("Failed to parse quote token", e);
+              return null;
+            }
+          })()}
+          {parts[2] && renderMessageContent(parts[2])}
+        </>
+      );
+    }
+
     const lines = content.split('\n');
     const renderedContent = [];
     let projectBuffer = [];
