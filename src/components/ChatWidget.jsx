@@ -97,7 +97,7 @@ const QuoteCard = ({ data }) => {
     <div className="p-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-white/5 dark:to-white/10 rounded-xl border border-gray-200 dark:border-white/10 shadow-lg my-2">
       <div className="flex items-center justify-between mb-3">
         <h4 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <span className="text-xl">🏷️</span> Estimated Quote
+          <span className="text-xl">🏷️</span> {data.package_title || 'Estimated Quote'}
         </h4>
         <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 text-[10px] font-bold uppercase tracking-wider rounded-md border border-yellow-200 dark:border-yellow-800">Estimate Only</span>
       </div>
@@ -107,18 +107,39 @@ const QuoteCard = ({ data }) => {
         <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600 dark:from-cyan-400 dark:to-blue-400">
           ${data.min.toLocaleString()} - ${data.max.toLocaleString()} {data.currency}
         </p>
+        {data.timeline && <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">⏳ Est. Timeline: {data.timeline}</p>}
       </div>
 
+      {data.package_summary && (
+        <div className="mb-4 p-2 bg-cyan-50 dark:bg-cyan-900/10 rounded-lg border border-cyan-100 dark:border-cyan-800/30">
+          <p className="text-xs text-cyan-800 dark:text-cyan-200">{data.package_summary}</p>
+        </div>
+      )}
+
       <div className="space-y-2 mb-4">
-        <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">Breakdown:</p>
+        <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">Package Includes:</p>
         <ul className="space-y-1">
           {data.breakdown.map((item, i) => (
             <li key={i} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2">
-              <span className="text-cyan-500 mt-0.5">•</span> {item}
+              <span className="text-cyan-500 mt-0.5">✓</span> {item}
             </li>
           ))}
         </ul>
       </div>
+
+      {data.addons && data.addons.length > 0 && (
+        <div className="space-y-2 mb-4 pt-3 border-t border-gray-200 dark:border-white/10">
+          <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">Optional Addons:</p>
+          <ul className="space-y-1">
+            {data.addons.map((addon, i) => (
+              <li key={i} className="text-xs text-gray-600 dark:text-gray-400 flex justify-between items-center bg-white dark:bg-white/5 p-1.5 rounded border border-gray-100 dark:border-white/5">
+                <span><span className="text-green-500 mr-1">+</span> {addon.title}</span>
+                <span className="font-semibold text-gray-700 dark:text-gray-300">{addon.price}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="mb-4">
         <p className="text-xs text-gray-500 dark:text-gray-400 italic border-l-2 border-cyan-500 pl-2">
