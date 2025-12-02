@@ -26,11 +26,16 @@ SKILLS:
 - Tools: Git, Docker, AWS, Firebase
 
 PROJECTS:
-1. Workflow Challenger: A gamified platform to test and improve workflow efficiency.
-2. DocuMind: A local RAG system for chatting with PDF documents securely.
-3. Guro.AI: An AI lesson plan generator for teachers.
-4. SEO Simulator: An interactive tool to demonstrate SEO optimization techniques.
-5. AI Simulator: A wizard to design custom AI architectures (Chatbots, Scrapers).
+1. Workflow Challenger: A gamified platform to test and improve workflow efficiency (React/Node).
+2. DocuMind: A local RAG system for chatting with PDF documents securely (Python/AI).
+3. Guro.AI: An AI lesson plan generator for teachers (Next.js/OpenAI).
+4. SEO Simulator: An interactive tool to demonstrate SEO optimization techniques (React).
+5. AI Simulator: A wizard to design custom AI architectures (React/Flow).
+6. SkillFoundri: A project-based learning platform with mentorship (React/Node/MongoDB) - NOT WordPress.
+7. Decor: High-end Home Decor E-commerce Store (WordPress/WooCommerce).
+8. Femme: Trendy Women's Fashion Boutique (WordPress/WooCommerce).
+9. Gents: Premium Men's Apparel Shop (WordPress/WooCommerce).
+10. Plush: Luxury Lifestyle & Accessories Brand (WordPress).
 
 CONTACT:
 - Email: contact@developer.com

@@ -21,13 +21,53 @@ export const BOT_PROJECT_DATA = [
     },
     {
         title: "SkillFoundri",
-        technologies: ["WordPress", "PHP", "MySQL"],
+        technologies: ["React", "Node.js", "MongoDB"],
         summary: "Project-based learning platform with mentorship.",
         overview: "SkillFoundri combines project management, coursework, and mentorship into a single learning platform. As COO and co-founder, I guided the product vision and ensured the build supported both cohort-based learning and self-paced journeys.",
         problem: "Aspiring tech professionals lack structured, industry-aligned practice that goes beyond tutorials.",
         solution: "Delivered a project-based curriculum platform with mentorship, progress tracking, and community spaces to simulate real sprints.",
         impact: "Helped over 300 learners build portfolio-ready artifacts and land freelance work across ASEAN markets.",
         links: { caseStudy: "/projects/skillfoundri" }
+    },
+    {
+        title: "Decor",
+        technologies: ["WordPress", "WooCommerce", "Elementor"],
+        summary: "High-end Home Decor E-commerce Store.",
+        overview: "Decor is a premium e-commerce store built on WordPress, featuring a sophisticated design and seamless shopping experience for high-end home accessories.",
+        problem: "The client needed a luxurious online presence that matched their physical showroom's aesthetic.",
+        solution: "Customized a WordPress theme with WooCommerce integration, focusing on high-quality imagery and a streamlined checkout process.",
+        impact: "Increased online sales by 45% within the first three months of launch.",
+        links: { caseStudy: "/projects/decor" }
+    },
+    {
+        title: "Femme",
+        technologies: ["WordPress", "WooCommerce"],
+        summary: "Trendy Women's Fashion Boutique.",
+        overview: "Femme is a vibrant fashion boutique showcasing the latest trends. The site emphasizes visual storytelling and ease of navigation to drive conversions.",
+        problem: "The previous site was slow and difficult to update, leading to lost sales and inventory mismanagement.",
+        solution: "Migrated to a robust WordPress setup with easy inventory management and a mobile-first design.",
+        impact: "Improved mobile conversion rates by 60% and simplified backend operations for the staff.",
+        links: { caseStudy: "/projects/femme" }
+    },
+    {
+        title: "Gents",
+        technologies: ["WordPress", "WooCommerce"],
+        summary: "Premium Men's Apparel Shop.",
+        overview: "Gents offers a curated selection of men's clothing. The site is designed to be masculine, clean, and efficient, catering to the modern gentleman.",
+        problem: "The brand lacked a cohesive online identity and struggled with cart abandonment.",
+        solution: "Developed a clean, minimalist WordPress site with trusted payment gateways and abandoned cart recovery.",
+        impact: "Reduced cart abandonment by 25% and established a strong brand identity online.",
+        links: { caseStudy: "/projects/gents" }
+    },
+    {
+        title: "Plush",
+        technologies: ["WordPress", "WooCommerce"],
+        summary: "Luxury Lifestyle & Accessories Brand.",
+        overview: "Plush represents the pinnacle of luxury lifestyle. The website serves as a digital catalog and e-commerce platform for exclusive accessories.",
+        problem: "The client required a platform that felt exclusive and high-end, capable of handling high-value transactions securely.",
+        solution: "Built a secure, high-performance WordPress site with custom animations and a VIP member area.",
+        impact: "Successfully launched a limited-edition collection that sold out in 24 hours.",
+        links: { caseStudy: "/projects/plush" }
     },
     {
         title: "Rage Fitness Gym",

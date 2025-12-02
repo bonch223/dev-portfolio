@@ -171,6 +171,7 @@ const ChatWidget = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
 
@@ -185,6 +186,46 @@ const ChatWidget = () => {
     }
     scrollToBottom();
   }, [messages, isOpen]);
+
+  const speakMessage = (text) => {
+    if (isMuted || !window.speechSynthesis) return;
+
+    // Cancel any current speech
+    window.speechSynthesis.cancel();
+
+    // Strip tokens and markdown for cleaner speech
+    const cleanText = text
+      .replace(/:::.*?:::/g, '') // Remove tokens like :::SHOW_SCHEDULER:::
+      .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold markdown
+      .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Remove links, keep text
+      .replace(/>>>/g, '') // Remove carousel indicators
+      .trim();
+
+    if (!cleanText) return;
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+
+    // Try to select a better voice
+    const voices = window.speechSynthesis.getVoices();
+    const preferredVoice = voices.find(v => v.name.includes('Google US English')) ||
+      voices.find(v => v.name.includes('Microsoft Zira')) ||
+      voices.find(v => v.lang === 'en-US');
+
+    if (preferredVoice) utterance.voice = preferredVoice;
+
+    utterance.rate = 1.1; // Slightly faster
+    utterance.pitch = 1.0;
+
+    window.speechSynthesis.speak(utterance);
+  };
+
+  useEffect(() => {
+    // Speak the last message if it's from the assistant and not muted
+    const lastMsg = messages[messages.length - 1];
+    if (lastMsg && lastMsg.role === 'assistant' && !isMuted && !lastMsg.animate) {
+      speakMessage(lastMsg.content);
+    }
+  }, [messages, isMuted]);
 
   const clearHistory = () => {
     const defaultMsg = [{ role: 'assistant', content: "Hi! I'm MelBot. Ask me anything about the developer's skills or projects.", animate: true }];
@@ -203,7 +244,10 @@ const ChatWidget = () => {
       recognition.continuous = false;
       recognition.interimResults = false;
       recognition.lang = 'en-US';
-      recognition.onstart = () => setIsListening(true);
+      recognition.onstart = () => {
+        setIsListening(true);
+        window.speechSynthesis.cancel(); // Stop speaking when listening starts
+      };
       recognition.onend = () => setIsListening(false);
       recognition.onresult = (event) => setInput(event.results[0][0].transcript);
       recognition.onerror = (event) => { console.error("Speech recognition error", event.error); setIsListening(false); };
@@ -220,6 +264,7 @@ const ChatWidget = () => {
 
   const handleSubmit = async (e, overrideInput = null) => {
     if (e) e.preventDefault();
+    window.speechSynthesis.cancel(); // Stop speaking when user submits
     const messageToSend = overrideInput || input;
     if (!messageToSend.trim() || isLoading) return;
 
@@ -246,25 +291,24 @@ const ChatWidget = () => {
     } finally { setIsLoading(false); }
   };
 
-  const handleAnimationComplete = (index) => { setMessages(prev => prev.map((msg, i) => i === index ? { ...msg, animate: false } : msg)); };
-
-  const handleScheduleConfirm = async (scheduleData) => {
-    const emailData = { type: 'Call Schedule Request', name: 'User (via Chat)', email: 'Not provided', date: scheduleData.date, time: scheduleData.time, summary: 'User requested a call via Melbot.' };
-    const success = await sendEmail(emailData);
-    setMessages(prev => [...prev, {
-      role: 'assistant',
-      content: success
-        ? "Great! I've sent a request to schedule a call. Melvin will review it and confirm with you shortly."
-        : "I'm sorry, I couldn't send the schedule request right now.",
-      animate: false
-    }]);
+  const handleAnimationComplete = (idx) => {
+    setMessages(prev => prev.map((msg, i) => i === idx ? { ...msg, animate: false } : msg));
+    // Trigger speech after animation completes for the latest message
+    if (idx === messages.length - 1 && !isMuted) {
+      speakMessage(messages[idx].content);
+    }
   };
 
-  const handleLinkClick = (link) => { if (link.startsWith('http')) window.open(link, '_blank', 'noopener,noreferrer'); else navigate(link); };
+  const handleLinkClick = (link) => {
+    if (link.startsWith('/')) navigate(link);
+    else window.open(link, '_blank');
+  };
 
-  const renderMessageContent = (rawContent) => {
-    // Hide thought block
-    const content = rawContent.replace(/:::THOUGHT\|[\s\S]*?:::/g, '').trim();
+  const handleScheduleConfirm = ({ date, time }) => {
+    setMessages(prev => [...prev, { role: 'assistant', content: `Great! I've noted your preferred time: ${date} at ${time}. I'll send this to Melvin.:::SEND_EMAIL|{"type":"Schedule Call","date":"${date}","time":"${time}"}:::`, animate: true }]);
+  };
+
+  const renderMessageContent = (content) => {
     if (!content) return null;
 
     if (content.includes(':::SHOW_SCHEDULER:::')) {
@@ -274,8 +318,9 @@ const ChatWidget = () => {
 
     if (content.includes(':::SHOW_QUOTE|')) {
       const parts = content.split(/:::SHOW_QUOTE\|([\s\S]+?):::/);
-      // Safety check: if split didn't work (length 1), return content to avoid recursion loop
       if (parts.length === 1) return content;
+
+      const hasFollowUp = parts[2] && parts[2].trim().length > 0;
 
       return (
         <>
@@ -289,7 +334,19 @@ const ChatWidget = () => {
               return null;
             }
           })()}
-          {parts[2] && renderMessageContent(parts[2])}
+          {hasFollowUp ? renderMessageContent(parts[2]) : (
+            <div className="mt-3 p-3 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg border border-cyan-100 dark:border-cyan-800 animate-fade-in">
+              <p className="text-sm text-gray-700 dark:text-gray-300 mb-2 font-medium">
+                Does this look good to you? I can schedule a quick call to discuss the details if you're ready.
+              </p>
+              <button
+                onClick={() => handleSubmit(null, "I'd like to schedule a call")}
+                className="w-full py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg text-xs font-bold hover:shadow-md transition-all transform hover:scale-[1.02]"
+              >
+                📅 Schedule a Call
+              </button>
+            </div>
+          )}
         </>
       );
     }
@@ -349,6 +406,13 @@ const ChatWidget = () => {
               <div className="ml-3"><h3 className="font-bold text-gray-900 dark:text-white text-lg tracking-wide">MelBot</h3><div className="flex items-center text-[10px] text-cyan-600 dark:text-cyan-300 uppercase tracking-wider font-semibold"><span className="w-1.5 h-1.5 bg-green-500 dark:bg-green-400 rounded-full mr-1.5 animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.5)]"></span>Online</div></div>
             </div>
             <div className="flex items-center space-x-1">
+              <button onClick={() => { setIsMuted(!isMuted); window.speechSynthesis.cancel(); }} className={`p-2 rounded-full transition-all duration-200 ${!isMuted ? 'text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-900/20' : 'text-gray-400 dark:text-white/40 hover:bg-gray-100 dark:hover:bg-white/10'}`} title={isMuted ? "Unmute Voice" : "Mute Voice"}>
+                {isMuted ? (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" strokeDasharray="1 1" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" /></svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
+                )}
+              </button>
               <button onClick={clearHistory} className="p-2 text-gray-500 dark:text-white/60 hover:text-red-500 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-all duration-200" title="Clear Conversation"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
               <button onClick={() => { setIsOpen(false); navigate('/chat'); }} className="p-2 text-gray-500 dark:text-white/60 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-all duration-200" title="Open Full Page"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg></button>
               <button onClick={() => setIsOpen(false)} className="p-2 text-gray-500 dark:text-white/60 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-all duration-200"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
